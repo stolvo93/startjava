@@ -134,10 +134,8 @@ public class IfElseStatementTheme {
 
         System.out.println("7. Определение оценки по предметам");
 
-        double scoreHistory = 59;
-        double scoreProgramming = 92;
-
         //определение оценки по истории
+        int scoreHistory = 59;
         int gradeHistory;
         if (scoreHistory <= 60) {
             gradeHistory = 2;
@@ -150,6 +148,7 @@ public class IfElseStatementTheme {
         }
 
         //определение оценки по программированию
+        int scoreProgramming = 92;
         int gradeProgramming;
         if (scoreProgramming <= 60) {
             gradeProgramming = 2;
