@@ -62,22 +62,25 @@ public class CyclesTheme {
 
         System.out.println("4. Вывод чисел в несколько строк");
 
+        int startOfRange = 1;
+        int endOfRange = 24;
+
+        //необходимо начать цикл с наименьшего нечетного значения в заданном диапазоне
+        if (startOfRange % 2 == 0) {
+            startOfRange++;
+        }
+
         int numbersInString = 0;
         int maxNumbersPerString = 5;
 
-        for (int i = 1; i < 24; i++) {
-            if (i % 2 != 0) {
-                if (numbersInString == maxNumbersPerString) {
-                    System.out.println("");
-                    numbersInString = 0;
-                }
-                System.out.printf("%2d ", i);
-                numbersInString++;
-                //пропускаем итерацию, в которой i снова стало бы четным
-                i++;
-            } else {
-                continue;
+        //вывод всех нечетных значений в заданном диапазоне
+        for (int i = startOfRange; i < endOfRange; i += 2) {
+            if (numbersInString == maxNumbersPerString) {
+                System.out.println("");
+                numbersInString = 0;
             }
+            System.out.printf("%2d ", i);
+            numbersInString++;
         }
 
         for (int i = 0; i < maxNumbersPerString - numbersInString; i++) {
@@ -86,6 +89,23 @@ public class CyclesTheme {
 
         System.out.println("\n\n5. Проверка количества двоек числа на четность/нечетность");
 
+        int someNumber = 3242592;
+        int twosCount = 0;
+        int calculationNumber = someNumber;
 
+        while (calculationNumber != 0) {
+            if (calculationNumber % 10 == 2) {
+                twosCount++;
+            }
+            calculationNumber /= 10;
+        }
+
+        System.out.print("В " + someNumber);
+        if (twosCount % 2 == 0) {
+            System.out.print(" четное ");
+        } else {
+            System.out.print(" нечетное ");
+        }
+        System.out.print("количество двоек - " + twosCount + "\n\n");
     }
 }
