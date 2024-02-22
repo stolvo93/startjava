@@ -106,6 +106,53 @@ public class CyclesTheme {
         } else {
             System.out.print(" нечетное ");
         }
-        System.out.print("количество двоек - " + twosCount + "\n\n");
+        System.out.println("количество двоек - " + twosCount + "\n");
+
+        System.out.println("6. Отображение геометрических фигур");
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 10; j++) {
+                System.out.print("*");
+            }
+            System.out.println("");
+        }
+        System.out.println("");
+
+        int lineCounter = 5;
+
+        while (lineCounter != 0) {
+            int hashCounter = lineCounter;
+            while (hashCounter != 0) {
+                System.out.print("#");
+                hashCounter--;
+            }
+            System.out.println("");
+            lineCounter--;
+        }
+        System.out.println("");
+
+        int ascLineCounter = 1;
+        int descLineCounter = 5;
+
+        do {                
+            int maxLength;            
+            if (ascLineCounter <= 3) {
+                maxLength = ascLineCounter;
+            } else {
+                maxLength = descLineCounter;
+            }
+            int dollarSignCounter = 1;
+            do {
+                System.out.print("$");
+                dollarSignCounter++;
+            } while (dollarSignCounter <= maxLength);
+            ascLineCounter++;
+            descLineCounter--;
+            System.out.println("");
+        } while (ascLineCounter <= 5);
+
+        System.out.println("\n7. Отображение ASCII-символов");
+
+        
     }
 }
