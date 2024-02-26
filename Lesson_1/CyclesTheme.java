@@ -25,15 +25,12 @@ public class CyclesTheme {
         int a = 10;
         int b = 5;
         int c = -1;
-        int max = 0;
-        int min = 0;
+        int max = b;
+        int min = a;
 
         if (a > b) {
             max = a;
             min = b;
-        } else {
-            max = b;
-            min = a;
         }
 
         if (c > max) {
@@ -51,7 +48,7 @@ public class CyclesTheme {
         int originalNumber = 1234;
         int sumDigits = 0;
 
-        while (originalNumber != 0) {
+        while (originalNumber > 0) {
             int digit = originalNumber % 10;
             System.out.print(digit);
             sumDigits += digit;
@@ -93,7 +90,7 @@ public class CyclesTheme {
         int countTwos = 0;
         int originalNumberCopy = originalNumber;
 
-        while (originalNumberCopy != 0) {
+        while (originalNumberCopy > 0) {
             if (originalNumberCopy % 10 == 2) {
                 countTwos++;
             }
@@ -116,9 +113,9 @@ public class CyclesTheme {
 
         int stringCounter = 5;
 
-        while (stringCounter != 0) {
+        while (stringCounter > 0) {
             int numberSignCounter = stringCounter;
-            while (numberSignCounter != 0) {
+            while (numberSignCounter > 0) {
                 System.out.print("#");
                 numberSignCounter--;
             }
@@ -166,7 +163,7 @@ public class CyclesTheme {
         originalNumberCopy = originalNumber;
         int reversedNumber = 0;
 
-        while (originalNumberCopy != 0) {
+        while (originalNumberCopy > 0) {
             reversedNumber *= 10;
             reversedNumber += originalNumberCopy % 10;
             originalNumberCopy /= 10;
@@ -178,28 +175,28 @@ public class CyclesTheme {
         System.out.println("9. Проверка, является ли число счастливым");
 
         int happyNumber = 123124;
-        int digitsAbc = 0;
-        int digitsDef = 0;
-        int sumAbc = 0;
-        int sumDef = 0;
+        int leftHalf = 0;
+        int rightHalf = 0;
+        int sumLeftHalf = 0;
+        int sumRightHalf = 0;
         counter = 1;
 
-        while (happyNumber != 0) {
+        for (int i = 0; i < 6; i++) {
             int digit = happyNumber % 10;
             if (counter <= 100) {
-                digitsDef += digit * counter;
-                sumDef += digit;
+                rightHalf += digit * counter;
+                sumRightHalf += digit;
             } else {
-                digitsAbc += digit * counter / 1000;
-                sumAbc += digit;
+                leftHalf += digit * counter / 1000;
+                sumLeftHalf += digit;
             }
             counter *= 10;
             happyNumber /= 10;
         }
 
-        System.out.printf("Число %d%d%s является счастливым%n", digitsAbc, digitsDef,
-                sumAbc == sumDef ? "" : " не");
-        System.out.printf("Сумма цифр %d = %d, а сумма %d = %d%n%n", digitsAbc, sumAbc, digitsDef, sumDef);
+        System.out.printf("Число %d%d%s является счастливым%n", leftHalf, rightHalf,
+                sumLeftHalf == sumRightHalf ? "" : " не");
+        System.out.printf("Сумма цифр %d = %d, а сумма %d = %d%n%n", leftHalf, sumLeftHalf, rightHalf, sumRightHalf);
 
         System.out.println("10. Отображение таблицы умножения Пифагора");
 
