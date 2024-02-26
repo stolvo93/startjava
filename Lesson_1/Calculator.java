@@ -3,10 +3,10 @@ public class Calculator {
         System.out.println("\n1. Калькулятор");
 
         double a = 43;
-        char sign = '/';
+        char sign = '%';
         double b = 3;
         double result = 1;
-        boolean signValid = true;
+        boolean isSignValid = true;
         boolean hasDivisionByZero = false;
 
         switch (sign) {
@@ -45,12 +45,12 @@ public class Calculator {
                 result = a % b;
                 break;
             default:
-                signValid = false;
+                isSignValid = false;
                 System.out.println("Неверный знак. Используйте один из следующих знаков: +, -, *, /, ^, %");
                 break;
         }
 
-        if (signValid & !hasDivisionByZero) {
+        if (isSignValid & !hasDivisionByZero) {
             System.out.println(a + " " + sign + " " + b + " = " + result);
         }
     }

@@ -1,11 +1,12 @@
 import java.util.Random;
 
 public class RpsGameFormatting {
-    // Игра Камень-Ножницы-Бумага
     public static void main(String[] args) throws InterruptedException {
-        char rock = 'R';
-        char scissors = 'S';
-        char paper = 'P';
+        System.out.println("3. Игра \"Камень-Ножницы-Бумага\"");
+
+        char rock = '✊';
+        char scissors = '✌';
+        char paper = '✋';
         Random r = new Random();
 
         // Ход первого игрока
@@ -19,7 +20,7 @@ public class RpsGameFormatting {
             sign1 = scissors;
         }
 
-        System.out.println("Ход " + name1 + ": ");
+        System.out.println("Ход " + name1 + ":");
 
         for (int i = 0; i < 5; i++) {
             System.out.print(rock + "\r");
@@ -43,7 +44,7 @@ public class RpsGameFormatting {
             sign2 = scissors;
         }
 
-        System.out.println("Ход " + name2 + ": ");
+        System.out.println("Ход " + name2 + ":");
 
         for (int i = 0; i < 5; i++) {
             System.out.print(rock + "\r");
@@ -61,10 +62,9 @@ public class RpsGameFormatting {
         } else if (sign1 == rock && sign2 == scissors ||
                 sign1 == scissors && sign2 == paper ||
                 sign1 == paper && sign2 == rock) {
-            System.out.println("\nПобедил - " + name1);
+            System.out.println("Победил - " + name1);
         } else {
-            System.out.println("\nПобедил - " + name2);
+            System.out.println("Победил - " + name2);
         }
-
     }
 }
