@@ -59,9 +59,14 @@ public class RpsGameFormatting {
 
         if (sign1 == sign2) {
             System.out.println("Победила дружба!");
-        } else if (sign1 == rock && sign2 == scissors ||
+            return;
+        }
+
+        boolean isPlayer1Winning = sign1 == rock && sign2 == scissors ||
                 sign1 == scissors && sign2 == paper ||
-                sign1 == paper && sign2 == rock) {
+                sign1 == paper && sign2 == rock;
+
+        if (isPlayer1Winning) {
             System.out.println("Победил - " + name1);
         } else {
             System.out.println("Победил - " + name2);
