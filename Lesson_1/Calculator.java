@@ -17,9 +17,9 @@ public class Calculator {
             if (b == 0) {
                 System.out.println("Деление на ноль запрещено.");
             } else {
-                double divisionResult = (double) a / (double) b;
+                double divisionResult = (double) a / b;
                 // не выводим дробную часть результата, если это целое число
-                if (divisionResult * 10 % 10 == 0) {
+                if (divisionResult % 1 == 0) {
                     System.out.printf("%d %s %d = %.0f%n", a, sign, b, divisionResult);
                 } else {
                     System.out.println(a + " " + sign + " " + b + " = " + divisionResult);
