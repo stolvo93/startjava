@@ -3,8 +3,8 @@ public class Wolf {
     private String sex;
     private String name;
     private float weight;
-    private byte age;
-    private String coatColor;
+    private int age;
+    private String color;
 
     public String getSex() {
         return sex;
@@ -30,11 +30,11 @@ public class Wolf {
         this.weight = weight;
     }
 
-    public byte getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(byte age) {
+    public void setAge(int age) {
         if (age > 8) {
             System.out.println("Некорректный возраст");
         } else {
@@ -42,12 +42,12 @@ public class Wolf {
         }
     }
 
-    public String getCoatColor() {
-        return coatColor;
+    public String getColor() {
+        return color;
     }
 
-    public void setCoatColor(String coatColor) {
-        this.coatColor = coatColor;
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public void walk() {
