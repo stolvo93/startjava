@@ -46,7 +46,7 @@ public class Wolf {
         return coatColor;
     }
 
-    public void setCoatColor() {
+    public void setCoatColor(String coatColor) {
         this.coatColor = coatColor;
     }
 
