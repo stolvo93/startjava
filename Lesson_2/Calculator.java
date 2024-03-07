@@ -1,52 +1,66 @@
 public class Calculator {
-    public static void main(String[] args) {
-        System.out.println("\n1. Калькулятор");
 
-        int a = 16_777_216;
-        char sign = '5';
-        int b = 65_536;
-        int result = 1;
+        private int a = 16_777_216;
+        private String sign = "/";
+        private int b = 65_536;
+        private int result = 1;
+
+    public void calculate(int a, String sign, int b) {
+        this.a = a;
+        this.sign = sign;
+        this.b = b;
 
         switch (sign) {
-            case '+':
+            case "+":
                 result = a + b;
                 break;
-            case '-':
+            case "-":
                 result = a - b;
                 break;
-            case '*':
+            case "*":
                 result = a * b;
                 break;
-            case '/':
-                if (b == 0) {
-                    System.out.println("Деление на ноль запрещено.");
-                } else {
-                    double divisionResult = (double) a / b;
-                    // не выводим дробную часть результата, если он является целым числом
-                    if (divisionResult % 1 == 0) {
-                        System.out.printf("%d %s %d = %.0f%n", a, sign, b, divisionResult);
-                    } else {
-                        System.out.println(a + " " + sign + " " + b + " = " + divisionResult);
-                    }
+            case "/":
+                if (!hasDivisionByZero(b)) {
+                    divide(a, b);
                 }
                 return;
-            case '^':
+            case "^":
                 for (int i = 0; i < b; i++) {
                     result *= a;
                 }
                 break;
-            case '%':
-                if (b == 0) {
-                    System.out.println("Деление на ноль запрещено.");
+            case "%":
+                if (!hasDivisionByZero(b)) {
+                    result = a % b;
+                    break;
+                } else {
                     return;
                 }
-                result = a % b;
-                break;
             default:
                 System.out.print("Неверный знак математической операции. ");
-                System.out.println("Доступны следующие знаки: +, -, *, /, ^, %");
+                System.out.println("Поддерживаются следующие знаки: +, -, *, /, ^, %");
                 return;
         }
         System.out.println(a + " " + sign + " " + b + " = " + result);
+    }
+
+    private boolean hasDivisionByZero(int divisor) {
+        if (divisor == 0) {
+            System.out.println("Деление на ноль запрещено.");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void divide(int a, int b) {
+        double divisionResult = (double) a / b;
+        // не выводим дробную часть результата, если он является целым числом
+        if (divisionResult % 1 == 0) {
+            System.out.printf("%d / %d = %.0f%n", a, b, divisionResult);
+        } else {
+            System.out.println(a + " / " + b + " = " + divisionResult);
+        }
     }
 }
