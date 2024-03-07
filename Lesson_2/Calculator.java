@@ -1,36 +1,38 @@
 public class Calculator {
 
-        private int a = 16_777_216;
-        private String sign = "/";
-        private int b = 65_536;
-        private int result = 1;
+        private int a;
+        private char sign;
+        private int b;
+        private int result;
 
-    public void calculate(int a, String sign, int b) {
+    public void calculate(int a, char sign, int b) {
         this.a = a;
         this.sign = sign;
         this.b = b;
+        result = 1;
 
         switch (sign) {
-            case "+":
+            case '+':
                 result = a + b;
                 break;
-            case "-":
+            case '-':
                 result = a - b;
                 break;
-            case "*":
+            case '*':
                 result = a * b;
                 break;
-            case "/":
+            case '/':
                 if (!hasDivisionByZero(b)) {
                     divide(a, b);
                 }
                 return;
-            case "^":
+            case '^':
                 for (int i = 0; i < b; i++) {
                     result *= a;
+                    System.out.println(result);
                 }
                 break;
-            case "%":
+            case '%':
                 if (!hasDivisionByZero(b)) {
                     result = a % b;
                     break;
@@ -56,6 +58,7 @@ public class Calculator {
 
     private void divide(int a, int b) {
         double divisionResult = (double) a / b;
+        
         // не выводим дробную часть результата, если он является целым числом
         if (divisionResult % 1 == 0) {
             System.out.printf("%d / %d = %.0f%n", a, b, divisionResult);

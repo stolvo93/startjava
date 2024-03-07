@@ -12,10 +12,10 @@ public class CalculatorTest {
             int firstNumber = scanner.nextInt();
             scanner.nextLine();
             System.out.print("Введите знак математической операции: ");
-            String sign = scanner.nextLine();
+            char mathOperation = scanner.nextLine().charAt(0);
             System.out.print("Введите второе число: ");
             int secondNumber = scanner.nextInt();
-            calculation.calculate(firstNumber, sign, secondNumber);
+            calculation.calculate(firstNumber, mathOperation, secondNumber);
             scanner.nextLine();
             while (true) {
                 System.out.print("Хотите продолжить вычисления? [yes/no]: ");
