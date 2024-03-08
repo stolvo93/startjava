@@ -1,15 +1,7 @@
 public class Calculator {
 
-        private int a;
-        private char sign;
-        private int b;
-        private int result;
-
     public void calculate(int a, char sign, int b) {
-        this.a = a;
-        this.sign = sign;
-        this.b = b;
-        result = 1;
+        int result = 1;
 
         switch (sign) {
             case '+':
@@ -29,16 +21,14 @@ public class Calculator {
             case '^':
                 for (int i = 0; i < b; i++) {
                     result *= a;
-                    System.out.println(result);
                 }
                 break;
             case '%':
                 if (!hasDivisionByZero(b)) {
                     result = a % b;
                     break;
-                } else {
-                    return;
                 }
+                return;
             default:
                 System.out.print("Неверный знак математической операции. ");
                 System.out.println("Поддерживаются следующие знаки: +, -, *, /, ^, %");
@@ -51,9 +41,8 @@ public class Calculator {
         if (divisor == 0) {
             System.out.println("Деление на ноль запрещено.");
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     private void divide(int a, int b) {
