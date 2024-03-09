@@ -62,7 +62,7 @@ public class Jaeger {
         }
     }
 
-    public boolean isPositive (double quantifiableValue, String fieldName) {
+    private boolean isPositive (double quantifiableValue, String fieldName) {
         if (quantifiableValue > 0) {
             return true;
         }
