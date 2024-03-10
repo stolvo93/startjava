@@ -1,13 +1,13 @@
 import java.util.Locale;
 
 public class Jaeger {
-    
+
     private String modelName;
     private String mark;
     private String status;
     private double height;
     private int weight;
-    
+
     public Jaeger() {}
 
     public Jaeger(String modelName, String mark, String status, double height, int weight) {
