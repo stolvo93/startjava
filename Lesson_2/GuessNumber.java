@@ -3,26 +3,37 @@ import java.util.Scanner;
 
 public class GuessNumber {
 
-    public void play(Player player1, Player player2) {
+    private Player player1;
+    private Player player2;
+    private int requiredNumber;
+
+    public GuessNumber(Player player1, Player player2) {
+        this.player1 = player1;
+        this.player2 = player2;
+    }
+
+    public void play() {
         Random r = new Random();
-        int requiredNumber = r.nextInt(1, 101);
+        requiredNumber = r.nextInt(1, 101);
         boolean isPlayer1Turn = true;
 
-        while (!makeMove(isPlayer1Turn ? player1 : player2, requiredNumber)) {
+        while (!makeMove(isPlayer1Turn ? player1 : player2)) {
             isPlayer1Turn = !isPlayer1Turn;
         }
     }
 
-    private boolean makeMove(Player player, int requiredNumber) {
-        System.out.printf("%nХод игрока %s: ", player.getName());
+    private boolean makeMove(Player player) {
+        System.out.printf("%nИгрок %s угадывает число: ", player.getName());
         Scanner scanner = new Scanner(System.in);
-        int playerNumber = scanner.nextInt();
-        if (playerNumber == requiredNumber) {
+        player.setNumber(scanner.nextInt());
+
+        if (player.getNumber() == requiredNumber) {
             System.out.printf("%nЧисло %d угадано! Победитель - %s! 🎉%n%n", requiredNumber, player.getName());
             return true;
         }
+
         System.out.printf("Число %d %s того, что загадал компьютер%n",
-                playerNumber, playerNumber > requiredNumber ? "больше" : "меньше");
+                player.getNumber(), player.getNumber() > requiredNumber ? "больше" : "меньше");
         return false;
     }
 }
