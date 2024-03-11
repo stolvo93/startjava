@@ -5,7 +5,7 @@ public class GuessNumber {
 
     private Player player1;
     private Player player2;
-    private int requiredNumber;
+    private int targetNumber;
 
     public GuessNumber(Player player1, Player player2) {
         this.player1 = player1;
@@ -14,11 +14,11 @@ public class GuessNumber {
 
     public void play() {
         Random r = new Random();
-        requiredNumber = r.nextInt(1, 101);
-        boolean isPlayer1Turn = true;
+        targetNumber = r.nextInt(1, 101);
+        Player currentPlayer = player1;
 
-        while (!makeMove(isPlayer1Turn ? player1 : player2)) {
-            isPlayer1Turn = !isPlayer1Turn;
+        while (!makeMove(currentPlayer)) {
+            currentPlayer = currentPlayer == player1 ? player2 : player1;
         }
     }
 
@@ -27,13 +27,13 @@ public class GuessNumber {
         Scanner scanner = new Scanner(System.in);
         player.setNumber(scanner.nextInt());
 
-        if (player.getNumber() == requiredNumber) {
-            System.out.printf("%nЧисло %d угадано! Победитель - %s! 🎉%n%n", requiredNumber, player.getName());
+        if (player.getNumber() == targetNumber) {
+            System.out.printf("%nЧисло %d угадано! Победитель - %s! 🎉%n%n", targetNumber, player.getName());
             return true;
         }
 
         System.out.printf("Число %d %s того, что загадал компьютер%n",
-                player.getNumber(), player.getNumber() > requiredNumber ? "больше" : "меньше");
+                player.getNumber(), player.getNumber() > targetNumber ? "больше" : "меньше");
         return false;
     }
 }

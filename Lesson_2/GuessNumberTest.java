@@ -9,12 +9,10 @@ public class GuessNumberTest {
         System.out.println("Компьютер загадал число от 1 до 100. Попробуйте его угадать!\n");
 
         System.out.print("Введите имя первого игрока: ");
-        String name = scanner.nextLine();
-        Player player1 = new Player(name);
+        Player player1 = new Player(scanner.nextLine());
 
         System.out.print("Введите имя второго игрока: ");
-        name = scanner.nextLine();
-        Player player2 = new Player(name);
+        Player player2 = new Player(scanner.nextLine());
 
         GuessNumber game = new GuessNumber(player1, player2);
         String answer;
