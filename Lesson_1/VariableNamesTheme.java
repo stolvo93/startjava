@@ -19,15 +19,15 @@ public class VariableNamesTheme {
         System.out.println("Максимальное число = " + maxNumber);
 
         // Количество десятков
-        int tensQuantity = 3;
-        System.out.println("Количество десятков = " + tensQuantity);
+        int tensCount = 3;
+        System.out.println("Количество десятков = " + tensCount);
 
         // Вес собаки
         int dogWeight = 3;
         System.out.println("Вес собаки: " + dogWeight + " кг");
 
         // Исходное число
-        int originalNumber = 3;
+        int originalNumber = -3;
         System.out.println("Исходное число = " + originalNumber);
 
         // Процент по вкладу
@@ -39,7 +39,7 @@ public class VariableNamesTheme {
         System.out.println("Символ '&': " + ampersand);
 
         // Код ошибки
-        String errorCode = "\"STOP 0x0000007B\"";
+        String errorCode = "STOP 0x0000007B";
         System.out.println("Код ошибки: " + errorCode);
 
         // Тип сообщения
@@ -47,8 +47,8 @@ public class VariableNamesTheme {
         System.out.println("Тип сообщения: " + messageType);
 
         // Количество нулей
-        int zerosQuantity = 3;
-        System.out.println("Количество нулей = " + zerosQuantity);
+        int zerosCount = 3;
+        System.out.println("Количество нулей = " + zerosCount);
 
         // Уникальное число
         int uniqueNumber = 4;
@@ -91,7 +91,7 @@ public class VariableNamesTheme {
         System.out.println("Имя работника месяца: " + employeeOfTheMonthName);
 
         // Название электронной книги
-        String ebookTitle = "\"Почему одни страны богатые, а другие бедные\"";
+        String ebookTitle = "Почему одни страны богатые, а другие бедные";
         System.out.println("Название электронной книги: " + ebookTitle);
 
         // Размер
@@ -111,8 +111,8 @@ public class VariableNamesTheme {
         System.out.println("Путь до файла: " + filePath);
 
         // Количество чисел в строке
-        int stringNumbersQuantity = 3;
-        System.out.println("Количество чисел в строке = " + stringNumbersQuantity);
+        int stringNumbersCount = 3;
+        System.out.println("Количество чисел в строке = " + stringNumbersCount);
 
         System.out.println("\n2. BOOLEAN-ПЕРЕМЕННЫЕ\n");
 
@@ -152,6 +152,34 @@ public class VariableNamesTheme {
         boolean hasUniqueLines = true;
         System.out.println("Имеются уникальные строки? " + hasUniqueLines);
 
-        System.out.println("\n2. АББРЕВИАТУРЫ\n");
+        System.out.println("\n3. АББРЕВИАТУРЫ\n");
+
+        // Старый universally unique identifier
+        String oldUuid = "6a11a190-5942-11f1-b4ac-0800200c9a66";
+        System.out.println("Старый UUID = " + oldUuid);
+
+        // Производитель оперативной памяти
+        String ramVendor = "Samsung Electronics";
+        System.out.println("Производитель RAM: " + ramVendor);
+
+        // Ёмкость жёсткого диска
+        int hddCapacity = 512;
+        System.out.println("Ёмкость HDD: " + hddCapacity + " ГБ");
+
+        // Определение термина протокола передачи гипертекста
+        String httpDefinition = "протокол прикладного уровня, используемый для передачи данных по сети";
+        System.out.println("HTTP - это " + httpDefinition);
+
+        // Сокращенный uniform resource locator
+        String shortUrl = "shrt.url/xmpl";
+        System.out.println("Сокращенный URL: " + shortUrl);
+
+        // Новый идентификатор клиента
+        int newCustomerId = 25_347;
+        System.out.println("Новый ID клиента: " + newCustomerId);
+
+        // Количество символов в American Standard Code for Information Interchange
+        int asciiCharCount = 128;
+        System.out.println("Количество символов в ASCII = " + asciiCharCount);
     }
 }
