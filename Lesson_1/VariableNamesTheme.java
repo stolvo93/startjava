@@ -121,8 +121,8 @@ public class VariableNamesTheme {
         System.out.println("Сотни равны? " + isHundredsEqual);
 
         // Компьютер включён?
-        boolean isOn = false;
-        System.out.println("Компьютер включён? " + isOn);
+        boolean isComputerOn = false;
+        System.out.println("Компьютер включён? " + isComputerOn);
 
         // Есть равные цифры?
         boolean hasEqualNumbers = true;
