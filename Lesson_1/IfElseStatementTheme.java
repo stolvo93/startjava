@@ -144,5 +144,57 @@ public class IfElseStatementTheme {
         System.out.printf("Сумма начисленного %%: %s\n", interestAmountBd);
         System.out.printf("Итоговая сумма с %%: %s\n", depositBd.add(interestAmountBd)
                 .setScale(2, RoundingMode.HALF_UP));
+
+        System.out.println("\n7. ОПРЕДЕЛЕНИЕ ОЦЕНКИ ПО ПРЕДМЕТАМ\n");
+
+        int historyScore = 59;
+        int codingScore = 92;
+
+        int historyMark = 2;
+
+        if (historyScore > 91) {
+            historyMark = 5;
+        } else if (historyScore > 73) {
+            historyMark = 4;
+        } else if (historyScore > 60) {
+            historyMark = 3;
+        }
+
+        int codingMark = 2;
+
+        if (codingScore > 91) {
+            codingMark = 5;
+        } else if (codingScore > 73) {
+            codingMark = 4;
+        } else if (codingScore > 60) {
+            codingMark = 3;
+        }
+
+        System.out.printf("История - %d\n", historyMark);
+        System.out.printf("Программирование - %d\n", codingMark);
+
+        float avgMark = (float) (historyMark + codingMark) / 2;
+        float avgScore = (float) (historyScore + codingScore) / 2;
+
+        System.out.println("Средняя оценка - " + avgMark);
+        System.out.println("Средний % - " + avgScore);
+
+        System.out.println("\n8. РАСЧЕТ ГОДОВОЙ ПРИБЫЛИ\n");
+
+        BigDecimal monthlyRevenue = new BigDecimal("13025.233");
+        BigDecimal monthlyRental = new BigDecimal("5123.018");
+        BigDecimal monthlyProductionCost = new BigDecimal("9001.729");
+        BigDecimal monthlyCosts = monthlyRental.add(monthlyProductionCost);
+        BigDecimal monthlyProfit = monthlyRevenue.subtract(monthlyCosts);
+        BigDecimal annualProfit = monthlyProfit.multiply(new BigDecimal("12"))
+                .setScale(2, RoundingMode.HALF_UP);
+
+        System.out.print("Прибыль за год: ");
+
+        if (annualProfit.compareTo(BigDecimal.ZERO) > 0) {
+            System.out.print('+');
+        }
+
+        System.out.println(annualProfit + " руб.\n");
     }
 }
