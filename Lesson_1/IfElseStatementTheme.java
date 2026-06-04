@@ -158,26 +158,15 @@ public class IfElseStatementTheme {
         BigDecimal totalAmountBd = depositBd.multiply(BigDecimal.ONE.add(interestRateBd))
                 .setScale(2, RoundingMode.HALF_UP);
 
-<<<<<<< HEAD
-        System.out.printf("Сумма начисленного %%: %s\n", interestAmountBd);
-        System.out.printf("Итоговая сумма с %%: %s\n", depositBd.add(interestAmountBd)
-                .setScale(2, RoundingMode.HALF_UP));
-=======
         System.out.printf("""
                 Сумма вклада: %s
                 Сумма начисленного %%: %s
                 Итоговая сумма с %%: %s
                 """, depositBd, interestAmountBd, totalAmountBd);
->>>>>>> b570f60 (Исправлены VariablesTheme и IfElseStatementTheme с учётом ряда замечаний ментора. Отдельно переработано задание "4. ОПРЕДЕЛЕНИЕ ПЕРВОГО СИМВОЛА НИКНЕЙМА" по теме IfElseStatementTheme.)
 
         System.out.println("\n7. ОПРЕДЕЛЕНИЕ ОЦЕНКИ ПО ПРЕДМЕТАМ\n");
 
         int historyScore = 59;
-<<<<<<< HEAD
-        int codingScore = 92;
-
-=======
->>>>>>> b570f60 (Исправлены VariablesTheme и IfElseStatementTheme с учётом ряда замечаний ментора. Отдельно переработано задание "4. ОПРЕДЕЛЕНИЕ ПЕРВОГО СИМВОЛА НИКНЕЙМА" по теме IfElseStatementTheme.)
         int historyMark = 2;
 
         if (historyScore > 91) {
@@ -188,23 +177,6 @@ public class IfElseStatementTheme {
             historyMark = 3;
         }
 
-<<<<<<< HEAD
-        int codingMark = 2;
-
-        if (codingScore > 91) {
-            codingMark = 5;
-        } else if (codingScore > 73) {
-            codingMark = 4;
-        } else if (codingScore > 60) {
-            codingMark = 3;
-        }
-
-        System.out.printf("История - %d\n", historyMark);
-        System.out.printf("Программирование - %d\n", codingMark);
-
-        float avgMark = (float) (historyMark + codingMark) / 2;
-        float avgScore = (float) (historyScore + codingScore) / 2;
-=======
         int csScore = 92;
         int csMark = 2;
 
@@ -221,7 +193,6 @@ public class IfElseStatementTheme {
 
         float avgMark = (historyMark + csMark) / 2f;
         float avgScore = (historyScore + csScore) / 2f;
->>>>>>> b570f60 (Исправлены VariablesTheme и IfElseStatementTheme с учётом ряда замечаний ментора. Отдельно переработано задание "4. ОПРЕДЕЛЕНИЕ ПЕРВОГО СИМВОЛА НИКНЕЙМА" по теме IfElseStatementTheme.)
 
         System.out.println("Средняя оценка - " + avgMark);
         System.out.println("Средний % - " + avgScore);
@@ -231,24 +202,14 @@ public class IfElseStatementTheme {
         BigDecimal monthlyRevenue = new BigDecimal("13025.233");
         BigDecimal monthlyRental = new BigDecimal("5123.018");
         BigDecimal monthlyProductionCost = new BigDecimal("9001.729");
-<<<<<<< HEAD
-        BigDecimal monthlyCosts = monthlyRental.add(monthlyProductionCost);
-        BigDecimal monthlyProfit = monthlyRevenue.subtract(monthlyCosts);
-        BigDecimal annualProfit = monthlyProfit.multiply(new BigDecimal("12"))
-=======
         BigDecimal annualProfit = monthlyRevenue
                 .subtract(monthlyRental.add(monthlyProductionCost))
                 .multiply(new BigDecimal("12"))
->>>>>>> b570f60 (Исправлены VariablesTheme и IfElseStatementTheme с учётом ряда замечаний ментора. Отдельно переработано задание "4. ОПРЕДЕЛЕНИЕ ПЕРВОГО СИМВОЛА НИКНЕЙМА" по теме IfElseStatementTheme.)
                 .setScale(2, RoundingMode.HALF_UP);
 
         System.out.print("Прибыль за год: ");
 
-<<<<<<< HEAD
-        if (annualProfit.compareTo(BigDecimal.ZERO) > 0) {
-=======
         if (annualProfit.signum() > 0) {
->>>>>>> b570f60 (Исправлены VariablesTheme и IfElseStatementTheme с учётом ряда замечаний ментора. Отдельно переработано задание "4. ОПРЕДЕЛЕНИЕ ПЕРВОГО СИМВОЛА НИКНЕЙМА" по теме IfElseStatementTheme.)
             System.out.print('+');
         }
 
