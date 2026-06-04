@@ -5,10 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class VariablesTheme {
     public static void main(String[] args) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-        final String checkStartTime = dtf.format(LocalTime.now());
+        final LocalTime startTime = LocalTime.now();
         final long checkStart = System.nanoTime();
-
+        
         System.out.println("\n1. ВЫВОД ASCII ГРАФИКИ\n");
 
         System.out.println(String.join("\n",
@@ -30,28 +29,28 @@ public class VariablesTheme {
         float penPrice = 105.5f;
         float bookPrice = 235.23f;
         float discountPercent = 0.11f;
-        float originalTotal = penPrice + bookPrice;
-        float discountAmount = originalTotal * discountPercent;
-        float discountedTotal = originalTotal - discountAmount;
+        float baseTotal = penPrice + bookPrice;
+        float discountAmount = baseTotal * discountPercent;
+        float discountedTotal = baseTotal - discountAmount;
 
         System.out.println("Ответ 1:");
-        System.out.println("Стоимость товаров без скидки - " + originalTotal + " руб.");
+        System.out.println("Стоимость товаров без скидки - " + baseTotal + " руб.");
         System.out.println("Сумма скидки - " + discountAmount + " руб.");
         System.out.println("Стоимость товаров со скидкой - " + discountedTotal + " руб.\n");
 
         BigDecimal penPriceBd = new BigDecimal("105.5");
         BigDecimal bookPriceBd = new BigDecimal("235.23");
         BigDecimal discountPercentBd = new BigDecimal("0.11");
-        BigDecimal originalTotalBd = penPriceBd.add(bookPriceBd).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal discountAmountBd = originalTotalBd.multiply(discountPercentBd)
+        BigDecimal baseTotalBd = penPriceBd.add(bookPriceBd).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal discountAmountBd = baseTotalBd.multiply(discountPercentBd)
                 .setScale(2, RoundingMode.HALF_UP);
-        BigDecimal discountedTotalBd = originalTotalBd.subtract(discountAmountBd)
+        BigDecimal discountedTotalBd = baseTotalBd.subtract(discountAmountBd)
                 .setScale(2, RoundingMode.HALF_UP);
 
         System.out.println("Ответ 2:");
-        System.out.println("Стоимость товаров без скидки - " + originalTotalBd + " руб.");
+        System.out.println("Стоимость товаров без скидки - " + baseTotalBd + " руб.");
         System.out.println("Сумма скидки - " + discountAmountBd + " руб.");
-        System.out.println("Стоимость товаров со скидкой - " + discountedTotalBd + " руб.\n");
+        System.out.println("Стоимость товаров со скидкой - " + discountedTotalBd + " руб.");
 
         System.out.println("\n3. ПЕРЕСТАНОВКА ЗНАЧЕНИЙ ЯЧЕЕК В ТАБЛИЦЕ\n");
 
@@ -116,7 +115,7 @@ public class VariablesTheme {
                   Исходное: %4d
                      +1: %7d
                      -1: %7d
-                \n""", temperature, ++temperature, --temperature);
+                %n""", temperature, ++temperature, --temperature);
 
         short pressure = Short.MAX_VALUE;
         System.out.printf("""
@@ -124,7 +123,7 @@ public class VariablesTheme {
                   Исходное: %,6d
                      +1: %,9d
                      -1: %,9d
-                \n""", pressure, ++pressure, --pressure);
+                %n""", pressure, ++pressure, --pressure);
 
         char statusCode = Character.MAX_VALUE;
         System.out.printf("""
@@ -132,7 +131,7 @@ public class VariablesTheme {
                   Исходное: %,6d
                      +1: %,9d
                      -1: %,9d
-                \n""", (int) statusCode, (int) ++statusCode, (int) --statusCode);
+                %n""", (int) statusCode, (int) ++statusCode, (int) --statusCode);
 
         int traveledDistance = Integer.MAX_VALUE;
         System.out.printf("""
@@ -140,7 +139,7 @@ public class VariablesTheme {
                   Исходное: %,11d
                      +1: %,16d
                      -1: %,16d
-                \n""", traveledDistance, ++traveledDistance, --traveledDistance);
+                %n""", traveledDistance, ++traveledDistance, --traveledDistance);
 
         long timeSinceLaunch = Long.MAX_VALUE;
         System.out.printf("""
@@ -153,12 +152,12 @@ public class VariablesTheme {
         System.out.println("\n7. ВЫВОД ПАРАМЕТРОВ JVM И ОС\n");
 
         double mb = 1024 * 1024;
-        Runtime jvm = Runtime.getRuntime();
-        int availableCoresNumber = jvm.availableProcessors();
-        double allocatedMemory = jvm.totalMemory() / mb;
-        double freeMemory = jvm.freeMemory() / mb;
+        Runtime rt = Runtime.getRuntime();
+        int availableCoresNumber = rt.availableProcessors();
+        double allocatedMemory = rt.totalMemory() / mb;
+        double freeMemory = rt.freeMemory() / mb;
         double usedMemory = allocatedMemory - freeMemory;
-        double maxMemory = jvm.maxMemory() / mb;
+        double maxMemory = rt.maxMemory() / mb;
 
         System.out.printf("""
                 Характеристики JVM:
@@ -168,7 +167,7 @@ public class VariablesTheme {
                   используемая память (МБ)  - %.1f
                   максимально доступная
                   для выделения память (МБ) - %.1f
-                \n""", availableCoresNumber, allocatedMemory, freeMemory, usedMemory, maxMemory);
+                %n""", availableCoresNumber, allocatedMemory, freeMemory, usedMemory, maxMemory);
 
         String userDirectory = System.getProperty("user.dir");
         String osVersion = System.getProperty("os.name") + " " + System.getProperty("os.version");
@@ -184,9 +183,11 @@ public class VariablesTheme {
 
         System.out.println("\n8. ЗАМЕР ВРЕМЕНИ РАБОТЫ КОДА\n");
 
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        String checkStartTime = dtf.format(startTime);
         String checkFinishTime = dtf.format(LocalTime.now());
         long checkFinish = System.nanoTime();
-        double ns = 1_000_000_000;
+        double ns = 1e9;
         double timeElapsed = (checkFinish - checkStart) / ns;
 
         System.out.printf("""
@@ -195,6 +196,6 @@ public class VariablesTheme {
                 | Финиш проверки | %s |
                 +-------------------------------+
                 | Время работы   | %6.3f сек   |
-                \n""", checkStartTime, checkFinishTime, timeElapsed);
+                %n""", checkStartTime, checkFinishTime, timeElapsed);
     }
 }
