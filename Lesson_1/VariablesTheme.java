@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class VariablesTheme {
     public static void main(String[] args) {
         final LocalTime startTime = LocalTime.now();
-        final long checkStart = System.nanoTime();
+        final long startTimeNano = System.nanoTime();
         
         System.out.println("\n1. ВЫВОД ASCII ГРАФИКИ\n");
 
@@ -184,11 +184,11 @@ public class VariablesTheme {
         System.out.println("\n8. ЗАМЕР ВРЕМЕНИ РАБОТЫ КОДА\n");
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-        String checkStartTime = dtf.format(startTime);
-        String checkFinishTime = dtf.format(LocalTime.now());
-        long checkFinish = System.nanoTime();
+        String startTimeFormatted = dtf.format(startTime);
+        String finishTimeFormatted = dtf.format(LocalTime.now());
+        long finishTimeNano = System.nanoTime();
         double ns = 1e9;
-        double timeElapsed = (checkFinish - checkStart) / ns;
+        double timeElapsed = (finishTimeNano - startTimeNano) / ns;
 
         System.out.printf("""
                 | Старт проверки | %s |
@@ -196,6 +196,6 @@ public class VariablesTheme {
                 | Финиш проверки | %s |
                 +-------------------------------+
                 | Время работы   | %6.3f сек   |
-                %n""", checkStartTime, checkFinishTime, timeElapsed);
+                %n""", startTimeFormatted, finishTimeFormatted, timeElapsed);
     }
 }
