@@ -7,14 +7,10 @@ class CyclesTheme {
         System.out.printf("%-10s%-12s%s%n", "DECIMAL", "CHARACTER", "DESCRIPTION");
 
         String rowFormat = "%4d\t%7c\t\t   %-25s%n";
-        char character = 33;
 
-        while (character <= 'z') {
-            if (character % 2 != 0 && character < '0' ||
-                    character % 2 == 0 && character >= 'a') {
-                System.out.printf(rowFormat, (int) character, character, Character.getName(character));
-            }
-            character++;
+        for (char character = 33; character <= 'z'; character += 2) {
+            if (character == 49) character = 98;
+            System.out.printf(rowFormat, (int) character, character, Character.getName(character));
         }
 
         System.out.println("\n2. ВЫВОД ГЕОМЕТРИЧЕСКИХ ФИГУР\n");
@@ -69,11 +65,7 @@ class CyclesTheme {
 
         while (currentNum < rangeEnd) {
             for (int i = 0; i < 5; i++) {
-                if (currentNum < rangeEnd) {
-                    System.out.printf("%3d", currentNum);
-                } else {
-                    System.out.printf("%3d", 0);
-                }
+                System.out.printf("%3d", currentNum < rangeEnd ? currentNum : 0);
                 currentNum += 2;
             }
             System.out.println();
@@ -118,55 +110,47 @@ class CyclesTheme {
 
         System.out.println("\n7. ПРОВЕРКА СЧАСТЛИВОГО ЧИСЛА\n");
 
-        int initialNumber = 101002;
-        int leftDigits = initialNumber / 1000;
-        int rightDigits = initialNumber % 1000;
-        int leftDigitsSum = 0;
+        originalNumber = 101_002;
+        int leftHalf = originalNumber / 1000;
+        int rightHalf = originalNumber % 1000;
+        int leftHalfSum = 0;
+        int rightHalfSum = 0;
 
-        tmpNumber = leftDigits;
-
-        while (tmpNumber > 0) {
-            leftDigitsSum += tmpNumber % 10;
-            tmpNumber /= 10;
+        for (int i = 1; i <= 100; i *= 10) {
+            leftHalfSum += leftHalf / i % 10;
+            rightHalfSum += rightHalf / i % 10;
         }
 
-        int rightDigitsSum = 0;
-
-        tmpNumber = rightDigits;
-
-        while (tmpNumber > 0) {
-            rightDigitsSum += tmpNumber % 10;
-            tmpNumber /= 10;
-        }
-
-        String isLuckyNumber = leftDigitsSum == rightDigitsSum ? "счастливое" : "не счастливое";
+        String isLuckyNumber = leftHalfSum == rightHalfSum ? "счастливое" : "не счастливое";
 
         System.out.printf("""
-                %d - %s число
+                %,d - %s число
                 Сумма цифр %03d = %d
                 Сумма цифр %d = %d
-                """, initialNumber, isLuckyNumber, rightDigits, rightDigitsSum, leftDigits, leftDigitsSum);
+                """, originalNumber, isLuckyNumber, rightHalf, rightHalfSum, leftHalf, leftHalfSum);
 
         System.out.println("\n8. ПРОСТОЙ ГЕНЕРАТОР ПАРОЛЯ\n");
 
-        String password = "";
+        StringBuilder password = new StringBuilder(8);
         boolean hasSmallLetters = false;
         boolean hasCapitalLetters = false;
         boolean hasDigits = false;
         boolean hasSpecialCharacters = false;
-        char nextCharacter;
         Random r = new Random();
 
         for (int i = 0; i < 8; i++) {
-            nextCharacter = (char) r.nextInt(33, 126);
-            password += nextCharacter;
-            if (nextCharacter >= 'a' && nextCharacter <= 'z') {
-                hasSmallLetters = true;
-            } else if (nextCharacter >= 'A' && nextCharacter <= 'Z') {
+            char currentCharacter = (char) r.nextInt(33, 127);
+            password.append(currentCharacter);
+            
+            if (!Character.isLetterOrDigit(currentCharacter)) {
+                hasSpecialCharacters = true;
+            } else if (Character.isUpperCase(currentCharacter)) {
                 hasCapitalLetters = true;
-            } else if (nextCharacter >= '0' && nextCharacter <= '9') {
+            } else if (Character.isLowerCase(currentCharacter)) {
+                hasSmallLetters = true; 
+            } else {
                 hasDigits = true;
-            } else hasSpecialCharacters = true;
+            }
         }
 
         String passwordStrength = "Слабый";
