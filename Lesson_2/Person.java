@@ -1,9 +1,9 @@
-public class Person extends {
+public class Person {
 
     String sex = "female";
     String name = "Карина";
     int height = 168;
-    float weight = 44.2;
+    float weight = 44.2f;
     int age = 25;
 
     void walk() {
