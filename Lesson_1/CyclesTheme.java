@@ -15,19 +15,22 @@ class CyclesTheme {
 
         System.out.println("\n2. ВЫВОД ГЕОМЕТРИЧЕСКИХ ФИГУР\n");
 
-        int height = 5;
+        int height = 20;
         int width = height * 4 + 2;
+        int firstSpaceCol = width / 2;
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 1; j <= width; j++) {
-                if (j == width / 2 ||
-                        (j == width / 2 + height - i + 1)) {
-                    System.out.print(' ');
-                } else if (j < width / 2) {
+        for (int row = 0; row < height; row++) {
+            int secondSpaceCol = firstSpaceCol + 1 + height - row;
+            int caretsCount = 1 + row * 2;
+
+            for (int col = 1; col <= width; col++) {
+                if (col < firstSpaceCol) {
                     System.out.print('-');
-                } else if (j <= (width / 2 + height - i)) {
+                } else if (col == firstSpaceCol || col == secondSpaceCol) {
+                    System.out.print(' ');
+                } else if (col > firstSpaceCol && col < secondSpaceCol) {
                     System.out.print('*');
-                } else if (j <= (width / 2 + height + i + 2)) {
+                } else if (col <= secondSpaceCol + caretsCount) {
                     System.out.print('^');
                 }
             }
@@ -35,7 +38,7 @@ class CyclesTheme {
         }
 
         System.out.println("\n3. ВЫВОД ТАБЛИЦЫ УМНОЖЕНИЯ\n");
-        
+
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 if (i == 0 && j == 0) {
@@ -91,15 +94,15 @@ class CyclesTheme {
 
         int originalNumber = 2234321;
         int reversedNumber = 0;
-        int tmpNumber = originalNumber;
+        int processedNumber = originalNumber;
         int twosCount = 0;
 
-        while (tmpNumber > 0) {
-            if (tmpNumber % 10 == 2) {
+        while (processedNumber > 0) {
+            if (processedNumber % 10 == 2) {
                 twosCount++;
             }
-            reversedNumber = reversedNumber * 10 + tmpNumber % 10;
-            tmpNumber /= 10;
+            reversedNumber = reversedNumber * 10 + processedNumber % 10;
+            processedNumber /= 10;
         }
         
         String isPalindrome = reversedNumber == originalNumber ? "палиндром" : "не палиндром";
@@ -110,9 +113,9 @@ class CyclesTheme {
 
         System.out.println("\n7. ПРОВЕРКА СЧАСТЛИВОГО ЧИСЛА\n");
 
-        originalNumber = 101_002;
-        int leftHalf = originalNumber / 1000;
-        int rightHalf = originalNumber % 1000;
+        int checkedNumber = 101_002;
+        int leftHalf = checkedNumber / 1000;
+        int rightHalf = checkedNumber % 1000;
         int leftHalfSum = 0;
         int rightHalfSum = 0;
 
@@ -127,7 +130,7 @@ class CyclesTheme {
                 %,d - %s число
                 Сумма цифр %03d = %d
                 Сумма цифр %d = %d
-                """, originalNumber, isLuckyNumber, rightHalf, rightHalfSum, leftHalf, leftHalfSum);
+                """, checkedNumber, isLuckyNumber, rightHalf, rightHalfSum, leftHalf, leftHalfSum);
 
         System.out.println("\n8. ПРОСТОЙ ГЕНЕРАТОР ПАРОЛЯ\n");
 
