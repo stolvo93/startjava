@@ -1,6 +1,8 @@
 public class BooleanMethods {
     public boolean isRunning() {
-
+        System.out.println(getCurrentMethodName() +
+                "() -> программа выполняется далее или завершается?");
+        return true;
     }
 
     public boolean hasUniqueDigit() {
@@ -19,7 +21,7 @@ public class BooleanMethods {
 
     }
 
-    public boolean isEmptyString() {
+    public boolean isBlank() {
 
     }
 
