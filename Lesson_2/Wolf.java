@@ -1,5 +1,4 @@
 public class Wolf {
-    
     private String sex;
     private String nickname;
     private float weight;
