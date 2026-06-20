@@ -4,10 +4,10 @@ public class Main {
 
         NonBooleanMethods nonBooleanMethodsInstance = new NonBooleanMethods();
         
-        nonBooleanMethodsInstance.getLongestWord();
+        nonBooleanMethodsInstance.findLongestWord();
         nonBooleanMethodsInstance.selectMenuItem();
-        nonBooleanMethodsInstance.getAvgMark();
-        nonBooleanMethodsInstance.getUniqueWordsCount();
+        nonBooleanMethodsInstance.calculateAvgMark();
+        nonBooleanMethodsInstance.countUniqueWords();
         nonBooleanMethodsInstance.printErrorMessage();
         nonBooleanMethodsInstance.syncData();
         nonBooleanMethodsInstance.restoreBackup();
@@ -17,7 +17,7 @@ public class Main {
         nonBooleanMethodsInstance.convertCelsiusToFahrenheit();
         nonBooleanMethodsInstance.enterMathExpression();
         nonBooleanMethodsInstance.determineWinner();
-        nonBooleanMethodsInstance.getBooks();
+        nonBooleanMethodsInstance.searchBooksByAuthor();
 
         System.out.println("\n2. BOOLEAN-МЕТОДЫ\n");
 

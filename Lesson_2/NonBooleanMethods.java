@@ -1,5 +1,5 @@
 public class NonBooleanMethods {
-    public void getLongestWord() {
+    public void findLongestWord() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> найти самое длинное слово в предложении из книги по Java");
     }
@@ -9,12 +9,12 @@ public class NonBooleanMethods {
                 "() -> выбрать пункт меню в текстовом редакторе на macOS");
     }
 
-    public void getAvgMark() {
+    public void calculateAvgMark() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> вычислить среднее значение оценок в школе №1234");
     }
 
-    public void getUniqueWordsCount() {
+    public void countUniqueWords() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> подсчитать количество уникальных слов в \"Война и Мир\"");
     }
@@ -64,7 +64,7 @@ public class NonBooleanMethods {
                 "() -> выявить победителя среди гонщиков игры \"Need For Speed\"");
     }
 
-    public void getBooks() {
+    public void searchBooksByAuthor() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> найти книгу по имени писателя");
     }
