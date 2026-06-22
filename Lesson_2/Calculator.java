@@ -34,11 +34,12 @@ public class Calculator {
                 result = multiply();
                 break;
             case "/":
-                result = divide();
+                result = div();
                 if (Double.isNaN(result)) return;
                 break;
             case "%":
                 result = mod();
+                if (Double.isNaN(result)) return;
                 break;
             case "^":
                 result = pow();
@@ -63,17 +64,20 @@ public class Calculator {
         return firstNumber * secondNumber;
     }
 
-    private double divide() {
-        if (secondNumber != 0) {
-            return (double) firstNumber / secondNumber;
-        } else {
+    private double div() {
+        if (secondNumber == 0) {
             System.out.println("Ошибка: деление на ноль запрещено!");
             return Double.NaN;
         }
+        return (double) firstNumber / secondNumber;
     }
 
-    private int mod() {
-        return firstNumber % secondNumber;
+    private double mod() {
+        if (secondNumber == 0) {
+            System.out.println("Ошибка: деление на ноль запрещено!");
+            return Double.NaN;
+        }
+        return (double) firstNumber % secondNumber;
     }
 
     private double pow() {
@@ -83,12 +87,7 @@ public class Calculator {
         for (int i = 1; i <= power; i++) {
             product *= firstNumber;
         }
-
-        if (secondNumber < 0) {
-            product = 1 / product;
-        }
-
-        return product;
+        return secondNumber > 0 ? product : 1.0 / product;
     }
 
     private void printResult() {

@@ -1,4 +1,17 @@
 public class BooleanMethods {
+    public void printDescription() {
+        System.out.println("\nBOOLEAN-МЕТОДЫ:\n");
+        System.out.println(isRunning());
+        System.out.println(hasUniqueDigit());
+        System.out.println(isLetter());
+        System.out.println(hasEqualDigits());
+        System.out.println(hasAttempts());
+        System.out.println(isBlank());
+        System.out.println(isEven());
+        System.out.println(isValidPath());
+        System.out.println(isExistFile());
+    }
+
     public boolean isRunning() {
         System.out.print(Methods.getCurrentMethodName() +
                 "() -> программа выполняется далее или завершается? ");

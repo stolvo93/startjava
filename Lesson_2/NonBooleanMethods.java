@@ -1,4 +1,22 @@
 public class NonBooleanMethods {
+    public void printDescription() {
+        System.out.println("\nНЕ BOOLEAN-МЕТОДЫ:\n");
+        findLongestWord();
+        selectMenuItem();
+        calculateAvgMark();
+        countUniqueWords();
+        printErrorMessage();
+        syncData();
+        restoreBackup();
+        pauseDownload();
+        resetFactorySettings();
+        writeToFile();
+        convertCelsiusToFahrenheit();
+        enterMathExpression();
+        determineWinner();
+        findBooksByAuthor();
+    }
+
     public void findLongestWord() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> найти самое длинное слово в предложении из книги по Java");
@@ -64,7 +82,7 @@ public class NonBooleanMethods {
                 "() -> выявить победителя среди гонщиков игры \"Need For Speed\"");
     }
 
-    public void searchBooksByAuthor() {
+    public void findBooksByAuthor() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> найти книгу по имени писателя");
     }
