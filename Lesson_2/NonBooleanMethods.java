@@ -1,22 +1,4 @@
 public class NonBooleanMethods {
-    public void printDescription() {
-        System.out.println("\nНЕ BOOLEAN-МЕТОДЫ:\n");
-        findLongestWord();
-        selectMenuItem();
-        calculateAvgMark();
-        countUniqueWords();
-        printErrorMessage();
-        syncData();
-        restoreBackup();
-        pauseDownload();
-        resetFactorySettings();
-        writeToFile();
-        convertCelsiusToFahrenheit();
-        enterMathExpression();
-        determineWinner();
-        findBooksByAuthor();
-    }
-
     public void findLongestWord() {
         System.out.println(Methods.getCurrentMethodName() +
                 "() -> найти самое длинное слово в предложении из книги по Java");
