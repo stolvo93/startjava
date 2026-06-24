@@ -1,7 +1,6 @@
 import java.util.Locale;
 
 public class Jaeger {
-
     private String modelName;
     private String mark;
     private String status;
@@ -62,12 +61,18 @@ public class Jaeger {
         }
     }
 
-    private boolean isPositive (double quantifiableValue, String fieldName) {
-        if (quantifiableValue > 0) {
-            return true;
+    private boolean isPositive(double quantifiableValue, String fieldName) {
+        if (quantifiableValue <= 0) {
+            System.out.printf("%nНеверное значение %s! Используйте только положительные значения.%n",
+                    fieldName);
+            return false;
         }
-        System.out.printf("Неверное значение %s! Используйте только положительные значения.%n%n", fieldName);
-        return false;
+        return true;
     }
 
+    @Override
+    public String toString() {
+        String s = "Name:\t%s%nMark:\t%s%nStatus: %s%nHeight: %.2f m%nWeight: %d tons";
+        return String.format(Locale.UK, s, modelName, mark, status, height, weight);
+    }
 }
