@@ -1,25 +1,77 @@
-public class GuessNumber {
-    Player player1;
-    Player player2;
-    int targetNumber;
+import java.util.Scanner;
 
-    public GuessNumber(Player player1, Player player2, int number) {
+public class GuessNumber {
+    private final Player player1;
+    private final Player player2;
+    private final Scanner scanner;
+    private final int minNumber = 1;
+    private final int maxNumber = 100;
+    private int targetNumber;
+    private Player currentPlayer;
+
+    public GuessNumber(Player player1, Player player2, Scanner scanner) {
         this.player1 = player1;
         this.player2 = player2;
-        targetNumber = number;
+        this.scanner = scanner;
     }
 
-    String failureMessage = "%d %s того, что загадал компьютер%n";
-
-    private void play(int playerNumber) {
-        while (playerNumber != targetNumber) {
-            if (playerNumber < targetNumber) {
-                System.out.printf(failureMessage, playerNumber, "меньше");
-            } else {
-                System.out.printf(failureMessage, playerNumber, "больше");
-            }
+    public void play() {
+        generateNumber();
+        currentPlayer = player1;
+        makeMove();
+        while (!isNumberGuessed()) {
+            printFailureMessage();
+            changePlayer();
+            makeMove();
         }
-        System.out.println("\nИскомое число - " + playerNumber + ". Вы победили!\n");
+        printVictoryMessage();
     }
 
+    private void generateNumber() {
+        targetNumber = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
+        System.out.printf("\nКомпьютер загадал число в диапазоне [%d, %d]. Попробуйте его угадать!%n",
+                minNumber, maxNumber);
+    }
+
+    private void makeMove() {
+        System.out.println("\nХод игрока " + currentPlayer.getName());
+        readNumber();
+        while (isWrongNumberRange()) {
+            printWrongRangeMessage();
+            readNumber();
+        }
+    }
+
+    private boolean isNumberGuessed() {
+        return currentPlayer.getNumber() == targetNumber;
+    }
+
+    private void printFailureMessage() {
+        String failureMessage = "%d %s того, что загадал компьютер%n";
+        String inequalitySignWord = currentPlayer.getNumber() < targetNumber ? "меньше" : "больше";
+        System.out.printf(failureMessage, currentPlayer.getNumber(), inequalitySignWord);
+    }
+
+    private void changePlayer() {
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+    }
+
+    private void printVictoryMessage() {
+        System.out.printf("\nИскомое число - %d. Побеждает игрок %s!%n%n",
+                currentPlayer.getNumber(), currentPlayer.getName());
+    }
+
+    private void readNumber() {
+        System.out.print("Введите число: ");
+        currentPlayer.setNumber(scanner.nextInt());
+    }
+
+    private boolean isWrongNumberRange() {
+        return !(currentPlayer.getNumber() >= minNumber && currentPlayer.getNumber() <= maxNumber);
+    }
+
+    private void printWrongRangeMessage() {
+        System.out.printf("Внимание! Число должно быть в диапазоне [%d, %d]. Введите другое число.%n",
+                minNumber, maxNumber);
+    }
 }
