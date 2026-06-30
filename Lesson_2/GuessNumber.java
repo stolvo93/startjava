@@ -16,33 +16,51 @@ public class GuessNumber {
     }
 
     public void play() {
-        generateNumber();
+        generateTargetNumber();
         currentPlayer = player1;
-        makeMove();
-        while (!isNumberGuessed()) {
+        while (true) {
+            makeMove();
+            if (isGuessed()) {
+                break;
+            }
             printFailureMessage();
             changePlayer();
-            makeMove();
         }
         printVictoryMessage();
     }
 
-    private void generateNumber() {
-        targetNumber = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
+    private void generateTargetNumber() {
+        targetNumber = minNumber + (int) (Math.random() * (maxNumber - minNumber + 1));
         System.out.printf("\nКомпьютер загадал число в диапазоне [%d, %d]. Попробуйте его угадать!%n",
                 minNumber, maxNumber);
     }
 
     private void makeMove() {
         System.out.println("\nХод игрока " + currentPlayer.getName());
-        readNumber();
-        while (isWrongNumberRange()) {
-            printWrongRangeMessage();
+        while (true) {
             readNumber();
+            if (isNumberInRange(currentPlayer.getNumber())) {
+                break;
+            }
+            printOutOfRangeWarning();
         }
     }
 
-    private boolean isNumberGuessed() {
+    private void readNumber() {
+        System.out.print("Введите число: ");
+        currentPlayer.setNumber(scanner.nextInt());
+    }
+
+    private boolean isNumberInRange(int number) {
+        return number >= minNumber && number <= maxNumber;
+    }
+
+    private void printOutOfRangeWarning() {
+        System.out.printf("Внимание! Число должно быть в диапазоне [%d, %d]. Введите другое число.%n",
+                minNumber, maxNumber);
+    }
+
+    private boolean isGuessed() {
         return currentPlayer.getNumber() == targetNumber;
     }
 
@@ -59,19 +77,5 @@ public class GuessNumber {
     private void printVictoryMessage() {
         System.out.printf("\nИскомое число - %d. Побеждает игрок %s!%n%n",
                 currentPlayer.getNumber(), currentPlayer.getName());
-    }
-
-    private void readNumber() {
-        System.out.print("Введите число: ");
-        currentPlayer.setNumber(scanner.nextInt());
-    }
-
-    private boolean isWrongNumberRange() {
-        return !(currentPlayer.getNumber() >= minNumber && currentPlayer.getNumber() <= maxNumber);
-    }
-
-    private void printWrongRangeMessage() {
-        System.out.printf("Внимание! Число должно быть в диапазоне [%d, %d]. Введите другое число.%n",
-                minNumber, maxNumber);
     }
 }
