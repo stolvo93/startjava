@@ -1,3 +1,5 @@
+package com.startjava.lesson_2_3.method.naming;
+
 public class BooleanMethods {
     public boolean isRunning() {
         System.out.print(Methods.getCurrentMethodName() +

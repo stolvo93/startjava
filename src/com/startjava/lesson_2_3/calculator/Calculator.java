@@ -1,3 +1,5 @@
+package com.startjava.lesson_2_3.calculator;
+
 import java.text.DecimalFormat;
 
 public class Calculator {
