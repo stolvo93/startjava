@@ -34,7 +34,7 @@ public class RpsGameFormatting {
         return console.nextLine();
     }
 
-    private static int generatePosition (String name, Random r) {
+    private static int generatePosition(String name, Random r) {
         System.out.println("Ход " + name + ": ");
         return r.nextInt(1, 100);
     }
