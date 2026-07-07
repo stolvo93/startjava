@@ -1,4 +1,4 @@
-package com.startjava.lesson_2_3.robot;
+package com.startjava.lesson_2_3_4.robot;
 
 import java.util.Locale;
 
