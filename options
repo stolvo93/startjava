@@ -1,0 +1,3 @@
+-d out/
+src/com/startjava/lesson_2_3_4/array/Factorial.java
+src/com/startjava/lesson_2_3_4/array/FactorialTest.java

@@ -1,7 +1,7 @@
 out/
 utils/
+.idea/
+*.iml
 *.class
-options
-optionsj
 sources
 .DS_Store
