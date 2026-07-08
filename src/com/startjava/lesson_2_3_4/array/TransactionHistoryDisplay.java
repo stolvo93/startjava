@@ -1,7 +1,9 @@
 package com.startjava.lesson_2_3_4.array;
 
+import java.util.Arrays;
+
 public class TransactionHistoryDisplay {
-    public static void displayForwardAndReverseOrder(Integer[] transactions) {
+    public static void display(int[] transactions) {
         if (transactions == null) {
             printDataError();
         } else if (transactions.length == 0) {
@@ -19,24 +21,14 @@ public class TransactionHistoryDisplay {
         System.out.println("Нет данных.");
     }
 
-    private static void printTransactions(Integer[] transactions) {
+    private static void printTransactions(int[] transactions) {
         System.out.print("Исходные транзакции: ");
-        System.out.println(representCommaSeparatedInBrackets(transactions));
+        System.out.println(Arrays.toString(transactions));
         System.out.print(" В обратном порядке: ");
-        System.out.println(representCommaSeparatedInBrackets(reverse(transactions)));
+        System.out.println(Arrays.toString(reverse(transactions)));
     }
 
-    private static String representCommaSeparatedInBrackets(Integer[] transactions) {
-        int index = 0;
-        String finalRepresentation = "[";
-        while (index < transactions.length - 1) {
-            finalRepresentation += transactions[index++] + ", ";
-        }
-        finalRepresentation += transactions[index] + "]";
-        return finalRepresentation;
-    }
-
-    private static int[] reverse(Integer[] original) {
+    private static int[] reverse(int[] original) {
         int[] reversed = new int[original.length];
         int index = reversed.length - 1;
         for (int element : original) {
