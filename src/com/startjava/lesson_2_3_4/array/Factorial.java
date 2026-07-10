@@ -7,7 +7,7 @@ public class Factorial {
             return;
         }
         if (nums.length == 0) {
-            printNoDataMessage();
+            printNoNumsError();
         } else {
             printOutput(nums, getFactorials(nums));
         }
@@ -17,7 +17,7 @@ public class Factorial {
         System.out.println("Ошибка в данных");
     }
 
-    private static void printNoDataMessage() {
+    private static void printNoNumsError() {
         System.out.println("Ошибка: нет чисел для расчета");
     }
 
@@ -44,11 +44,11 @@ public class Factorial {
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] < 0) {
                 printNegativeNumberError(nums[i]);
-                break;
+                continue;
             }
             if (nums[i] > 20) {
                 printTooLargeNumberError(nums[i]);
-                break;
+                continue;
             }
             factorials[i] = factorial(nums[i]);
         }
