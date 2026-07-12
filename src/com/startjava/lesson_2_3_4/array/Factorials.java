@@ -5,11 +5,11 @@ public class Factorials {
     private static final int INVALID_TOO_LARGE = -2;
 
     public static void main(String[] args) {
-        Factorials.print();
-        Factorials.print(null);
-        Factorials.print(-5);
-        Factorials.print(7, 0, 21);
-        Factorials.print(1, 20, 5, -3);
+        print();
+        print(null);
+        print(-5);
+        print(7, 0, 21);
+        print(1, 20, 5, -3);
     }
 
     private static void print(int... numbers) {
