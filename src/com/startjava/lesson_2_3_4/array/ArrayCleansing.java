@@ -20,11 +20,11 @@ public class ArrayCleansing {
     }
 
     private static double[] generateFractionsArray(int length) {
-        double[] array = new double[length];
+        double[] fractionsArray = new double[length];
         for (int i = 0; i < length; i++) {
-            array[i] = Math.random();
+            fractionsArray[i] = Math.random();
         }
-        return array;
+        return fractionsArray;
     }
 
     private static void printWrongIndexError(int index, int maxIndex) {

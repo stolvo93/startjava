@@ -23,7 +23,7 @@ public class TransactionHistoryDisplay {
             }
         }
     }
-    
+
     private static void printDataError() {
         System.out.println("Ошибка в данных.");
     }
