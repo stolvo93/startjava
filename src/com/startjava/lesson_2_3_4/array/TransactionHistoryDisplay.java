@@ -14,20 +14,16 @@ public class TransactionHistoryDisplay {
 
         for (int[] transactionSet : transactionSets) {
             System.out.println();
-            display(transactionSet);
+            if (transactionSet == null) {
+                printDataError();
+            } else if (transactionSet.length == 0) {
+                printNoDataMessage();
+            } else {
+                printTransactions(transactionSet, reverse(transactionSet));
+            }
         }
     }
-
-    private static void display(int[] transactions) {
-        if (transactions == null) {
-            printDataError();
-        } else if (transactions.length == 0) {
-            printNoDataMessage();
-        } else {
-            printTransactions(transactions, reverse(transactions));
-        }
-    }
-
+    
     private static void printDataError() {
         System.out.println("Ошибка в данных.");
     }
