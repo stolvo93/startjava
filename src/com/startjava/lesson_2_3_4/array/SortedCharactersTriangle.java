@@ -11,6 +11,7 @@ public class SortedCharactersTriangle {
         print('/', '!', false);
         print('A', 'J', false);
         print((char) 29, (char) 160, true);
+        print((char) 178, (char) 204, true);
     }
 
     private static void print(char leftBound, char rightBound, boolean directionAsc) {
@@ -26,13 +27,17 @@ public class SortedCharactersTriangle {
     }
 
     private static boolean isOutOfRange(char leftBound, char rightBound) {
-        boolean isLeftBoundInFirstRange = leftBound >= FIRST_RANGE_MIN &&
+        boolean isLeftBoundInFirstRange =
+                leftBound >= FIRST_RANGE_MIN &&
                 leftBound <= FIRST_RANGE_MAX;
-        boolean isLeftBoundInSecondRange = leftBound >= SECOND_RANGE_MIN &&
+        boolean isLeftBoundInSecondRange =
+                leftBound >= SECOND_RANGE_MIN &&
                 leftBound <= SECOND_RANGE_MAX;
-        boolean isRightBoundInFirstRange = rightBound >= FIRST_RANGE_MIN &&
+        boolean isRightBoundInFirstRange =
+                rightBound >= FIRST_RANGE_MIN &&
                 rightBound <= FIRST_RANGE_MAX;
-        boolean isRightBoundInSecondRange = rightBound >= SECOND_RANGE_MIN &&
+        boolean isRightBoundInSecondRange =
+                rightBound >= SECOND_RANGE_MIN &&
                 rightBound <= SECOND_RANGE_MAX;
         if (isLeftBoundInFirstRange && isRightBoundInFirstRange ||
                 isLeftBoundInSecondRange && isRightBoundInSecondRange) {
