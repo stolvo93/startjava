@@ -1,10 +1,10 @@
 package com.startjava.lesson_2_3_4.array;
 
 public class SortedCharactersTriangle {
-    private static final char FIRST_RANGE_MIN = (char) 33;
-    private static final char FIRST_RANGE_MAX = (char) 126;
-    private static final char SECOND_RANGE_MIN = (char) 161;
-    private static final char SECOND_RANGE_MAX = (char) 255;
+    private static final char RANGE_1_MIN = (char) 33;
+    private static final char RANGE_1_MAX = (char) 126;
+    private static final char RANGE_2_MIN = (char) 161;
+    private static final char RANGE_2_MAX = (char) 255;
 
     public static void main(String[] args) {
         print('0', '9', true);
@@ -27,30 +27,23 @@ public class SortedCharactersTriangle {
     }
 
     private static boolean isOutOfRange(char leftBound, char rightBound) {
-        boolean isLeftBoundInFirstRange =
-                leftBound >= FIRST_RANGE_MIN &&
-                leftBound <= FIRST_RANGE_MAX;
-        boolean isLeftBoundInSecondRange =
-                leftBound >= SECOND_RANGE_MIN &&
-                leftBound <= SECOND_RANGE_MAX;
-        boolean isRightBoundInFirstRange =
-                rightBound >= FIRST_RANGE_MIN &&
-                rightBound <= FIRST_RANGE_MAX;
-        boolean isRightBoundInSecondRange =
-                rightBound >= SECOND_RANGE_MIN &&
-                rightBound <= SECOND_RANGE_MAX;
-        if (isLeftBoundInFirstRange && isRightBoundInFirstRange ||
-                isLeftBoundInSecondRange && isRightBoundInSecondRange) {
-            return false;
-        } else return true;
+        boolean isBothBoundsInRange1 = isBothBoundsInRange(leftBound, rightBound, RANGE_1_MIN, RANGE_1_MAX);
+        boolean isBothBoundsInRange2 = isBothBoundsInRange(leftBound, rightBound, RANGE_2_MIN, RANGE_2_MAX);
+        return !(isBothBoundsInRange1 || isBothBoundsInRange2);
+    }
+
+    private static boolean isBothBoundsInRange(char bound1, char bound2, char min, char max) {
+        boolean bound1InRange = bound1 >= min && bound1 <= max;
+        boolean bound2InRange = bound2 >= min && bound2 <= max;
+        return bound1InRange && bound2InRange;
     }
 
     private static void printOutOfRangeError(char leftBound, char rightBound) {
         System.out.printf("Ошибка: вывод диапазона символов [%d, %d] не поддерживается. " + 
                 "Ваш диапазон должен принадлежать одному из двух отрезков: " +
                 "[%d, %d] или [%d, %d]%n%n", (int) leftBound, (int) rightBound,
-                (int) FIRST_RANGE_MIN, (int) FIRST_RANGE_MAX,
-                (int) SECOND_RANGE_MIN, (int) SECOND_RANGE_MAX);
+                (int) RANGE_1_MIN, (int) RANGE_1_MAX,
+                (int) RANGE_2_MIN, (int) RANGE_2_MAX);
     }
 
     private static boolean isWrongOrder(char leftBound, char rightBound) {
@@ -64,16 +57,16 @@ public class SortedCharactersTriangle {
 
     private static void printTriangle(char leftBound, char rightBound, boolean directionAsc) {
         char upperCharacter = directionAsc ? leftBound : rightBound;
-        char lowerCharacter = directionAsc ? rightBound : leftBound;
-        int ident = rightBound - leftBound;
+        int indent = rightBound - leftBound;
         StringBuilder triangle = new StringBuilder();
         char currentCharacter = upperCharacter;
-        for (int line = 1; ident >= 0; line++, ident--) {
-            triangle.repeat(" ", ident);
+        for (int line = 1; indent >= 0; line++, indent--) {
+            triangle.repeat(" ", indent);
             int width = line * 2 - 1;
             triangle.repeat(currentCharacter, width);
             triangle.append("\n");
-            currentCharacter += directionAsc ? 1 : -1;
+            if (directionAsc) currentCharacter++;
+            else currentCharacter--;
         }
         System.out.println(triangle);
     }
