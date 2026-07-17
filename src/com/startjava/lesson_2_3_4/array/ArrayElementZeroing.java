@@ -1,6 +1,6 @@
 package com.startjava.lesson_2_3_4.array;
 
-public class ArrayCleansing {
+public class ArrayElementZeroing {
     public static void main(String[] args) {
         int arraysLength = 15;
         double[] originalArray = generateFractionsArray(arraysLength);
@@ -8,14 +8,14 @@ public class ArrayCleansing {
 
         for (int index : indexes) {
             System.out.println();
-            if (index < 0 || index >= arraysLength) {
+            if (index < 0 || index >= originalArray.length) {
                 printWrongIndexError(index, arraysLength - 1);
                 continue;
             }
             double[] cleansedArray = cleanseLargerElementsByIndex(originalArray, index);
             printArray(originalArray, "Исходный массив:");
             printArray(cleansedArray, "Измененный массив:");
-            printElement(originalArray, index);
+            printThresholdValue(originalArray, index);
         }
     }
 
@@ -33,21 +33,18 @@ public class ArrayCleansing {
     }
 
     private static double[] cleanseLargerElementsByIndex(double[] originalArray, int index) {
-        double[] cleansedArray = new double[originalArray.length];
+        double thresholdValue = originalArray[index];
+        double[] cleansedArray = originalArray.clone();
         for (int i = 0; i < originalArray.length; i++) {
-            if (originalArray[i] <= originalArray[index]) {
-                cleansedArray[i] = originalArray[i];
+            if (originalArray[i] > thresholdValue) {
+                cleansedArray[i] = 0;
             }
         }
         return cleansedArray;
     }
 
-    private static void printArray(double[] array, String... arrayName) {
-        if (arrayName != null) {
-            if (arrayName.length > 0) {
-                System.out.println(arrayName[0]);
-            }
-        }
+    private static void printArray(double[] array, String title) {
+        System.out.println(title);
 
         StringBuilder elements = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
@@ -59,7 +56,7 @@ public class ArrayCleansing {
         System.out.println(elements);
     }
 
-    private static void printElement(double[] array, int index) {
-        System.out.printf("Значение ячейки по переданному индексу: %.3f%n", array[index]);
+    private static void printThresholdValue(double[] array, int thresholdValueIndex) {
+        System.out.printf("Значение ячейки по переданному индексу: %.3f%n", array[thresholdValueIndex]);
     }
 }

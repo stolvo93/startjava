@@ -5,24 +5,26 @@ public class Factorials {
     private static final int INVALID_TOO_LARGE = -2;
 
     public static void main(String[] args) {
-        print();
-        print(null);
-        print(-5);
-        print(7, 0, 21);
-        print(1, 20, 5, -3);
-    }
+        int[][] numberSets = {
+                {},
+                null,
+                {-5},
+                {7, 0, 21},
+                {1, 20, 5, -3}
+        };
 
-    private static void print(int... numbers) {
-        System.out.println();
-        if (numbers == null) {
-            printDataError();
-            return;
-        }
-        if (numbers.length == 0) {
-            printNoNumbersError();
-        } else {
-            long[] factorials = calculateFactorials(numbers);
-            printOutput(numbers, factorials);
+        for (int[] numbers : numberSets) {
+            System.out.println();
+            if (numbers == null) {
+                printDataError();
+                continue;
+            }
+            if (numbers.length == 0) {
+                printNoNumbersError();
+            } else {
+                long[] factorials = calculateFactorials(numbers);
+                printResults(numbers, factorials);
+            }
         }
     }
 
@@ -58,7 +60,7 @@ public class Factorials {
         return factorial;
     }
 
-    private static void printOutput(int[] numbers, long[] factorials) {
+    private static void printResults(int[] numbers, long[] factorials) {
         for (int i = 0; i < numbers.length; i++) {
             if (factorials[i] == INVALID_NEGATIVE) {
                 printNegativeNumberError(numbers[i]);
@@ -81,13 +83,13 @@ public class Factorials {
     }
 
     private static void printFactorialExpression(int number, long factorial) {
-        StringBuilder sb = new StringBuilder().append(number).append("! = 1");
+        StringBuilder expression = new StringBuilder().append(number).append("! = 1");
         for (int i = 2; i <= number; i++) {
-            sb.append(" * ").append(i);
+            expression.append(" * ").append(i);
         }
         String finalPart = String.format(" = %,d", factorial);
-        String expression = number == 0 || number == 1 ? sb.toString()
-                : sb.append(finalPart).toString();
-        System.out.println(expression);
+        String finalExpression = (number == 0 || number == 1) ? expression.toString()
+                : expression.append(finalPart).toString();
+        System.out.println(finalExpression);
     }
 }
