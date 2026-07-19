@@ -1,6 +1,7 @@
 package com.startjava.lesson_2_3_4.array;
 
-public class Factorials {
+public class FactorialCalculator {
+    private static final int MAX_INPUT_VALUE = 20;
     private static final int INVALID_NEGATIVE = -1;
     private static final int INVALID_TOO_LARGE = -2;
 
@@ -21,10 +22,10 @@ public class Factorials {
             }
             if (numbers.length == 0) {
                 printNoNumbersError();
-            } else {
-                long[] factorials = calculateFactorials(numbers);
-                printResults(numbers, factorials);
+                continue;
             }
+            long[] factorials = calculateFactorials(numbers);
+            printResults(numbers, factorials);
         }
     }
 
@@ -43,7 +44,7 @@ public class Factorials {
                 factorials[i] = INVALID_NEGATIVE;
                 continue;
             }
-            if (numbers[i] > 20) {
+            if (numbers[i] > MAX_INPUT_VALUE) {
                 factorials[i] = INVALID_TOO_LARGE;
                 continue;
             }
@@ -79,7 +80,7 @@ public class Factorials {
     }
 
     private static void printTooLargeNumberError(int number) {
-        System.out.printf("Ошибка: факториал %d! слишком велик (максимум 20!)%n", number);
+        System.out.printf("Ошибка: факториал %d! слишком велик (максимум %d!)%n", number, MAX_INPUT_VALUE);
     }
 
     private static void printFactorialExpression(int number, long factorial) {
