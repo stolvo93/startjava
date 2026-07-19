@@ -12,14 +12,14 @@ public class TransactionHistoryDisplay {
                 {13, 8, 5, 3, 2, 1, 1}
         };
 
-        for (int[] transactionSet : transactionSets) {
+        for (int[] transactions : transactionSets) {
             System.out.println();
-            if (transactionSet == null) {
+            if (transactions == null) {
                 printDataError();
-            } else if (transactionSet.length == 0) {
+            } else if (transactions.length == 0) {
                 printNoDataMessage();
             } else {
-                printTransactions(transactionSet, reverse(transactionSet));
+                printTransactions(transactions, reverse(transactions));
             }
         }
     }
@@ -42,9 +42,7 @@ public class TransactionHistoryDisplay {
     }
 
     private static void printTransactions(int[] transactions, int[] reversedTransactions) {
-        System.out.print("Исходные транзакции: ");
-        System.out.println(Arrays.toString(transactions));
-        System.out.print(" В обратном порядке: ");
-        System.out.println(Arrays.toString(reversedTransactions));
+        System.out.printf("Исходные транзакции: %s%n", Arrays.toString(transactions));
+        System.out.printf(" В обратном порядке: %s%n", Arrays.toString(reversedTransactions));
     }
 }
