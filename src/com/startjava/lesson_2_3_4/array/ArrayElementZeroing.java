@@ -2,14 +2,14 @@ package com.startjava.lesson_2_3_4.array;
 
 public class ArrayElementZeroing {
     public static void main(String[] args) {
-        int arraysLength = 15;
-        double[] originalArray = generateFractionsArray(arraysLength);
+        int arrayLength = 15;
+        double[] originalArray = generateFractionsArray(arrayLength);
         int[] indexes = {-1, 15, 0, 14};
 
         for (int index : indexes) {
             System.out.println();
             if (index < 0 || index >= originalArray.length) {
-                printWrongIndexError(index, arraysLength - 1);
+                printWrongIndexError(index, arrayLength - 1);
                 continue;
             }
             double[] cleansedArray = cleanseLargerElementsByIndex(originalArray, index);
