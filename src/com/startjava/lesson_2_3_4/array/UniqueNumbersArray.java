@@ -16,50 +16,50 @@ public class UniqueNumbersArray {
                 {-150, 20, 20}
         };
 
-        for (int[] argumentSet : argumentSets) {
+        for (int[] arguments : argumentSets) {
+            int leftBound = arguments[0];
+            int rightBound = arguments[1];
+            int lineLength = arguments[2];
+
             System.out.println();
-            print(argumentSet[0], argumentSet[1], argumentSet[2]);
-        }
-    }
+            if (leftBound > rightBound) {
+                printLeftBoundIsGreaterError(leftBound, rightBound);
+            }
+            if (lineLength < 1) {
+                printInvalidLineLengthError(lineLength);
+            }
+            if (leftBound > rightBound) {
+                continue;
+            }
 
-    private static void print(int leftBound, int rightBound, int lineLength) {
-        if (leftBound > rightBound) {
-            printLeftBoundIsGreaterError(leftBound, rightBound);
-        }
-        if (lineLength < 1) {
-            printInvalidLineLengthError(lineLength);
-        }
-        if (leftBound > rightBound) {
-            return;
-        }
+            int rangeSize = rightBound - leftBound + 1;
+            int arrayLength = rangeSize * 3 / 4;
+            if (arrayLength <= 0) {
+                printInvalidArrayLengthError(arrayLength);
+                continue;
+            }
+            if (lineLength < 1) {
+                continue;
+            }
 
-        int rangeSize = rightBound - leftBound + 1;
-        int arrayLength = rangeSize * 3 / 4;
-        if (arrayLength <= 0) {
-            printInvalidArrayLengthError(arrayLength);
-            return;
+            int[] uniqueNumbers = generateUniqueNumbers(leftBound, rangeSize, arrayLength);
+            printSortedNumbers(uniqueNumbers, lineLength);
         }
-        if (lineLength < 1) {
-            return;
-        }
-
-        int[] uniqueNumbers = generateUniqueNumbersArray(leftBound, rangeSize, arrayLength);
-        printSortedNumbers(uniqueNumbers, lineLength);
-    }
-
-    private static void printInvalidLineLengthError(int lineLength) {
-        System.out.printf("Ошибка: количество чисел в строке не должно быть < 1 (%d)%n", lineLength);
     }
 
     private static void printLeftBoundIsGreaterError(int leftBound, int rightBound) {
         System.out.printf("Ошибка: левая граница (%d) > правой (%d)%n", leftBound, rightBound);
     }
 
+    private static void printInvalidLineLengthError(int lineLength) {
+        System.out.printf("Ошибка: количество чисел в строке не должно быть < 1 (%d)%n", lineLength);
+    }
+
     private static void printInvalidArrayLengthError(int arrayLength) {
         System.out.printf("Ошибка: длина массива должна быть > 0 (%d)%n", arrayLength);
     }
 
-    private static int[] generateUniqueNumbersArray(int minValue, int rangeSize, int arrayLength) {
+    private static int[] generateUniqueNumbers(int minValue, int rangeSize, int arrayLength) {
         int[] randomUniqueNumbers = new int[arrayLength];
         int uniqueNumbersCount = 0;
         Random random = new Random();
@@ -74,9 +74,8 @@ public class UniqueNumbersArray {
             }
             if (isDuplicate) {
                 continue;
-            } else {
-                randomUniqueNumbers[uniqueNumbersCount++] = newNumber;
             }
+            randomUniqueNumbers[uniqueNumbersCount++] = newNumber;
         }
         return randomUniqueNumbers;
     }
