@@ -1,10 +1,10 @@
 package com.startjava.lesson_2_3_4.array;
 
 public class SortedCharactersTriangle {
-    private static final char VISIBLE_ASCII_MIN = (char) 33;
-    private static final char VISIBLE_ASCII_MAX = (char) 126;
-    private static final char VISIBLE_EXTENDED_MIN = (char) 161;
-    private static final char VISIBLE_EXTENDED_MAX = (char) 255;
+    private static final char VISIBLE_ASCII_MIN = 33; // '!'
+    private static final char VISIBLE_ASCII_MAX = 126; // '~'
+    private static final char VISIBLE_EXTENDED_MIN = 161; // '¡'
+    private static final char VISIBLE_EXTENDED_MAX = 255; // 'ÿ'
 
     public static void main(String[] args) {
         print('0', '9', true);
@@ -19,7 +19,7 @@ public class SortedCharactersTriangle {
             printUnsupportedRangeError(leftBound, rightBound);
             return;
         }
-        if (isWrongOrder(leftBound, rightBound)) {
+        if (leftBound > rightBound) {
             printWrongOrderError(leftBound, rightBound);
             return;
         }
@@ -42,15 +42,11 @@ public class SortedCharactersTriangle {
 
     private static void printUnsupportedRangeError(char leftBound, char rightBound) {
         System.out.printf("""
-                Ошибка: вывод диапазона символов [%d, %d] не поддерживается. \
-                Ваш диапазон должен принадлежать одному из двух отрезков: \
-                [%d, %d] или [%d, %d]%n%n""", (int) leftBound, (int) rightBound,
+                Ошибка: вывод диапазона символов [%d, %d] не поддерживается.
+                Ваш диапазон должен принадлежать одному из двух отрезков: [%d, %d] или [%d, %d]%n%n""",
+                (int) leftBound, (int) rightBound,
                 (int) VISIBLE_ASCII_MIN, (int) VISIBLE_ASCII_MAX,
                 (int) VISIBLE_EXTENDED_MIN, (int) VISIBLE_EXTENDED_MAX);
-    }
-
-    private static boolean isWrongOrder(char leftBound, char rightBound) {
-        return leftBound > rightBound;
     }
 
     private static void printWrongOrderError(char leftBound, char rightBound) {
@@ -59,10 +55,9 @@ public class SortedCharactersTriangle {
     }
 
     private static void printTriangle(char leftBound, char rightBound, boolean directionAsc) {
-        char topCharacter = directionAsc ? leftBound : rightBound;
         int indent = rightBound - leftBound;
+        char currentCharacter = directionAsc ? leftBound : rightBound;
         StringBuilder triangle = new StringBuilder();
-        char currentCharacter = topCharacter;
         for (int line = 1; indent >= 0; line++, indent--) {
             triangle.repeat(" ", indent);
             int width = line * 2 - 1;
