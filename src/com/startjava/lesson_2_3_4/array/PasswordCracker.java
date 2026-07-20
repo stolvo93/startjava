@@ -10,12 +10,16 @@ public class PasswordCracker {
             ("123456").toCharArray()
     };
     private static final Random RND = new Random();
-    private static boolean hasSmallLetters = false;
-    private static boolean hasCapitalLetters = false;
-    private static boolean hasDigits = false;
-    private static boolean hasSpecialCharacters = false;
+    private static final String ANSI_RED = "\u001B[31m"; // следующий текст будет красным
+    private static final String ANSI_GREEN = "\u001B[32m"; // следующий текст будет зеленым
+    private static final String ANSI_RESET = "\u001B[0m"; // следующий текст будет стандартного цвета
+    private static final char[] SPINS = ("-\\|/").toCharArray();
+    private static boolean hasSmallLetters;
+    private static boolean hasCapitalLetters;
+    private static boolean hasDigits;
+    private static boolean hasSpecialCharacters;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         char[][] passwordsToBeCracked = new char[4][];
         passwordsToBeCracked[0] = ("123456").toCharArray();
         for (int i = 1; i < passwordsToBeCracked.length; i++) {
@@ -25,8 +29,7 @@ public class PasswordCracker {
 
         for (char[] password : passwordsToBeCracked) {
             System.out.println();
-            System.out.println(password);
-            checkComplexity(password);
+            analyzeComplexity(password);
             showWarnings(password);
             crack(password);
         }
@@ -39,17 +42,21 @@ public class PasswordCracker {
             password[i] = (char) RND.nextInt(32, 127);
         }
         return password;
-
     }
 
-    private static void checkComplexity(char[] password) {
+    private static void analyzeComplexity(char[] password) {
+        hasSpecialCharacters = false;
+        hasCapitalLetters = false;
+        hasSmallLetters = false;
+        hasDigits = false;
+
         for (char character : password) {
             if (!Character.isLetterOrDigit(character)) {
                 hasSpecialCharacters = true;
             } else if (Character.isUpperCase(character)) {
                 hasCapitalLetters = true;
             } else if (Character.isLowerCase(character)) {
-                hasSmallLetters = true; 
+                hasSmallLetters = true;
             } else {
                 hasDigits = true;
             }
@@ -72,27 +79,30 @@ public class PasswordCracker {
         }
         StringBuilder beginning = new StringBuilder("Пароль ");
         if (password.length < 8) {
-            System.out.println(beginning.toString() + "содержит менее 8 символов");
+            System.out.println(beginning + "содержит менее 8 символов");
         }
         if (isBlank(password)) {
-            System.out.println(beginning.toString() + "не может быть пустым");
+            System.out.println(beginning + "не может быть пустым");
         }
         beginning.append("не содержит ");
         if (!hasDigits) {
-            System.out.println(beginning.toString() + "цифры");
+            System.out.println(beginning + "цифры");
         }
         if (!hasCapitalLetters) {
-            System.out.println(beginning.toString() + "буквы верхнего регистра");
+            System.out.println(beginning + "буквы верхнего регистра");
         }
         if (!hasSmallLetters) {
-            System.out.println(beginning.toString() + "буквы нижнего регистра");
+            System.out.println(beginning + "буквы нижнего регистра");
         }
         if (!hasSpecialCharacters) {
-            System.out.println(beginning.toString() + "спец. символы");
+            System.out.println(beginning + "спец. символы");
         }
     }
 
     private static boolean isBlank(char[] password) {
+        if (password.length == 0) {
+            return true;
+        }
         for (char character : password) {
             if (!Character.isWhitespace(character)) {
                 return false;
@@ -101,21 +111,28 @@ public class PasswordCracker {
         return true;
     }
 
-    private static void crack(char[] password) {
+    private static void crack(char[] password) throws InterruptedException {
         System.out.print("Cracking password: ");
-        // rollSpinner();
+        rollSpinner();
+        System.out.println();
 
-        String message = "✓ Password cracked: ";
-
+        String message = ANSI_GREEN + "✓ Password cracked: ";
         if (password.length >= 8 && hasSmallLetters && hasCapitalLetters && hasSpecialCharacters) {
-            message = "✗ Strong password: ";
-        } // else if (password.length() >= 8 && (hasCapitalLetters || hasDigits)) {
-        //     passwordStrength = "Средний";
-        // }
+            message = ANSI_RED + "✗ Strong password: ";
+        }
+        System.out.println(message + String.valueOf(password) + ANSI_RESET);
+    }
 
-        // System.out.println("Пароль: " + password);
-        // System.out.println("Надёжность: " + passwordStrength);
-
-        System.out.println(message + '\'' + String.valueOf(password) + '\'');
+    private static void rollSpinner() throws InterruptedException {
+        for (int turn = 1, spinIndex = 0; turn <= 3; spinIndex++) {
+            if (spinIndex == SPINS.length) {
+                spinIndex = -1;
+                turn++;
+                continue;
+            }
+            System.out.print(SPINS[spinIndex]);
+            Thread.sleep(100);
+            System.out.print('\b');
+        }
     }
 }
