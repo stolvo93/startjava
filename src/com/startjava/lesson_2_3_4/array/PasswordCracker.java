@@ -20,14 +20,14 @@ public class PasswordCracker {
     private static boolean hasSpecialCharacters;
 
     public static void main(String[] args) throws InterruptedException {
-        char[][] passwordsToBeCracked = new char[4][];
-        passwordsToBeCracked[0] = ("123456").toCharArray();
-        for (int i = 1; i < passwordsToBeCracked.length; i++) {
+        char[][] passwordsToCrack = new char[4][];
+        passwordsToCrack[0] = ("123456").toCharArray();
+        for (int i = 1; i < passwordsToCrack.length; i++) {
             int passwordLength = RND.nextInt(6, 13);
-            passwordsToBeCracked[i] = generatePassword(passwordLength);
+            passwordsToCrack[i] = generatePassword(passwordLength);
         }
 
-        for (char[] password : passwordsToBeCracked) {
+        for (char[] password : passwordsToCrack) {
             System.out.println();
             analyzeComplexity(password);
             showWarnings(password);
@@ -37,7 +37,6 @@ public class PasswordCracker {
 
     private static char[] generatePassword(int length) {
         char[] password = new char[length];
-
         for (int i = 0; i < length; i++) {
             password[i] = (char) RND.nextInt(32, 127);
         }
@@ -74,9 +73,9 @@ public class PasswordCracker {
         if (isPasswordBlacklisted) {
             System.out.println("""
                     Не используйте пароли из списка популярных: \
-                    https://nordpass.com/most-common-passwords-list
-                    """);
+                    https://nordpass.com/most-common-passwords-list""");
         }
+        
         StringBuilder beginning = new StringBuilder("Пароль ");
         if (password.length < 8) {
             System.out.println(beginning + "содержит менее 8 символов");
@@ -124,10 +123,10 @@ public class PasswordCracker {
     }
 
     private static void rollSpinner() throws InterruptedException {
-        for (int turn = 1, spinIndex = 0; turn <= 3; spinIndex++) {
+        for (int halfTurn = 1, spinIndex = 0; halfTurn <= 6; spinIndex++) {
             if (spinIndex == SPINS.length) {
                 spinIndex = -1;
-                turn++;
+                halfTurn++;
                 continue;
             }
             System.out.print(SPINS[spinIndex]);
