@@ -14,6 +14,7 @@ public class PasswordCracker {
     private static final String ANSI_GREEN = "\u001B[32m"; // следующий текст будет зеленым
     private static final String ANSI_RESET = "\u001B[0m"; // следующий текст будет стандартного цвета
     private static final char[] SPINS = ("-\\|/").toCharArray();
+    private static final int MIN_FULL_TURNS = 3;
     private static boolean hasSmallLetters;
     private static boolean hasCapitalLetters;
     private static boolean hasDigits;
@@ -56,26 +57,19 @@ public class PasswordCracker {
                 hasCapitalLetters = true;
             } else if (Character.isLowerCase(character)) {
                 hasSmallLetters = true;
-            } else {
+            } else if (Character.isDigit(character)) {
                 hasDigits = true;
             }
         }
     }
 
     private static void showWarnings(char[] password) {
-        boolean isPasswordBlacklisted = false;
-        for (char[] weakPassword : BLACK_LIST) {
-            if (Arrays.equals(password, weakPassword)) {
-                isPasswordBlacklisted = true;
-                break;
-            }
-        }
-        if (isPasswordBlacklisted) {
+        if (isBlacklisted(password)) {
             System.out.println("""
                     Не используйте пароли из списка популярных: \
                     https://nordpass.com/most-common-passwords-list""");
         }
-        
+
         StringBuilder beginning = new StringBuilder("Пароль ");
         if (password.length < 8) {
             System.out.println(beginning + "содержит менее 8 символов");
@@ -98,10 +92,16 @@ public class PasswordCracker {
         }
     }
 
-    private static boolean isBlank(char[] password) {
-        if (password.length == 0) {
-            return true;
+    private static boolean isBlacklisted(char[] password) {
+        for (char[] weakPassword : BLACK_LIST) {
+            if (Arrays.equals(password, weakPassword)) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    private static boolean isBlank(char[] password) {
         for (char character : password) {
             if (!Character.isWhitespace(character)) {
                 return false;
@@ -116,14 +116,14 @@ public class PasswordCracker {
         System.out.println();
 
         String message = ANSI_GREEN + "✓ Password cracked: ";
-        if (password.length >= 8 && hasSmallLetters && hasCapitalLetters && hasSpecialCharacters) {
+        if (isStrong(password)) {
             message = ANSI_RED + "✗ Strong password: ";
         }
         System.out.println(message + String.valueOf(password) + ANSI_RESET);
     }
 
     private static void rollSpinner() throws InterruptedException {
-        for (int halfTurn = 1, spinIndex = 0; halfTurn <= 6; spinIndex++) {
+        for (int halfTurn = 1, spinIndex = 0; halfTurn / 2 <= MIN_FULL_TURNS; spinIndex++) {
             if (spinIndex == SPINS.length) {
                 spinIndex = -1;
                 halfTurn++;
@@ -133,5 +133,12 @@ public class PasswordCracker {
             Thread.sleep(100);
             System.out.print('\b');
         }
+    }
+
+    private static boolean isStrong(char[] password) {
+        return (password.length >= 8 &&
+                hasSmallLetters &&
+                hasCapitalLetters &&
+                hasSpecialCharacters);
     }
 }
