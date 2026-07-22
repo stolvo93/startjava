@@ -17,41 +17,79 @@ public class TypewriterLookingTextOutput {
                 null,
                 ""
         };
-        String[] words = findShortestAndLongestWords(arguments[1]);
-        System.out.println(Arrays.toString(words));
+        // String[] words = findShortestAndLongestWords("    топ топич  топ    ");
+        // System.out.println(Arrays.toString(words));
+        // String shortestWord = words[0];
+        // String longestWord = words[1];
+
+        int[][] wordCoordinates = findShortestAndLongestWords(arguments[0]);
+        String capitalizedString = capitalizeLettersBetweenWords (arguments[0], wordCoordinates);
+        System.out.println(capitalizedString);
     }
 
-    private static String[] findShortestAndLongestWords(String string) {
+    private static int[][] findShortestAndLongestWords(String string) {
         char[] stringChars = string.toCharArray();
+        int len = stringChars.length;
+        int minWordLen = len;
+        int minWordStart = 0;
         int maxWordLen = 0;
         int maxWordStart = 0;
-        int minWordLen = stringChars.length;
-        int minWordStart = 0;
-        for (int i = 0, charsCount = 0; i < stringChars.length; i++) {
+        for (int i = 0, charsCount = 0; i < len; i++) {
             if (Character.isLetter(stringChars[i])) {
                 charsCount++;
-                continue;
+                if (i < len - 1) continue;
+                else i++;
+            }
+            if (charsCount > 0 && charsCount < minWordLen) {
+                minWordLen = charsCount;
+                minWordStart = i - charsCount;
             }
             if (charsCount > maxWordLen) {
                 maxWordLen = charsCount;
                 maxWordStart = i - charsCount;
-            } else if (charsCount > 0 && charsCount < minWordLen) {
-                minWordLen = charsCount;
-                minWordStart = i - charsCount;
             }
             charsCount = 0;
         }
-        String shortestWord = extractWord(stringChars, minWordStart, minWordLen);
-        String longestWord = extractWord(stringChars, maxWordStart, maxWordLen);
-        String[] result = {shortestWord, longestWord};
-        return result;
+        // String shortestWord = extractWord(stringChars, minWordStart, minWordLen);
+        // String longestWord = extractWord(stringChars, maxWordStart, maxWordLen);
+        // String[] result = {shortestWord, longestWord};
+
+        int[][] indexes = {
+                {minWordStart, minWordLen},
+                {maxWordStart, maxWordLen}
+        };
+        return indexes;
     }
 
-    private static String extractWord(char[] charSequence, int start, int len) {
-        char[] word = new char[len];
-        for (int i = 0, j = start; i < len; i++, j++) {
-            word[i] = charSequence[j];
+    // private static String extractWord(char[] charSequence, int start, int len) {
+    //     char[] word = new char[len];
+    //     for (int i = 0, j = start; i < len; i++, j++) {
+    //         word[i] = charSequence[j];
+    //     }
+    //     return String.valueOf(word);
+    // }
+
+    private static String capitalizeLettersBetweenWords(String string, int[][] wordCoordinates) {
+        int minWordStart = wordCoordinates[0][0];
+        int minWordLen = wordCoordinates[0][1];
+        int maxWordStart = wordCoordinates[1][0];
+        int maxWordLen = wordCoordinates[1][1];
+        int start = 0;
+        int end = 0;
+        if (minWordStart < maxWordStart) {
+            start = minWordStart;
+            end = maxWordStart + maxWordLen;
+        } else {
+            start = maxWordStart;
+            end = minWordStart + minWordLen;
         }
-        return String.valueOf(word);
+
+        char[] stringChars = string.toCharArray();
+        for (int i = start; i < end; i++) {
+            stringChars[i] = Character.toUpperCase(stringChars[i]);
+        }
+
+        String capitalized = String.valueOf(stringChars);
+        return capitalized;
     }
 }
