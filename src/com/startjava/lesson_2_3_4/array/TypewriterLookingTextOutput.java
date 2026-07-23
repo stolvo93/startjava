@@ -1,6 +1,5 @@
 package com.startjava.lesson_2_3_4.array;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class TypewriterLookingTextOutput {
@@ -10,30 +9,37 @@ public class TypewriterLookingTextOutput {
     private static final String ROBERT_MARTIN_QUOTE = """
             Чтобы написать чистый код, мы сначала пишем грязный код, затем рефакторим его.
             - Robert Martin""";
-    private static final int SHORTEST_WORD = 0;
-    private static final int LONGEST_WORD = 1;
-    private static final int START = 0;
-    private static final int LEN = 1;
     private static final Random RND = new Random();
 
     public static void main(String[] args) throws InterruptedException {
-        String[] arguments = {
+        String[] strings = {
                 JAMES_GOSLING_QUOTE,
                 ROBERT_MARTIN_QUOTE,
                 null,
                 ""
         };
-        // String[] words = findShortestAndLongestWords("    топ топич  топ    ");
-        // System.out.println(Arrays.toString(words));
-        // String shortestWord = words[0];
-        // String longestWord = words[1];
-        String string = "ТЫ ПИД\b \b\b \b\b \bКРАСАВЧИК!";
-        // int[][] wordCoordinates = findShortestAndLongestWords(string);
-        // String capitalizedString = capitalizeLettersBetweenWords(string, wordCoordinates);
-        System.out.println("\n\n\n\n\n\n\n\n");
-        System.out.print("                                      ");
-        typeWrite(string);
-        System.out.println("\n\n\n\n\n\n\n\n");
+        for (String string : strings) {
+            System.out.println();
+            if (string == null) {
+                printDataError();
+                continue;
+            }
+            if (string.isEmpty()) {
+                printEmptyStringMessage();
+                continue;
+            }
+            int[][] wordCoordinates = findShortestAndLongestWords(string);
+            String modifiedString = capitalizeLettersBetweenWords(string, wordCoordinates);
+            typewrite(modifiedString);
+        }
+    }
+
+    private static void printDataError() {
+        System.out.println("Ошибка данных.");
+    }
+
+    private static void printEmptyStringMessage() {
+        System.out.println("В качестве аргумента подана пустая строка.");
     }
 
     private static int[][] findShortestAndLongestWords(String string) {
@@ -43,88 +49,55 @@ public class TypewriterLookingTextOutput {
         int shortestWordStart = 0;
         int maxWordLen = 0;
         int longestWordStart = 0;
-        for (int i = 0, charsCount = 0; i < len; i++) {
+        for (int i = 0, charactersCount = 0; i < len; i++) {
             if (Character.isLetter(stringCharacters[i])) {
-                charsCount++;
+                charactersCount++;
                 if (i < len - 1) continue;
                 else i++;
             }
-            if (charsCount > 0 && charsCount < minWordLen) {
-                minWordLen = charsCount;
-                shortestWordStart = i - charsCount;
+            if (charactersCount > 0 && charactersCount < minWordLen) {
+                minWordLen = charactersCount;
+                shortestWordStart = i - charactersCount;
             }
-            if (charsCount > maxWordLen) {
-                maxWordLen = charsCount;
-                longestWordStart = i - charsCount;
+            if (charactersCount > maxWordLen) {
+                maxWordLen = charactersCount;
+                longestWordStart = i - charactersCount;
             }
-            charsCount = 0;
+            charactersCount = 0;
         }
-        // String shortestWord = extractWord(stringCharacters, shortestWordStart, minWordLen);
-        // String longestWord = extractWord(stringCharacters, longestWordStart, maxWordLen);
-        // String[] result = {shortestWord, longestWord};
 
-        // int[][] indexes = {
-        //         {shortestWordStart, minWordLen},
-        //         {longestWordStart, maxWordLen}
-        // };
-        int[][] coordinates = new int[2][2];
-        coordinates[SHORTEST_WORD][START] = shortestWordStart;
-        coordinates[SHORTEST_WORD][LEN] = minWordLen;
-        coordinates[LONGEST_WORD][START] = longestWordStart;
-        coordinates[LONGEST_WORD][LEN] = maxWordLen;
+        int[][] coordinates = {
+                {shortestWordStart, minWordLen},
+                {longestWordStart, maxWordLen}
+        };
         return coordinates;
     }
 
-    // private static String extractWord(char[] charSequence, int start, int len) {
-    //     char[] word = new char[len];
-    //     for (int i = 0, j = start; i < len; i++, j++) {
-    //         word[i] = charSequence[j];
-    //     }
-    //     return String.valueOf(word);
-    // }
-
     private static String capitalizeLettersBetweenWords(String string, int[][] wordCoordinates) {
-        int firstWordStart = wordCoordinates[0][0];
-        int firstWordLen = wordCoordinates[0][1];
-        int secondWordStart = wordCoordinates[1][0];
-        int secondWordLen = wordCoordinates[1][1];
-        int start = 0;
+        int start = Integer.MAX_VALUE;
         int end = 0;
-        if (firstWordStart < secondWordStart) {
-            start = firstWordStart;
-            end = secondWordStart + secondWordLen;
-        } else {
-            start = secondWordStart;
-            end = firstWordStart + firstWordLen;
+        for (int[] word : wordCoordinates) {
+            int wordStart = word[0];
+            int wordLen = word[1];
+            start = Math.min(start, wordStart);
+            end = Math.max(end, wordStart + wordLen);
         }
 
-        char[] stringCharacters = string.toCharArray();
+        char[] modifiedString = string.toCharArray();
         for (int i = start; i < end; i++) {
-            stringCharacters[i] = Character.toUpperCase(stringCharacters[i]);
+            modifiedString[i] = Character.toUpperCase(modifiedString[i]);
         }
-
-        String capitalized = String.valueOf(stringCharacters);
-        return capitalized;
+        return String.valueOf(modifiedString);
     }
 
-    private static void typeWrite(String text) throws InterruptedException {
-        char[] textCharacters = text.toCharArray();
+    private static void typewrite(String text) throws InterruptedException {
         Thread.sleep(1000);
-        // for (char character : textCharacters) {
-        //     Thread.sleep(pause);
-        //     System.out.print(character);
-        // }
-        for (int i = 0; i < textCharacters.length; i++) {
-            if (i > 0 && (textCharacters[i - 1] == '\b' && textCharacters[i] == ' ' ||
-                    textCharacters[i - 1] == ' ' && textCharacters[i] == '\b')) {
-                System.out.print(textCharacters[i]);
-            } else {
-                int pause = RND.nextInt(200, 1000);
-                Thread.sleep(pause);
-                System.out.print(textCharacters[i]);
-            }
+        char[] textCharacters = text.toCharArray();
+        for (char character : textCharacters) {
+            System.out.print(character);
+            int pause = RND.nextInt(150, 500);
+            Thread.sleep(pause);
         }
-        Thread.sleep(500);
         System.out.println();
     }
 }
