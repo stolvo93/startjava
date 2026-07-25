@@ -9,11 +9,12 @@ public class PasswordCracker {
             ("qwerty").toCharArray(),
             ("123456").toCharArray()
     };
+    private static final int FLAGS_NUMBER = 4;
     private static final int HAS_DIGIT = 0;
     private static final int HAS_SMALL_LETTER = 1;
     private static final int HAS_CAPITAL_LETTER = 2;
     private static final int HAS_SPECIAL_CHARACTER = 3;
-    private static final int IS_STRONG_PASSWORD = 4;
+    private static final int STRONG_PASSWORD_MIN_LENGTH = 8;
     private static final String[] FLAG_DESCRIPTIONS = {
             "цифры",
             "буквы нижнего регистра",
@@ -28,7 +29,7 @@ public class PasswordCracker {
 
     public static void main(String[] args) throws InterruptedException {
         char[][] passwordsToCrack = new char[4][];
-        passwordsToCrack[0] = ("Abcdef1 ").toCharArray();
+        passwordsToCrack[0] = ("123456").toCharArray();
         for (int i = 1; i < passwordsToCrack.length; i++) {
             int passwordLength = random.nextInt(6, 13);
             passwordsToCrack[i] = generatePassword(passwordLength);
@@ -38,7 +39,8 @@ public class PasswordCracker {
             System.out.println();
             boolean[] complexityFlags = checkComplexity(password);
             showWarnings(password, complexityFlags);
-            crack(password, complexityFlags[IS_STRONG_PASSWORD]);
+            boolean isStrongPassword = isStrong(password, complexityFlags);
+            crack(password, isStrongPassword);
         }
     }
 
@@ -51,9 +53,9 @@ public class PasswordCracker {
     }
 
     private static boolean[] checkComplexity(char[] password) {
-        boolean[] complexityFlags = new boolean[5];
+        boolean[] complexityFlags = new boolean[FLAGS_NUMBER];
         for (char character : password) {
-            if (!Character.isLetterOrDigit(character)) {
+            if (!Character.isLetterOrDigit(character) && !Character.isWhitespace(character)) {
                 complexityFlags[HAS_SPECIAL_CHARACTER] = true;
             } else if (Character.isUpperCase(character)) {
                 complexityFlags[HAS_CAPITAL_LETTER] = true;
@@ -62,13 +64,6 @@ public class PasswordCracker {
             } else if (Character.isDigit(character)) {
                 complexityFlags[HAS_DIGIT] = true;
             }
-        }
-        if (password.length >= 8 &&
-                complexityFlags[HAS_SPECIAL_CHARACTER] &&
-                complexityFlags[HAS_CAPITAL_LETTER] &&
-                complexityFlags[HAS_SMALL_LETTER] &&
-                complexityFlags[HAS_DIGIT]) {
-            complexityFlags[IS_STRONG_PASSWORD] = true;
         }
         return complexityFlags;
     }
@@ -86,18 +81,6 @@ public class PasswordCracker {
         if (isBlank(password)) {
             System.out.println("Пароль не может быть пустым");
         }
-        // if (!complexityFlags[HAS_DIGIT]) {
-        //     System.out.println("Пароль не содержит цифры");
-        // }
-        // if (!complexityFlags[HAS_CAPITAL_LETTER]) {
-        //     System.out.println("Пароль не содержит буквы верхнего регистра");
-        // }
-        // if (!complexityFlags[HAS_SMALL_LETTER]) {
-        //     System.out.println("Пароль не содержит буквы нижнего регистра");
-        // }
-        // if (!complexityFlags[HAS_SPECIAL_CHARACTER]) {
-        //     System.out.println("Пароль не содержит спец. символы");
-        // }
 
         for (int i = 0; i < FLAG_DESCRIPTIONS.length; i++) {
             if (!complexityFlags[i]) {
@@ -124,6 +107,16 @@ public class PasswordCracker {
         return true;
     }
 
+    private static boolean isStrong(char[] password, boolean[] complexityFlags) {
+        if (password.length < STRONG_PASSWORD_MIN_LENGTH) {
+            return false;
+        }
+        for (boolean flag : complexityFlags) {
+            if (!flag) return false;
+        }
+        return true;
+    }
+
     private static void crack(char[] password, boolean strongPassword)
             throws InterruptedException {
         System.out.print("Cracking password:  ");
@@ -137,9 +130,9 @@ public class PasswordCracker {
     }
 
     private static void rollSpinner() throws InterruptedException {
-        for (int i = 0; i < SPINS.length * 3; i++) {
+        for (int i = 0; i < SPINS.length * 6; i++) {
             System.out.print("\b" + SPINS[i % SPINS.length]);
-            Thread.sleep(250);
+            Thread.sleep(150);
         }
     }
 }
