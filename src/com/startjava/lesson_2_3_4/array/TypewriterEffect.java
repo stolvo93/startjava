@@ -2,14 +2,15 @@ package com.startjava.lesson_2_3_4.array;
 
 import java.util.Random;
 
-public class TypewriterLookingTextOutput {
+public class TypewriterEffect {
     private static final String JAMES_GOSLING_QUOTE = """
             Java - это C++, из которого убрали все пистолеты, ножи и дубинки.
             - James Gosling""";
     private static final String ROBERT_MARTIN_QUOTE = """
             Чтобы написать чистый код, мы сначала пишем грязный код, затем рефакторим его.
             - Robert Martin""";
-    private static final Random RND = new Random();
+    private static final char[] ADJACENT_PUNCTUATION_MARKS = "!\"'()*,.:;<>?`{}‚…‹›‘’“”¡«»¿".toCharArray();
+    private static final Random random = new Random();
 
     public static void main(String[] args) throws InterruptedException {
         String[] strings = {
@@ -29,7 +30,7 @@ public class TypewriterLookingTextOutput {
                 continue;
             }
             int[][] wordCoordinates = findShortestAndLongestWords(string);
-            String modifiedString = capitalizeLettersBetweenWords(string, wordCoordinates);
+            String modifiedString = toUpperCaseRange(string, wordCoordinates);
             typewrite(modifiedString);
         }
     }
@@ -50,7 +51,7 @@ public class TypewriterLookingTextOutput {
         int maxWordLen = 0;
         int longestWordStart = 0;
         for (int i = 0, charactersCount = 0; i < len; i++) {
-            if (Character.isLetter(stringCharacters[i])) {
+            if (isWordCharacter(stringCharacters, i, charactersCount)) {
                 charactersCount++;
                 if (i < len - 1) continue;
                 else i++;
@@ -73,7 +74,27 @@ public class TypewriterLookingTextOutput {
         return coordinates;
     }
 
-    private static String capitalizeLettersBetweenWords(String string, int[][] wordCoordinates) {
+    private static boolean isWordCharacter(char[] string, int i, int charactersCount) {
+        if (Character.isLetter(string[i])) return true;
+        if (charactersCount > 0) {
+            return isPossibleWordCharacter(string[i]);
+        }
+        for (int j = i; j < string.length; j++) {
+            if (Character.isLetter(string[j])) return true;
+            if (!isPossibleWordCharacter(string[j])) break;
+        }
+        return false;
+    }
+
+    private static boolean isPossibleWordCharacter(char character) {
+        if (Character.isWhitespace(character)) return false;
+        for (char punctuationMark : ADJACENT_PUNCTUATION_MARKS) {
+            if (character == punctuationMark) return false;
+        }
+        return true;
+    }
+
+    private static String toUpperCaseRange(String string, int[][] wordCoordinates) {
         int start = Integer.MAX_VALUE;
         int end = 0;
         for (int[] word : wordCoordinates) {
@@ -95,7 +116,7 @@ public class TypewriterLookingTextOutput {
         char[] textCharacters = text.toCharArray();
         for (char character : textCharacters) {
             System.out.print(character);
-            int pause = RND.nextInt(150, 500);
+            int pause = random.nextInt(150, 500);
             Thread.sleep(pause);
         }
         System.out.println();
