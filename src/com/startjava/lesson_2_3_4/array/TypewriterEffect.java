@@ -13,24 +13,24 @@ public class TypewriterEffect {
     private static final Random random = new Random();
 
     public static void main(String[] args) throws InterruptedException {
-        String[] strings = {
+        String[] quotes = {
                 JAMES_GOSLING_QUOTE,
                 ROBERT_MARTIN_QUOTE,
                 null,
                 ""
         };
-        for (String string : strings) {
+        for (String quote : quotes) {
             System.out.println();
-            if (string == null) {
+            if (quote == null) {
                 printDataError();
                 continue;
             }
-            if (string.isEmpty()) {
+            if (quote.isBlank()) {
                 printEmptyStringMessage();
                 continue;
             }
-            int[][] wordCoordinates = findShortestAndLongestWords(string);
-            String modifiedString = toUpperCaseRange(string, wordCoordinates);
+            int[][] wordCoordinates = findShortestAndLongestWords(quote);
+            String modifiedString = toUpperCaseRange(quote, wordCoordinates);
             typewrite(modifiedString);
         }
     }
@@ -40,7 +40,7 @@ public class TypewriterEffect {
     }
 
     private static void printEmptyStringMessage() {
-        System.out.println("В качестве аргумента подана пустая строка.");
+        System.out.println("Текст не содержит печатных символов.");
     }
 
     private static int[][] findShortestAndLongestWords(String string) {
@@ -54,7 +54,7 @@ public class TypewriterEffect {
             if (isWordCharacter(stringCharacters, i, charactersCount)) {
                 charactersCount++;
                 if (i < len - 1) continue;
-                else i++;
+                i++;
             }
             if (charactersCount > 0 && charactersCount < minWordLen) {
                 minWordLen = charactersCount;
