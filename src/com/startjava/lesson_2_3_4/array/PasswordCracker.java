@@ -10,10 +10,10 @@ public class PasswordCracker {
             ("123456").toCharArray()
     };
     private static final int FLAGS_NUMBER = 4;
-    private static final int HAS_DIGIT = 0;
-    private static final int HAS_SMALL_LETTER = 1;
-    private static final int HAS_CAPITAL_LETTER = 2;
-    private static final int HAS_SPECIAL_CHARACTER = 3;
+    private static final int DIGIT_IDX = 0;
+    private static final int SMALL_LETTER_IDX = 1;
+    private static final int CAPITAL_LETTER_IDX = 2;
+    private static final int SPECIAL_CHARACTER_IDX = 3;
     private static final int STRONG_PASSWORD_MIN_LENGTH = 8;
     private static final String[] FLAG_DESCRIPTIONS = {
             "цифры",
@@ -39,8 +39,7 @@ public class PasswordCracker {
             System.out.println();
             boolean[] complexityFlags = checkComplexity(password);
             showWarnings(password, complexityFlags);
-            boolean isStrongPassword = isStrong(password, complexityFlags);
-            crack(password, isStrongPassword);
+            crack(password, complexityFlags);
         }
     }
 
@@ -56,13 +55,13 @@ public class PasswordCracker {
         boolean[] complexityFlags = new boolean[FLAGS_NUMBER];
         for (char character : password) {
             if (!Character.isLetterOrDigit(character) && !Character.isWhitespace(character)) {
-                complexityFlags[HAS_SPECIAL_CHARACTER] = true;
+                complexityFlags[SPECIAL_CHARACTER_IDX] = true;
             } else if (Character.isUpperCase(character)) {
-                complexityFlags[HAS_CAPITAL_LETTER] = true;
+                complexityFlags[CAPITAL_LETTER_IDX] = true;
             } else if (Character.isLowerCase(character)) {
-                complexityFlags[HAS_SMALL_LETTER] = true;
+                complexityFlags[SMALL_LETTER_IDX] = true;
             } else if (Character.isDigit(character)) {
-                complexityFlags[HAS_DIGIT] = true;
+                complexityFlags[DIGIT_IDX] = true;
             }
         }
         return complexityFlags;
@@ -75,8 +74,8 @@ public class PasswordCracker {
                     https://nordpass.com/most-common-passwords-list""");
         }
 
-        if (password.length < 8) {
-            System.out.println("Пароль содержит менее 8 символов");
+        if (password.length < STRONG_PASSWORD_MIN_LENGTH) {
+            System.out.printf("Пароль содержит менее %d символов%n", STRONG_PASSWORD_MIN_LENGTH);
         }
         if (isBlank(password)) {
             System.out.println("Пароль не может быть пустым");
@@ -107,6 +106,17 @@ public class PasswordCracker {
         return true;
     }
 
+    private static void crack(char[] password, boolean[] complexityFlags) throws InterruptedException {
+        System.out.print("Cracking password:  ");
+        rollSpinner();
+        System.out.println();
+
+        String message = isStrong(password, complexityFlags) ?
+                ANSI_RED + "✗ Strong password: " :
+                ANSI_GREEN + "✓ Password cracked: ";
+        System.out.println(message + String.valueOf(password) + ANSI_RESET);
+    }
+
     private static boolean isStrong(char[] password, boolean[] complexityFlags) {
         if (password.length < STRONG_PASSWORD_MIN_LENGTH) {
             return false;
@@ -115,18 +125,6 @@ public class PasswordCracker {
             if (!flag) return false;
         }
         return true;
-    }
-
-    private static void crack(char[] password, boolean strongPassword)
-            throws InterruptedException {
-        System.out.print("Cracking password:  ");
-        rollSpinner();
-        System.out.println();
-
-        String message = strongPassword ?
-                ANSI_RED + "✗ Strong password: " :
-                ANSI_GREEN + "✓ Password cracked: ";
-        System.out.println(message + String.valueOf(password) + ANSI_RESET);
     }
 
     private static void rollSpinner() throws InterruptedException {
