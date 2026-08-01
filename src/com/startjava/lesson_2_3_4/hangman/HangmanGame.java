@@ -32,12 +32,12 @@ public class HangmanGame {
     private final Scanner scanner;
     private final char[] targetWord;
     private final char[] targetWordMask;
-    private int attemptsNumber;
     private char[] wrongLetters;
+    private int attemptsNumber;
 
     public HangmanGame(Scanner scanner) {
         this.scanner = scanner;
-        targetWord = TARGET_WORDS[random.nextInt(TARGET_WORDS.length)].clone();
+        targetWord = TARGET_WORDS[random.nextInt(TARGET_WORDS.length)];
         targetWordMask = createMask(targetWord.length);
         attemptsNumber = MAX_ATTEMPTS;
         wrongLetters = new char[0];
@@ -52,7 +52,7 @@ public class HangmanGame {
     public void play() {
         printGreeting();
         while (attemptsNumber > 0) {
-            showInfo();
+            printGameState();
             char playerLetter = readValidLetter();
             applyGuess(playerLetter);
             if (isWordGuessed()) {
@@ -68,7 +68,7 @@ public class HangmanGame {
         System.out.println("\n    *** Игра ВИСЕЛИЦА ***");
     }
 
-    private void showInfo() {
+    private void printGameState() {
         System.out.println();
         printGallowsPart();
         printTargetWordMaskMessage();
