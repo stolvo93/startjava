@@ -7,7 +7,8 @@ public class Calculator {
         final String[] expressionElements = mathExpression.split("\\s");
         if (expressionElements.length != VALID_ELEMENTS_NUMBER) {
             throw new WrongElementsNumberException(
-                    "Неверное количество элементов выражения (должно быть " + VALID_ELEMENTS_NUMBER + ")");
+                    "Ошибка: неверное количество элементов выражения (должно быть " +
+                            VALID_ELEMENTS_NUMBER + ")");
         }
         final String mathOperator = expressionElements[1];
         final int a = parseInt(expressionElements[0]);
@@ -21,7 +22,7 @@ public class Calculator {
             case "%" -> mod(a, b);
             case "^" -> pow(a, b);
             default -> throw new UnsupportedOperatorException(
-                    "Оператор '" + mathOperator + "' не поддерживается");
+                    "Ошибка: оператор '" + mathOperator + "' не поддерживается");
         };
         return result;
     }
@@ -30,7 +31,7 @@ public class Calculator {
         try {
             return Integer.parseInt(string);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(string + " не является целым числом");
+            throw new IllegalArgumentException("Ошибка: " + string + " не является целым числом");
         }
     }
 
@@ -46,14 +47,14 @@ public class Calculator {
 
     private static void checkDivisionByZero(int divisor) {
         if (divisor == 0) {
-            throw new ArithmeticException("Деление на 0 запрещено");
+            throw new ArithmeticException("Ошибка: деление на 0 запрещено");
         }
     }
 
     private static double pow(int base, int power) {
         if (base == 0 && power < 0) {
             throw new ArithmeticException(
-                    "Возведение 0 в отрицательную степень запрещено (аналогично делению на 0)");
+                    "Ошибка: возведение 0 в отрицательную степень запрещено (аналогично делению на 0)");
         }
         return Math.pow(base, power);
     }
