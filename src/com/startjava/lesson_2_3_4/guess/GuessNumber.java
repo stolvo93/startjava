@@ -3,23 +3,23 @@ package com.startjava.lesson_2_3_4.guess;
 import java.util.Scanner;
 
 public class GuessNumber {
-    private final Player player1;
-    private final Player player2;
+    public static final int MIN_NUMBER = 1;
+    public static final int MAX_NUMBER = 100;
+    private final Player[] players;
     private final Scanner scanner;
-    private final int minNumber = 1;
-    private final int maxNumber = 100;
     private int targetNumber;
     private Player currentPlayer;
+    private int currentPlayerIndex;
 
-    public GuessNumber(Player player1, Player player2, Scanner scanner) {
-        this.player1 = player1;
-        this.player2 = player2;
+    public GuessNumber(Scanner scanner, Player... players) {
         this.scanner = scanner;
+        this.players = players.clone();
+        currentPlayerIndex = 0;
     }
 
     public void play() {
         generateTargetNumber();
-        currentPlayer = player1;
+        currentPlayer = players[currentPlayerIndex];
         while (true) {
             makeMove();
             if (isGuessed()) {
@@ -32,20 +32,15 @@ public class GuessNumber {
     }
 
     private void generateTargetNumber() {
-        targetNumber = minNumber + (int) (Math.random() * (maxNumber - minNumber + 1));
+        targetNumber = MIN_NUMBER + (int) (Math.random() * (MAX_NUMBER - MIN_NUMBER + 1));
         System.out.printf("\nКомпьютер загадал число в диапазоне [%d, %d]. Попробуйте его угадать!%n",
-                minNumber, maxNumber);
+                MIN_NUMBER, MAX_NUMBER);
     }
 
     private void makeMove() {
         System.out.println("\nХод игрока " + currentPlayer.getName());
-        while (true) {
-            readNumber();
-            if (isNumberInRange(currentPlayer.getNumber())) {
-                break;
-            }
-            printOutOfRangeWarning();
-        }
+        readNumber();
+        currentPlayer.setNumber();
     }
 
     private void readNumber() {
@@ -54,12 +49,12 @@ public class GuessNumber {
     }
 
     private boolean isNumberInRange(int number) {
-        return number >= minNumber && number <= maxNumber;
+        return number >= MIN_NUMBER && number <= MAX_NUMBER;
     }
 
     private void printOutOfRangeWarning() {
         System.out.printf("Внимание! Число должно быть в диапазоне [%d, %d]. Введите другое число.%n",
-                minNumber, maxNumber);
+                MIN_NUMBER, MAX_NUMBER);
     }
 
     private boolean isGuessed() {
@@ -73,7 +68,8 @@ public class GuessNumber {
     }
 
     private void changePlayer() {
-        currentPlayer = currentPlayer == player1 ? player2 : player1;
+        currentPlayerIndex++;
+        currentPlayer = players[currentPlayerIndex];
     }
 
     private void printVictoryMessage() {
