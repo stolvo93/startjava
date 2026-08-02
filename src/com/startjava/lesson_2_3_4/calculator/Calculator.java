@@ -1,100 +1,60 @@
 package com.startjava.lesson_2_3_4.calculator;
 
-import java.text.DecimalFormat;
-
 public class Calculator {
-    private int firstNumber;
-    private String mathOperator;
-    private int secondNumber;
-    private double result;
+    private static final int VALID_ELEMENTS_NUMBER = 3;
 
-    private void setFirstNumber(int number) {
-        firstNumber = number;
-    }
-
-    private void setMathOperator(String mathOperator) {
-        this.mathOperator = mathOperator;
-    }
-
-    private void setSecondNumber(int number) {
-        secondNumber = number;
-    }
-
-    public void calculate(int firstNumber, String mathOperator, int secondNumber) {
-        setFirstNumber(firstNumber);
-        setMathOperator(mathOperator);
-        setSecondNumber(secondNumber);
-
-        switch (mathOperator) {
-            case "+":
-                result = add();
-                break;
-            case "-":
-                result = subtract();
-                break;
-            case "*":
-                result = multiply();
-                break;
-            case "/":
-                result = div();
-                if (Double.isNaN(result)) return;
-                break;
-            case "%":
-                result = mod();
-                if (Double.isNaN(result)) return;
-                break;
-            case "^":
-                result = pow();
-                break;
-            default:
-                System.out.println("Ошибка: операция '" + mathOperator + "' не поддерживается");
-                return;
+    public static double calculate(String mathExpression) {
+        final String[] expressionElements = mathExpression.split("\\s");
+        if (expressionElements.length != VALID_ELEMENTS_NUMBER) {
+            throw new WrongElementsNumberException(
+                    "Неверное количество элементов выражения (должно быть " + VALID_ELEMENTS_NUMBER + ")");
         }
+        final String mathOperator = expressionElements[1];
+        final int a = parseInt(expressionElements[0]);
+        final int b = parseInt(expressionElements[2]);
 
-        printResult();
+        double result = switch (mathOperator) {
+            case "+" -> a + b;
+            case "-" -> a - b;
+            case "*" -> a * b;
+            case "/" -> div(a, b);
+            case "%" -> mod(a, b);
+            case "^" -> pow(a, b);
+            default -> throw new UnsupportedOperatorException(
+                    "Оператор '" + mathOperator + "' не поддерживается");
+        };
+        return result;
     }
 
-    private double add() {
-        return firstNumber + secondNumber;
-    }
-
-    private double subtract() {
-        return firstNumber - secondNumber;
-    }
-
-    private double multiply() {
-        return firstNumber * secondNumber;
-    }
-
-    private double div() {
-        if (secondNumber == 0) {
-            System.out.println("Ошибка: деление на ноль запрещено!");
-            return Double.NaN;
+    private static int parseInt(String string) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(string + " не является целым числом");
         }
-        return (double) firstNumber / secondNumber;
     }
 
-    private double mod() {
-        if (secondNumber == 0) {
-            System.out.println("Ошибка: деление на ноль запрещено!");
-            return Double.NaN;
+    private static double div(int dividend, int divisor) {
+        checkDivisionByZero(divisor);
+        return (double) dividend / divisor;
+    }
+
+    private static double mod(int dividend, int divisor) {
+        checkDivisionByZero(divisor);
+        return Math.floorMod(dividend, divisor);
+    }
+
+    private static void checkDivisionByZero(int divisor) {
+        if (divisor == 0) {
+            throw new ArithmeticException("Деление на 0 запрещено");
         }
-        return (double) firstNumber % secondNumber;
     }
 
-    private double pow() {
-        int product = 1;
-        int power = secondNumber >= 0 ? secondNumber : -secondNumber;
-
-        for (int i = 1; i <= power; i++) {
-            product *= firstNumber;
+    private static double pow(int base, int power) {
+        if (base == 0 && power < 0) {
+            throw new ArithmeticException(
+                    "Возведение 0 в отрицательную степень запрещено (аналогично делению на 0)");
         }
-        return secondNumber > 0 ? product : 1.0 / product;
-    }
-
-    private void printResult() {
-        DecimalFormat df = new DecimalFormat("0.########");
-        String resultFormatted = df.format(result);
-        System.out.printf("%d %s %d = %s%n", firstNumber, mathOperator, secondNumber, resultFormatted);
+        return Math.pow(base, power);
     }
 }
