@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class GuessNumberTest {
     public static void main(String[] args) {
-        System.out.println("\n***** УГАДАЙ ЧИСЛО *****\n");
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("Введите имя первого игрока: ");

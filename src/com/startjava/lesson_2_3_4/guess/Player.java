@@ -3,33 +3,28 @@ package com.startjava.lesson_2_3_4.guess;
 import java.util.Arrays;
 
 public class Player {
-    public static final int MAX_ATTEMPTS = 10;
     private final String name;
-    private final int[] pastNumbers;
+    private final int[] triedNumbers;
     private int number;
-    private int attemptsRemaining;
-    private int attemptNumber;
 
     public Player(String name) {
         this.name = name;
-        pastNumbers = new int[MAX_ATTEMPTS];
-        attemptsRemaining = MAX_ATTEMPTS;
-        attemptNumber = 0;
+        triedNumbers = new int[GuessNumber.MAX_ATTEMPTS];
     }
 
     public String getName() {
         return name;
     }
 
-    public int[] getPastNumbers() {
-        int usedNumbersLength = MAX_ATTEMPTS - attemptsRemaining;
-        int[] usedNumbers = Arrays.copyOf(pastNumbers, usedNumbersLength);
-        return usedNumbers;
+    public int[] getTriedNumbers(int lastAttempt) {
+        int actuallyTriedNumbersLength = lastAttempt - 1;
+        int[] actuallyTriedNumbers = Arrays.copyOf(triedNumbers, actuallyTriedNumbersLength);
+        return actuallyTriedNumbers;
     }
 
-    public void addPastNumber(int number) {
-        int indexToFill = MAX_ATTEMPTS - attemptsRemaining;
-        pastNumbers[indexToFill] = number;
+    public void addTriedNumber(int currentAttempt) {
+        int indexToFill = currentAttempt - 1;
+        triedNumbers[indexToFill] = number;
     }
 
     public int getNumber() {
@@ -43,17 +38,5 @@ public class Player {
                     GuessNumber.MIN_NUMBER, GuessNumber.MAX_NUMBER));
         }
         this.number = number;
-    }
-
-    public void decrementAttempts() {
-        if (attemptsRemaining > 0) attemptsRemaining--;
-    }
-
-    public int getAttemptNumber() {
-        return attemptNumber;
-    }
-
-    public void incrementAttemptNumber() {
-        if (attemptNumber < MAX_ATTEMPTS) attemptNumber++;
     }
 }
