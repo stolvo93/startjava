@@ -1,6 +1,6 @@
 package com.startjava.lesson_2_3_4.guess;
 
-import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GuessNumber {
@@ -11,7 +11,6 @@ public class GuessNumber {
     private final Scanner scanner;
     private final Player[] players;
     private int targetNumber;
-    private int currentRound;
     private int currentAttempt;
     private Player currentPlayer;
 
@@ -23,7 +22,7 @@ public class GuessNumber {
     public void play() {
         generateTargetNumber();
         printGameStartMessage();
-        for (currentRound = 1; currentRound <= ROUNDS_NUMBER; currentRound++) {
+        for (int currentRound = 1; currentRound <= ROUNDS_NUMBER; currentRound++) {
             for (currentAttempt = 1; currentAttempt <= MAX_ATTEMPTS; currentAttempt++) {
                 for (Player player : players) {
                     currentPlayer = player;
@@ -38,17 +37,23 @@ public class GuessNumber {
                     printRoundVictoryMessage();
                     break;
                 }
+                printAllLoseRoundMessage();
             }
-            printGuessesHistory();
+            printGuessHistory();
             printRoundFinishMessage(currentRound);
             printRoundScore();
         }
-        if (isDraw()) {
+        if (isAllLoseGame()) {
+            printAllLoseGameMessage();
+            return;
+        }
+        int maxScore = findMaxScore();
+        if (isDraw(maxScore)) {
             printDrawMessage();
             return;
         }
-        Player winner = determineWinner();
-        printGameVictoryMessage();
+        Player winner = determineWinner(maxScore);
+        printGameVictoryMessage(winner);
     }
 
     private void generateTargetNumber() {
@@ -69,16 +74,13 @@ public class GuessNumber {
             try {
                 currentPlayer.setNumber(playerNumber);
                 break;
-            } catch (IllegalArgumentException |  e) {
+            } catch (IllegalArgumentException | InputMismatchException e) {
                 System.out.println(e.getMessage());
                 playerNumber = readNumber("Попробуйте ещё раз: ");
             }
         }
         currentPlayer.setLatestAttempt(currentAttempt);
-        // System.out.println("Записана последняя попытка: " + currentPlayer.getLatestAttempt());
         currentPlayer.addTriedNumber();
-        // System.out.println("Последнее число добавлено в список: " +
-        //         Arrays.toString(currentPlayer.getTriedNumbers()));
     }
 
     // private void writeStats() {
@@ -104,11 +106,15 @@ public class GuessNumber {
     }
 
     private void printRoundVictoryMessage() {
-        System.out.printf("%n%s угадал число %d с %d-й попытки%n",
+        System.out.printf("%n%s угадывает число %d с %d-й попытки%n",
                 currentPlayer.getName(), currentPlayer.getNumber(), currentPlayer.getLatestAttempt());
     }
 
-    private void printGuessesHistory() {
+    private void printAllLoseRoundMessage() {
+        System.out.println("Никто не угадал число " + targetNumber);
+    }
+
+    private void printGuessHistory() {
         for (Player player : players) {
             StringBuilder history = new StringBuilder(String.format("%nЧисла игрока %s: ", player.getName()));
             int[] numbers = player.getTriedNumbers();
@@ -131,22 +137,55 @@ public class GuessNumber {
         System.out.println(score);
     }
 
-    private boolean isDraw() {
-        if (players.length < 2) {
-            return false;
-        }
-        for (int i = 0; i < players.length - 1; i++) {
-            if (players[i].getScore() != players[i].getScore()) {
+    private boolean isAllLoseGame() {
+        for (Player player : players) {
+            if (player.getScore() != 0) {
                 return false;
             }
         }
         return true;
     }
 
-    private Player determineWinner() {
-        Player winner = players[0];
-        for (int i = 1; i < players.length; i++) {
-            
+    private void printAllLoseGameMessage() {
+        System.out.println("Общий проигрыш.");
+    }
+
+    private int findMaxScore() {
+        int maxScore = 0;
+        for (Player player : players) {
+            if (player.getScore() > maxScore) {
+                maxScore = player.getScore();
+            }
         }
+        return maxScore;
+    }
+
+    private boolean isDraw(int maxScore) {
+        if (players.length < 2) {
+            return false;
+        }
+        int maxScoreCount = 0;
+        for (Player player : players) {
+            if (player.getScore() == maxScore) maxScoreCount++;
+        }
+        return maxScoreCount > 1;
+    }
+
+    private void printDrawMessage() {
+        System.out.println("Никто не стал победителем.");
+    }
+
+    private Player determineWinner(int maxScore) {
+        Player winner = null;
+        for (Player player : players) {
+            if (player.getScore() == maxScore) {
+                winner = player;
+            }
+        }
+        return winner;
+    }
+
+    private void printGameVictoryMessage(Player winner) {
+        System.out.println("Побеждает " + winner.getName() + "!");
     }
 }

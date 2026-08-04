@@ -3,7 +3,7 @@ package com.startjava.lesson_2_3_4.guess;
 import java.util.Scanner;
 
 public class GuessNumberTest {
-    private static int PLAYERS_NUMBER = 3;
+    private static final int PLAYERS_NUMBER = 3;
 
     public static void main(String[] args) {
         String[] names = {

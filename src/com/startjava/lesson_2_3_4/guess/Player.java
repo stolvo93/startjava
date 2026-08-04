@@ -52,7 +52,7 @@ public class Player {
         latestAttempt = currentAttempt;
     }
 
-    public void getScore() {
+    public int getScore() {
         return score;
     }
 
