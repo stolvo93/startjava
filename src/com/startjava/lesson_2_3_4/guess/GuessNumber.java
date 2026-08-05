@@ -88,7 +88,11 @@ public class GuessNumber {
 
     private int readNumber(String prompt) {
         System.out.print(prompt);
-        return scanner.nextInt();
+        try {
+            return scanner.nextInt();
+        } catch (InputMismatchException e) {
+            throw new InputMismatchException("\nОшибка: введите целое число.");
+        }
     }
 
     private boolean isGuessed() {

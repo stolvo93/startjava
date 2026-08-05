@@ -13,7 +13,7 @@ public class Player {
         this.name = name;
         triedNumbers = new int[GuessNumber.MAX_ATTEMPTS];
         score = 0;
-        System.out.println("Игрок " + name + " создан.");
+        System.out.println("Игрок " + this.name + " создан.");
     }
 
     public String getName() {
