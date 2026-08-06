@@ -23,12 +23,8 @@ public class GuessNumber {
     public void play() {
         for (currentRound = 1; currentRound <= ROUNDS_NUMBER; currentRound++) {
             playRound();
-            printRoundFinishMessage(currentRound);
-            if (!isGuessed()) {
-                printAllLoseRoundMessage();
-            }
             printCurrentScore();
-            printGuessHistory();
+            printRoundGuessHistory();
         }
 
         if (isAllLoseGame()) {
@@ -45,6 +41,7 @@ public class GuessNumber {
     }
 
     private void playRound() {
+        cleanUpState();
         generateTargetNumber();
         printRoundStartMessage();
         for (currentAttempt = 1; currentAttempt <= MAX_ATTEMPTS; currentAttempt++) {
@@ -52,8 +49,18 @@ public class GuessNumber {
             if (isGuessed()) {
                 currentPlayer.addPoint();
                 printRoundVictoryMessage();
-                return;
+                break;
             }
+        }
+        printRoundFinishMessage();
+        if (!isGuessed()) {
+            printAllLoseRoundMessage();
+        }
+    }
+
+    private void cleanUpState() {
+        for (Player player : players) {
+            player.setLatestAttempt(0);
         }
     }
 
@@ -73,7 +80,6 @@ public class GuessNumber {
         for (Player player : players) {
             currentPlayer = player;
             makeGuess();
-            // writeStats();
             if (isGuessed()) return;
             printWrongGuessMessage();
             if (currentAttempt == MAX_ATTEMPTS) printOutOfAttemptsMessage();
@@ -95,9 +101,6 @@ public class GuessNumber {
         currentPlayer.setLatestAttempt(currentAttempt);
         currentPlayer.addTriedNumber();
     }
-
-    // private void writeStats() {
-    // }
 
     private int readNumber(String prompt) {
         System.out.print(prompt);
@@ -133,11 +136,23 @@ public class GuessNumber {
                 currentPlayer.getName(), currentPlayer.getNumber(), currentPlayer.getLatestAttempt());
     }
 
+    private void printRoundFinishMessage() {
+        System.out.println("\nРаунд " + currentRound + " окончен!");
+    }
+
     private void printAllLoseRoundMessage() {
         System.out.println("Никто не угадал число " + targetNumber);
     }
 
-    private void printGuessHistory() {
+    private void printCurrentScore() {
+        StringBuilder score = new StringBuilder("\nТекущий счёт:\n");
+        for (Player player : players) {
+            score.append(player.getName()).append(": ").append(player.getScore()).append('\n');
+        }
+        System.out.println(score);
+    }
+
+    private void printRoundGuessHistory() {
         for (Player player : players) {
             StringBuilder history = new StringBuilder(String.format("Числа игрока %s: ", player.getName()));
             int[] numbers = player.getTriedNumbers();
@@ -146,18 +161,6 @@ public class GuessNumber {
             }
             System.out.println(history);
         }
-    }
-
-    private void printRoundFinishMessage(int currentRound) {
-        System.out.println("\nРаунд " + currentRound + " окончен!");
-    }
-
-    private void printRoundScore() {
-        StringBuilder score = new StringBuilder("\nТекущий счёт:\n");
-        for (Player player : players) {
-            score.append(player.getName()).append(": ").append(player.getScore()).append('\n');
-        }
-        System.out.println(score);
     }
 
     private boolean isAllLoseGame() {
