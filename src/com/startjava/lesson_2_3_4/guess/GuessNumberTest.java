@@ -6,32 +6,41 @@ public class GuessNumberTest {
     private static final int PLAYERS_NUMBER = 3;
 
     public static void main(String[] args) {
-        String[] names = {
-                "Петя",
-                "Вася",
-                "Катя",
-        };
         Scanner scanner = new Scanner(System.in);
-        Player[] players = new Player[PLAYERS_NUMBER];
-        for (int i = 0; i < PLAYERS_NUMBER; i++) {
-            String name = names[i]; //readName(scanner, "\nВведите имя игрока " + (i + 1) + ": ");
-            players[i] = new Player(name);
-        }
-
+        Player[] players = createPlayers(scanner);
         GuessNumber game = new GuessNumber(scanner, players);
         String answer;
         do {
             game.play();
             scanner.nextLine();
-            do {
-                System.out.print("\nХотите продолжить игру? [yes/no]: ");
-                answer = scanner.nextLine();
-            } while (!"yes".equals(answer) && !"no".equals(answer));
+            answer = askToContinue(scanner);
         } while ("yes".equals(answer));
+    }
+
+    private static Player[] createPlayers(Scanner scanner) {
+        Player[] players = new Player[PLAYERS_NUMBER];
+        for (int i = 0; i < PLAYERS_NUMBER; i++) {
+            String name = readName(scanner, "\nВведите имя игрока " + (i + 1) + ": ");
+            players[i] = new Player(name);
+        }
+        return players;
     }
 
     private static String readName(Scanner scanner, String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim();
+    }
+
+    private static String askToContinue(Scanner scanner) {
+        return askToContinue(scanner, "\nХотите повторить игру? [yes / no]: ");
+    }
+
+    private static String askToContinue(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        String answer = scanner.nextLine().trim().toLowerCase();
+        if (!"yes".equals(answer) && !"no".equals(answer)) {
+            return askToContinue(scanner, "Введите корректный ответ [yes / no]: ");
+        }
+        return answer;
     }
 }

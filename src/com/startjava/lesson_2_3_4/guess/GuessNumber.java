@@ -1,15 +1,18 @@
 package com.startjava.lesson_2_3_4.guess;
 
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class GuessNumber {
+    private static final char[] SPINS = ("-\\|/").toCharArray();
     private static final int ROUNDS_NUMBER = 3;
     public static final int MIN_NUMBER = 1;
     public static final int MAX_NUMBER = 100;
     public static final int MAX_ATTEMPTS = 3;
     private final Scanner scanner;
-    private final Player[] players;
+    private final Random random = new Random();
+    private Player[] players;
     private int targetNumber;
     private int currentRound;
     private int currentAttempt;
@@ -21,27 +24,60 @@ public class GuessNumber {
     }
 
     public void play() {
+        printGreeting();
+        shufflePlayers();
+        printPlayerShuffleMessage();
+        resetScore();
         for (currentRound = 1; currentRound <= ROUNDS_NUMBER; currentRound++) {
             playRound();
             printCurrentScore();
             printRoundGuessHistory();
         }
+        showGameResult();
+    }
 
-        if (isAllLoseGame()) {
-            printAllLoseGameMessage();
-            return;
+    private void printGreeting() {
+        System.out.println("\n***** УГАДАЙ ЧИСЛО *****");
+    }
+
+    private void shufflePlayers() {
+        int len = players.length;
+        Player[] shuffled = new Player[len];
+        for (int i = len - 1; i >= 0; i--) {
+            int playerIndex = random.nextInt(i + 1);
+            shuffled[i] = players[playerIndex];
+            players[playerIndex] = players[i];
         }
-        int maxScore = findMaxScore();
-        if (isDraw(maxScore)) {
-            printDrawMessage();
-            return;
+        players = shuffled;
+    }
+
+    private void printPlayerShuffleMessage() {
+        System.out.print("\nИгроки бросают жребий:  ");
+        rollSpinner();
+        System.out.println("\n\nОпределён следующий порядок ходов игроков:");
+        for (Player player : players) {
+            System.out.println(player.getName());
         }
-        Player winner = determineWinner(maxScore);
-        printGameVictoryMessage(winner);
+    }
+
+    private static void rollSpinner() {
+        for (int i = 0; i < SPINS.length * 6; i++) {
+            System.out.print("\b" + SPINS[i % SPINS.length]);
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    private void resetScore() {
+        for (Player player : players) {
+            player.resetScore();
+        }
     }
 
     private void playRound() {
-        cleanUpState();
+        resetAttempts();
         generateTargetNumber();
         printRoundStartMessage();
         for (currentAttempt = 1; currentAttempt <= MAX_ATTEMPTS; currentAttempt++) {
@@ -58,28 +94,25 @@ public class GuessNumber {
         }
     }
 
-    private void cleanUpState() {
+    private void resetAttempts() {
         for (Player player : players) {
-            player.setLatestAttempt(0);
+            player.resetLatestAttempt();
         }
     }
 
     private void generateTargetNumber() {
-        targetNumber = MIN_NUMBER + (int) (Math.random() * (MAX_NUMBER - MIN_NUMBER + 1));
-        // targetNumber = 100;
+        targetNumber = random.nextInt(MIN_NUMBER, MAX_NUMBER + 1);
     }
 
     private void printRoundStartMessage() {
-        System.out.printf("""
-                %n***** УГАДАЙ ЧИСЛО *****%n
-                Раунд %d. У каждого игрока по %d попыток
-                """, currentRound, MAX_ATTEMPTS);
+        System.out.printf("\nРаунд %d. У каждого игрока по %d попыток%n", currentRound, MAX_ATTEMPTS);
     }
 
     private void playAttempt() {
         for (Player player : players) {
             currentPlayer = player;
             makeGuess();
+            player.setLatestAttempt(currentAttempt);
             if (isGuessed()) return;
             printWrongGuessMessage();
             if (currentAttempt == MAX_ATTEMPTS) printOutOfAttemptsMessage();
@@ -91,15 +124,13 @@ public class GuessNumber {
         int playerNumber = readNumber("Число вводит " + currentPlayer.getName() + ": ");
         while (true) {
             try {
-                currentPlayer.setNumber(playerNumber);
+                currentPlayer.addTriedNumber(playerNumber, currentAttempt);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 playerNumber = readNumberAgain();
             }
         }
-        currentPlayer.setLatestAttempt(currentAttempt);
-        currentPlayer.addTriedNumber();
     }
 
     private int readNumber(String prompt) {
@@ -133,7 +164,7 @@ public class GuessNumber {
 
     private void printRoundVictoryMessage() {
         System.out.printf("%n%s угадывает число %d с %d-й попытки%n",
-                currentPlayer.getName(), currentPlayer.getNumber(), currentPlayer.getLatestAttempt());
+                currentPlayer.getName(), targetNumber, currentAttempt);
     }
 
     private void printRoundFinishMessage() {
@@ -163,6 +194,25 @@ public class GuessNumber {
         }
     }
 
+    private void showGameResult() {
+        printGameResultPrefix();
+        if (isAllLoseGame()) {
+            printAllLoseGameMessage();
+            return;
+        }
+        int maxScore = findMaxScore();
+        if (isDraw(maxScore)) {
+            printDrawMessage();
+            return;
+        }
+        Player winner = determineWinner(maxScore);
+        printGameVictoryMessage(winner);
+    }
+
+    private void printGameResultPrefix() {
+        System.out.printf("По результатам %d раундов ", ROUNDS_NUMBER);
+    }
+
     private boolean isAllLoseGame() {
         for (Player player : players) {
             if (player.getScore() != 0) {
@@ -173,7 +223,7 @@ public class GuessNumber {
     }
 
     private void printAllLoseGameMessage() {
-        System.out.println("\nОбщий проигрыш.");
+        System.out.println("все игроки проиграли.");
     }
 
     private int findMaxScore() {
@@ -198,7 +248,7 @@ public class GuessNumber {
     }
 
     private void printDrawMessage() {
-        System.out.println("\nНикто не стал единоличным победителем.");
+        System.out.println("никто не стал единоличным победителем.");
     }
 
     private Player determineWinner(int maxScore) {
@@ -211,6 +261,6 @@ public class GuessNumber {
     }
 
     private void printGameVictoryMessage(Player winner) {
-        System.out.println("\nПобеждает " + winner.getName() + "!");
+        System.out.println("побеждает " + winner.getName() + "!");
     }
 }
