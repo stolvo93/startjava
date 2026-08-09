@@ -14,7 +14,7 @@ public class Calculator {
         final int a = parseInt(expressionElements[0]);
         final int b = parseInt(expressionElements[2]);
 
-        double result = switch (mathOperator) {
+        return switch (mathOperator) {
             case "+" -> a + b;
             case "-" -> a - b;
             case "*" -> a * b;
@@ -24,7 +24,6 @@ public class Calculator {
             default -> throw new UnsupportedOperatorException(
                     "Ошибка: оператор '" + mathOperator + "' не поддерживается");
         };
-        return result;
     }
 
     private static int parseInt(String string) {

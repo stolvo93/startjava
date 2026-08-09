@@ -15,7 +15,7 @@ public class CalculatorTest {
         String answer;
         do {
             String prompt = generatePrompt();
-            String expression = readCleanInput(scanner, prompt);
+            String expression = readCleanedExpression(scanner, prompt);
             try {
                 double result = Calculator.calculate(expression);
                 printResult(expression, result);
@@ -41,17 +41,16 @@ public class CalculatorTest {
                 String.valueOf(number1), String.valueOf(mathOperator), String.valueOf(number2));
     }
 
+    private static byte generateNonZeroByteNumber() {
+        byte randomNumber = generateByteNumber();
+        return randomNumber == 0 ? generateNonZeroByteNumber() : randomNumber;
+    }
+
     private static byte generateByteNumber() {
         return (byte) random.nextInt();
     }
 
-    private static byte generateNonZeroByteNumber() {
-        byte randomNumber = generateByteNumber();
-        if (randomNumber == 0) return generateNonZeroByteNumber();
-        return randomNumber;
-    }
-
-    private static String readCleanInput(Scanner scanner, String prompt) {
+    private static String readCleanedExpression(Scanner scanner, String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim().replaceAll("\\s+", " ");
     }
