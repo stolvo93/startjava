@@ -5,11 +5,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GuessNumber {
+    private static final char[] SPINNER_FRAMES = {'-', '\\', '|', '/'};
     private static final int ROUNDS_NUMBER = 3;
     public static final int MIN_NUMBER = 1;
     public static final int MAX_NUMBER = 100;
     public static final int MAX_ATTEMPTS = 10;
-    private static final char[] spins = "-\\|/".toCharArray();
     private final Player[] players;
     private final Random random = new Random();
     private final Scanner scanner;
@@ -24,10 +24,11 @@ public class GuessNumber {
     }
 
     public void play() {
-        printGreeting();
-        shufflePlayers();
-        printPlayerShuffleMessage();
         resetScore();
+        printGreeting();
+        showDrawingLots();
+        shufflePlayers();
+        announcePlayerOrder();
         for (currentRound = 1; currentRound <= ROUNDS_NUMBER; currentRound++) {
             playRound();
             printCurrentScore();
@@ -36,44 +37,47 @@ public class GuessNumber {
         showGameResult();
     }
 
+    private void resetScore() {
+        for (Player player : players) {
+            player.resetScore();
+        }
+    }
+
     private void printGreeting() {
         System.out.println("\n***** УГАДАЙ ЧИСЛО *****");
     }
 
-    private void shufflePlayers() {
-        int len = players.length;
-        Player[] shuffled = new Player[len];
-        for (int i = len - 1; i >= 0; i--) {
-            int j = random.nextInt(i + 1);
-            Player temp = players[i];
-            players[i] = players[j];
-            players[j] = temp;
-        }
-    }
-
-    private void printPlayerShuffleMessage() {
+    private void showDrawingLots() {
         System.out.print("\nИгроки бросают жребий:  ");
         rollSpinner();
-        System.out.println("\n\nОпределён следующий порядок ходов игроков:");
-        for (Player player : players) {
-            System.out.println(player.getName());
-        }
     }
 
     private void rollSpinner() {
-        int totalSpins = SPINS.length * 6;
-        for (int i = 0; i < totalSpins; i++) {
-            System.out.print("\b" + SPINS[i % SPINS.length]);
+        int totalFrames = SPINNER_FRAMES.length * 6;
+        for (int i = 0; i < totalFrames; i++) {
+            System.out.print("\b" + SPINNER_FRAMES[i % SPINNER_FRAMES.length]);
             try {
                 Thread.sleep(150);
             } catch (InterruptedException ignored) {
+                // Продолжаем работу без задержки
             }
         }
     }
 
-    private void resetScore() {
+    private void shufflePlayers() {
+        int len = players.length;
+        for (int i = len - 1; i >= 0; i--) {
+            int r = random.nextInt(i + 1);
+            Player temp = players[i];
+            players[i] = players[r];
+            players[r] = temp;
+        }
+    }
+
+    private void announcePlayerOrder() {
+        System.out.println("\n\nОпределён следующий порядок ходов игроков:");
         for (Player player : players) {
-            player.resetScore();
+            System.out.println(player.getName());
         }
     }
 
@@ -148,14 +152,14 @@ public class GuessNumber {
     }
 
     private boolean isGuessed() {
-        return currentPlayer.getNumber() == targetNumber;
+        return currentPlayer.getLatestNumber() == targetNumber;
     }
 
     private void printWrongGuessMessage() {
-    int playerNumber = currentPlayer.getNumber();
-    String inequalitySignWord = playerNumber < targetNumber ? "меньше" : "больше";
-    System.out.printf("%d %s того, что загадал компьютер%n", playerNumber, inequalitySignWord);
-}
+        int playerNumber = currentPlayer.getLatestNumber();
+        String inequalitySignWord = playerNumber < targetNumber ? "меньше" : "больше";
+        System.out.printf("%d %s того, что загадал компьютер%n", playerNumber, inequalitySignWord);
+    }
 
     private void printOutOfAttemptsMessage() {
         System.out.println("У игрока " + currentPlayer.getName() + " закончились попытки!");

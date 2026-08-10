@@ -22,7 +22,7 @@ public class Player {
         return Arrays.copyOf(triedNumbers, latestAttempt);
     }
 
-    public int getNumber() {
+    public int getLatestNumber() {
         int numberIndex = latestAttempt - 1;
         return triedNumbers[numberIndex];
     }
