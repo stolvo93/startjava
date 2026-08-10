@@ -11,7 +11,6 @@ public class Player {
     public Player(String name) {
         this.name = name;
         triedNumbers = new int[GuessNumber.MAX_ATTEMPTS];
-        score = 0;
         System.out.println("Игрок " + this.name + " создан.");
     }
 
