@@ -5,11 +5,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GuessNumber {
-    private static final char[] SPINNER_FRAMES = {'-', '\\', '|', '/'};
-    private static final int ROUNDS_NUMBER = 3;
     public static final int MIN_NUMBER = 1;
     public static final int MAX_NUMBER = 100;
     public static final int MAX_ATTEMPTS = 10;
+    private static final int ROUNDS_NUMBER = 3;
+    private static final char[] spinnerFrames = {'-', '\\', '|', '/'};
     private final Player[] players;
     private final Random random = new Random();
     private final Scanner scanner;
@@ -53,9 +53,9 @@ public class GuessNumber {
     }
 
     private void rollSpinner() {
-        int totalFrames = SPINNER_FRAMES.length * 6;
+        int totalFrames = spinnerFrames.length * 6;
         for (int i = 0; i < totalFrames; i++) {
-            System.out.print("\b" + SPINNER_FRAMES[i % SPINNER_FRAMES.length]);
+            System.out.print("\b" + spinnerFrames[i % spinnerFrames.length]);
             try {
                 Thread.sleep(150);
             } catch (InterruptedException ignored) {

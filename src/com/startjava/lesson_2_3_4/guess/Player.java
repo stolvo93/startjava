@@ -27,18 +27,18 @@ public class Player {
         return triedNumbers[numberIndex];
     }
 
-    public void addTriedNumber(int number, int currentAttempt) {
+    public void addTriedNumber(int number, int attempt) {
         if (number < GuessNumber.MIN_NUMBER || number > GuessNumber.MAX_NUMBER) {
             throw new IllegalArgumentException(String.format(
                     "%nОшибка: число должно быть в диапазоне [%d, %d].",
                     GuessNumber.MIN_NUMBER, GuessNumber.MAX_NUMBER));
         }
-        int indexToFill = currentAttempt - 1;
+        int indexToFill = attempt - 1;
         triedNumbers[indexToFill] = number;
     }
 
-    public void setLatestAttempt(int madeAttempt) {
-        latestAttempt = madeAttempt;
+    public void setLatestAttempt(int attempt) {
+        latestAttempt = attempt;
     }
 
     public void resetLatestAttempt() {
