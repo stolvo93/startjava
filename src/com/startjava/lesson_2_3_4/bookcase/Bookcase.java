@@ -6,7 +6,11 @@ public class Bookcase {
     private int booksNumber = 0;
     private Book[] books = new Book[10];
 
-    public Book[] getBooksByAuthor(String author) {
+    public int getBooksNumber() {
+        return booksNumber;
+    }
+
+    public Book[] find(String author) {
         int booksCount = 0;
         for (Book book : books) {
             if (author.equals(book.getAuthor())) booksCount++;
@@ -21,7 +25,7 @@ public class Bookcase {
         return foundBooks;
     }
 
-    public Book[] getBooksByTitle(String title) {
+    public Book[] find(String title) {
         int booksCount = 0;
         for (Book book : books) {
             if (title.equals(book.getTitle())) booksCount++;
@@ -36,7 +40,7 @@ public class Bookcase {
         return foundBooks;
     }
 
-    public Book[] getBooksByYear(int year) {
+    public Book[] find(int year) {
         int booksCount = 0;
         for (Book book : books) {
             if (year == book.getYear()) booksCount++;
@@ -51,7 +55,7 @@ public class Bookcase {
         return foundBooks;
     }
 
-    public void addBook(Book book) {
+    public void add(Book book) {
         books[booksNumber] = book.clone();
         booksNumber++;
         if (booksNumber == books.length) {
@@ -59,33 +63,41 @@ public class Bookcase {
         }
     }
 
-    public void removeBooks(Book book) {
+    public void remove(String title) {
+        booksCount = 0;
         for (int i = 0; i < books.length; i++) {
-            if (book.equals(books[i])) {
-                removeBook(i);
+            if (title.equals(books[i].title)) {
+                remove(i);
+                booksCount++;
             }
         }
     }
 
-    public void removeBook(int index) {
+    public void remove(Book book) {
+        booksCount = 0;
+        for (int i = 0; i < books.length; i++) {
+            if (book.equals(books[i])) {
+                removeBook(i);
+                booksCount++;
+            }
+        }
+    }
+
+    private void remove(int index) {
         System.arraycopy(books, index + 1, books, index, books.length - index);
         books[books.length - 1] = null;
         booksNumber--;
     }
 
-    private int getBooksNumber() {
-        return booksNumber;
-    }
-
-    private Book[] getBooks() {
+    public Book[] getBooks() {
         return books;
     }
 
-    private int getFreeShelvesNumber() {
+    public int getFreeShelvesNumber() {
         return books.length - booksNumber;
     }
 
-    private void clearBookcase() {
+    public void clearAll() {
         books = new Book[books.length];
     }
 }
