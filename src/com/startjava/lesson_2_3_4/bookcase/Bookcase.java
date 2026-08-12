@@ -10,35 +10,34 @@ public class Bookcase {
         return booksNumber;
     }
 
-    public Book[] find(String author) {
+    public Book[] find(String authorOrTitle) {
         int booksCount = 0;
         for (Book book : books) {
-            if (author.equals(book.getAuthor())) booksCount++;
+            if (authorOrTitle.equals(book.getAuthor()) || authorOrTitle.equals(book.getTitle())) booksCount++;
         }
         Book[] foundBooks = new Book[booksCount];
         int i = 0;
         for (Book book : books) {
-            if (author.equals(book.getAuthor())) {
+            if (authorOrTitle.equals(book.getAuthor()) || authorOrTitle.equals(book.getTitle())) {
                 foundBooks[i++] = book;
             }
         }
         return foundBooks;
     }
 
-    public Book[] find(String title) {
-        int booksCount = 0;
-        for (Book book : books) {
-            if (title.equals(book.getTitle())) booksCount++;
-        }
-        Book[] foundBooks = new Book[booksCount];
-        int i = 0;
-        for (Book book : books) {
-            if (title.equals(book.getTitle())) {
-                foundBooks[i++] = book;
-            }
-        }
-        return foundBooks;
-    }
+//    public Book[] find(String title) {
+//        int booksCount = 0;
+//        for (Book book : books) {
+//        }
+//        Book[] foundBooks = new Book[booksCount];
+//        int i = 0;
+//        for (Book book : books) {
+//            if (title.equals(book.getTitle())) {
+//                foundBooks[i++] = book;
+//            }
+//        }
+//        return foundBooks;
+//    }
 
     public Book[] find(int year) {
         int booksCount = 0;
@@ -64,9 +63,9 @@ public class Bookcase {
     }
 
     public void remove(String title) {
-        booksCount = 0;
+        int booksCount = 0;
         for (int i = 0; i < books.length; i++) {
-            if (title.equals(books[i].title)) {
+            if (title.equals(books[i].getTitle())) {
                 remove(i);
                 booksCount++;
             }
@@ -74,10 +73,10 @@ public class Bookcase {
     }
 
     public void remove(Book book) {
-        booksCount = 0;
+        int booksCount = 0;
         for (int i = 0; i < books.length; i++) {
             if (book.equals(books[i])) {
-                removeBook(i);
+                remove(i);
                 booksCount++;
             }
         }

@@ -14,6 +14,7 @@ public class BookcaseUi {
             int itemNumber = 1;
             for (MenuItem item : MenuItem.values()) {
                 System.out.println(itemNumber + ". " + item.text());
+                itemNumber++;
             }
         }
     }
