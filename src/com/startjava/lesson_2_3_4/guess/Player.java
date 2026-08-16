@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Player {
     private final String name;
     private final int[] triedNumbers;
-    private int latestAttempt;
+    private int attemptsMade;
     private int score;
 
     public Player(String name) {
@@ -19,30 +19,26 @@ public class Player {
     }
 
     public int[] getTriedNumbers() {
-        return Arrays.copyOf(triedNumbers, latestAttempt);
+        return Arrays.copyOf(triedNumbers, attemptsMade);
     }
 
     public int getLatestNumber() {
-        int numberIndex = latestAttempt - 1;
+        int numberIndex = attemptsMade - 1;
         return triedNumbers[numberIndex];
     }
 
-    public void addTriedNumber(int number, int attempt) {
+    public void recordAttempt(int number) {
         if (number < GuessNumber.MIN_NUMBER || number > GuessNumber.MAX_NUMBER) {
             throw new IllegalArgumentException(String.format(
                     "%nОшибка: число должно быть в диапазоне [%d, %d].",
                     GuessNumber.MIN_NUMBER, GuessNumber.MAX_NUMBER));
         }
-        int indexToFill = attempt - 1;
-        triedNumbers[indexToFill] = number;
+        triedNumbers[attemptsMade] = number;
+        attemptsMade++;
     }
 
-    public void setLatestAttempt(int attempt) {
-        latestAttempt = attempt;
-    }
-
-    public void resetLatestAttempt() {
-        latestAttempt = 0;
+    public void resetAttempts() {
+        attemptsMade = 0;
     }
 
     public int getScore() {

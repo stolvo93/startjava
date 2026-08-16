@@ -8,7 +8,7 @@ public class GuessNumber {
     public static final int MIN_NUMBER = 1;
     public static final int MAX_NUMBER = 100;
     public static final int MAX_ATTEMPTS = 10;
-    private static final int ROUNDS_NUMBER = 3;
+    private static final int ROUNDS_COUNT = 3;
     private static final char[] spinnerFrames = {'-', '\\', '|', '/'};
     private final Player[] players;
     private final Random random = new Random();
@@ -24,12 +24,12 @@ public class GuessNumber {
     }
 
     public void play() {
-        resetScore();
+        resetScores();
         printGreeting();
         showDrawingLots();
         shufflePlayers();
         announcePlayerOrder();
-        for (currentRound = 1; currentRound <= ROUNDS_NUMBER; currentRound++) {
+        for (currentRound = 1; currentRound <= ROUNDS_COUNT; currentRound++) {
             playRound();
             printCurrentScore();
             printRoundGuessHistory();
@@ -37,7 +37,7 @@ public class GuessNumber {
         showGameResult();
     }
 
-    private void resetScore() {
+    private void resetScores() {
         for (Player player : players) {
             player.resetScore();
         }
@@ -66,7 +66,7 @@ public class GuessNumber {
 
     private void shufflePlayers() {
         int len = players.length;
-        for (int i = len - 1; i >= 0; i--) {
+        for (int i = len - 1; i >= 1; i--) {
             int r = random.nextInt(i + 1);
             Player temp = players[i];
             players[i] = players[r];
@@ -99,7 +99,7 @@ public class GuessNumber {
 
     private void resetAttempts() {
         for (Player player : players) {
-            player.resetLatestAttempt();
+            player.resetAttempts();
         }
     }
 
@@ -115,7 +115,6 @@ public class GuessNumber {
         for (Player player : players) {
             currentPlayer = player;
             makeGuess();
-            currentPlayer.setLatestAttempt(currentAttempt);
             if (isGuessed()) return;
             printWrongGuessMessage();
             if (currentAttempt == MAX_ATTEMPTS) printOutOfAttemptsMessage();
@@ -127,7 +126,7 @@ public class GuessNumber {
         int playerNumber = readNumber("Число вводит " + currentPlayer.getName() + ": ");
         while (true) {
             try {
-                currentPlayer.addTriedNumber(playerNumber, currentAttempt);
+                currentPlayer.recordAttempt(playerNumber);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -213,7 +212,7 @@ public class GuessNumber {
     }
 
     private void printGameResultPrefix() {
-        System.out.printf("По результатам %d раундов ", ROUNDS_NUMBER);
+        System.out.printf("По результатам %d раундов ", ROUNDS_COUNT);
     }
 
     private boolean isAllLoseGame() {
