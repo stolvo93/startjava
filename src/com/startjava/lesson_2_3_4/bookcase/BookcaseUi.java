@@ -5,12 +5,19 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class BookcaseUi {
+    private static final MenuItem[] shortMenu = {MenuItem.ADD_BOOK, MenuItem.QUIT};
+    private static final MenuItem[] fullMenu = MenuItem.values();
     private static final Random random = new Random();
-    private static final MenuItem[] SHORT_MENU = {MenuItem.ADD_BOOK, MenuItem.QUIT};
-    private static final MenuItem[] FULL_MENU = MenuItem.values();
-    private static MenuItem[] currentMenu;
+    private final Scanner scanner;
+    private Bookcase bookcase;
+    private MenuItem[] currentMenu;
 
-    public static void makeIneraction(Bookcase bookcase, Scanner scanner) {
+    public BookcaseUi(Scanner scanner, Bookcase bookcase) {
+        this.scanner = scanner;
+        this.bookcase = bookcase;
+    }
+
+    public void makeInteraction() {
         if (bookcase == null) {
             throw new IllegalArgumentException("Ошибка в данных: книжный шкаф не найден.");
         }
@@ -18,9 +25,9 @@ public class BookcaseUi {
         printEmptyBookcaseMessage();
         MenuItem choice;
         do {
-            printCurrentMenu(bookcase);
-            choice = promptChoice(scanner);
-            executeMenuItem(bookcase, choice, scanner);
+            printCurrentMenu();
+            choice = promptChoice();
+            executeMenuItem(choice);
         } while (choice != MenuItem.QUIT);
     }
 
@@ -46,8 +53,8 @@ public class BookcaseUi {
         System.out.println("Шкаф пуст. Вы можете добавить в него первую книгу");
     }
 
-    private static void printCurrentMenu(Bookcase bookcase) {
-        updateMenu(bookcase);
+    private void printCurrentMenu() {
+        updateMenu();
 
         System.out.println("\nМеню:");
         int itemNumber = 1;
@@ -58,11 +65,11 @@ public class BookcaseUi {
         System.out.println();
     }
 
-    private static void updateMenu(Bookcase bookcase) {
-        currentMenu = bookcase.getBooksCount() == 0 ? SHORT_MENU : FULL_MENU;
+    private void updateMenu() {
+        currentMenu = bookcase.getBooksCount() == 0 ? shortMenu : fullMenu;
     }
 
-    private static MenuItem promptChoice(Scanner scanner) {
+    private MenuItem promptChoice() {
         int choice = readNumber(scanner, "Введите номер выбранного пункта меню: ");
         scanner.nextLine();
         try {
@@ -70,11 +77,11 @@ public class BookcaseUi {
         } catch (IndexOutOfBoundsException e) {
             System.out.println(
                     "\nОшибка: пункт под номером " + choice + " не представлен в меню. Попробуйте снова.");
-            return promptChoice(scanner);
+            return promptChoice();
         }
     }
 
-    private static int readNumber(Scanner scanner, String prompt) {
+    private int readNumber(String prompt) {
         System.out.print(prompt);
         try {
             return scanner.nextInt();
@@ -85,13 +92,13 @@ public class BookcaseUi {
         }
     }
 
-    private static void executeMenuItem(Bookcase bookcase, MenuItem choice, Scanner scanner) {
+    private void executeMenuItem(MenuItem choice) {
         switch (choice) {
             case SHOW_BOOKS -> print(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
-            case ADD_BOOK -> addBook(bookcase, scanner);
-            case FIND_BOOK -> findBook(bookcase, scanner);
-            case REMOVE_BOOK -> removeBook(bookcase);
-            case CLEAR_BOOKCASE -> clear(bookcase);
+            case ADD_BOOK -> addBook();
+            case FIND_BOOK -> findBook();
+            case REMOVE_BOOK -> removeBook();
+            case CLEAR_BOOKCASE -> clear();
             case QUIT -> {
             }
         }
@@ -111,12 +118,12 @@ public class BookcaseUi {
         System.out.println("+" + "-".repeat(Bookcase.WIDTH - 2) + "+");
     }
 
-    private static void addBook(Bookcase bookcase, Scanner scanner) {
+    private void addBook() {
         Book book = askForBook(scanner);
         bookcase.add(book);
     }
 
-    private static Book askForBook(Scanner scanner) {
+    private Book askForBook() {
         String author = readLine(scanner, "Введите автора книги: ");
         String title = readLine(scanner, "Введите название книги: ");
         int year = readNumber(scanner, "Введите год публикации: ");
@@ -129,24 +136,30 @@ public class BookcaseUi {
         }
     }
 
-    private static String readLine(Scanner scanner, String prompt) {
+    private String readLine(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }
 
-    private static void findBook(Bookcase bookcase, Scanner scanner) {
+    private void findBook() {
         String title = readLine(scanner, "Введите название книги: ");
         Book[] foundBooks = bookcase.find(title);
         if (foundBooks.length == 0) {
             System.out.println("Поиск по названию книги \"" + title + "\" не дал результата.");
+            return;
         }
         print(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
     }
 
-    private static void removeBook(Bookcase bookcase) {
+    private void removeBook() {
+        String title = readLine(scanner, "Введите название книги, которую хотите удалить: ");
+        int booksRemoved = bookcase.remove(title);
+        System.out.println("Удалено книг: " + booksRemoved);
     }
 
 
-    private static void clear(Bookcase bookcase) {
+    private void clear() {
+        bookcase.clearAll();
+        System.out.println("Шкаф очищен.");
     }
 }
