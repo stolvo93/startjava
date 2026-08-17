@@ -28,9 +28,9 @@ public class Bookcase {
     }
 
     public void add(Book book) {
+        if (booksCount == books.length) exetendSize();
         books[booksCount] = book.clone();
         booksCount++;
-        if (booksCount == books.length) exetendSize();
     }
 
     private void exetendSize() {

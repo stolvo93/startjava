@@ -22,8 +22,8 @@ public class Book {
 
         if (year < MIN_PUBLICATION_YEAR || year > LocalDate.now().getYear()) {
             throw new IllegalArgumentException(String.format(
-                    "%nОшибка: недопустимый год публикации. Введите значение между %d и %d.",
-                    MIN_PUBLICATION_YEAR, LocalDate.now().getYear()));
+                    "%nОшибка: недопустимый год публикации. Год издания должен быть между %d и текущим.",
+                    MIN_PUBLICATION_YEAR));
         }
         this.year = year;
     }
@@ -55,10 +55,6 @@ public class Book {
     public Book clone() {
         return new Book(author, title, year);
     }
-
-//    public boolean equals(Book book) {
-//        return
-//    }
 
     @Override
     public String toString() {
