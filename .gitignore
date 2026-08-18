@@ -3,5 +3,7 @@ utils/
 .idea/
 *.iml
 *.class
+options
+optionsj
+lint.sh
 sources
-.DS_Store
