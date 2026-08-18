@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class BookcaseUi {
-    private static final MenuItem[] shortMenu = {MenuItem.ADD_BOOK, MenuItem.QUIT};
+    private static final MenuItem[] shortMenu = { MenuItem.ADD_BOOK, MenuItem.QUIT };
     private static final MenuItem[] fullMenu = MenuItem.values();
     private static final Random random = new Random();
     private final Scanner scanner;
@@ -34,7 +34,7 @@ public class BookcaseUi {
     }
 
     private static void printGreeting() {
-        typewrite("ДОБРО ПОЖАЛОВАТЬ В КНИЖНЫЙ ШКАФ!\n");
+        typewrite("\nДОБРО ПОЖАЛОВАТЬ В КНИЖНЫЙ ШКАФ!\n");
     }
 
     private static void typewrite(String text) {
@@ -111,9 +111,10 @@ public class BookcaseUi {
     }
 
     private void print(Book[] books, String header) {
+        printBooksAndFreeShelvesCountMessage();
+
         int indent = (Bookcase.WIDTH - header.length()) / 2;
         System.out.println("\n" + " ".repeat(indent) + header);
-        printBooksAndFreeShelvesCountMessage();
         printSeparator();
         for (Book book : books) {
             System.out.print(book);
@@ -133,7 +134,7 @@ public class BookcaseUi {
     private void addBook() {
         Book book = askForBook();
         bookcase.add(book);
-        System.out.println("Книга добавлена в шкаф.");
+        System.out.println("\nКнига добавлена в шкаф.");
         printBooksAndFreeShelvesCountMessage();
     }
 
@@ -145,7 +146,7 @@ public class BookcaseUi {
         try {
             return new Book(author, title, year);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage() + " Попробуйте снова.");
+            System.out.println(e.getMessage() + " Попробуйте снова.\n");
             return askForBook();
         }
     }
@@ -157,10 +158,10 @@ public class BookcaseUi {
 
     private void findBook() {
         String title = readLine("Введите название книги: ");
-        printBooksAndFreeShelvesCountMessage();
         Book[] foundBooks = bookcase.find(title);
         if (foundBooks.length == 0) {
             System.out.println("Поиск по названию книги \"" + title + "\" не дал результата.");
+            printBooksAndFreeShelvesCountMessage();
             return;
         }
         print(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
@@ -172,7 +173,6 @@ public class BookcaseUi {
         System.out.println("Удалено книг: " + booksRemoved);
         printBooksAndFreeShelvesCountMessage();
     }
-
 
     private void clear() {
         bookcase.clearAll();

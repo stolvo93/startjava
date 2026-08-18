@@ -18,7 +18,8 @@ public class Bookcase {
     public Book[] find(String title) {
         Book[] foundBooks = new Book[0];
         for (Book book : books) {
-            if (book == null) break;
+            if (book == null)
+                break;
             if (book.getTitle().equals(title)) {
                 foundBooks = Arrays.copyOf(foundBooks, foundBooks.length + 1);
                 foundBooks[foundBooks.length - 1] = book.clone();
@@ -28,7 +29,8 @@ public class Bookcase {
     }
 
     public void add(Book book) {
-        if (booksCount == books.length) exetendSize();
+        if (booksCount == books.length)
+            exetendSize();
         books[booksCount] = book.clone();
         booksCount++;
     }
@@ -41,18 +43,7 @@ public class Bookcase {
         int booksRemoved = 0;
         for (int i = 0; i < booksCount; i++) {
             if (books[i].getTitle().equals(title)) {
-                remove(i);
-                booksRemoved++;
-            }
-        }
-        return booksRemoved;
-    }
-
-    public int remove(Book book) {
-        int booksRemoved = 0;
-        for (int i = 0; i < booksCount; i++) {
-            if (books[i].equals(book)) {
-                remove(i);
+                remove(i--);
                 booksRemoved++;
             }
         }
@@ -79,5 +70,6 @@ public class Bookcase {
 
     public void clearAll() {
         books = new Book[books.length];
+        booksCount = 0;
     }
 }
