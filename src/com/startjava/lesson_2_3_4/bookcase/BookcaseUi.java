@@ -14,13 +14,13 @@ public class BookcaseUi {
 
     public BookcaseUi(Scanner scanner, Bookcase bookcase) {
         this.scanner = scanner;
+        if (bookcase == null) {
+            throw new IllegalArgumentException("Ошибка в данных: книжный шкаф не найден.");
+        }
         this.bookcase = bookcase;
     }
 
     public void makeInteraction() {
-        if (bookcase == null) {
-            throw new IllegalArgumentException("Ошибка в данных: книжный шкаф не найден.");
-        }
         printGreeting();
         printEmptyBookcaseMessage();
         MenuItem choice;
