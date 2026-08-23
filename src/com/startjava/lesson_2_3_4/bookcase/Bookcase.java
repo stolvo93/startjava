@@ -3,40 +3,45 @@ package com.startjava.lesson_2_3_4.bookcase;
 import java.util.Arrays;
 
 public class Bookcase {
-    public static final int WIDTH = 80;
+    public static final int MAX_BOOKS = 10;
     private int booksCount;
     private Book[] books;
 
     public Bookcase() {
-        books = new Book[10];
+        books = new Book[MAX_BOOKS];
     }
 
     public int getBooksCount() {
         return booksCount;
     }
 
+    public Book[] getBooks() {
+        Book[] booksCopy = new Book[booksCount];
+        for (int i = 0; i < booksCount; i++) {
+            booksCopy[i] = books[i].copy();
+        }
+        return booksCopy;
+    }
+
     public Book[] find(String title) {
         Book[] foundBooks = new Book[0];
         for (Book book : books) {
-            if (book == null)
-                break;
+            if (book == null) break;
             if (book.getTitle().equals(title)) {
                 foundBooks = Arrays.copyOf(foundBooks, foundBooks.length + 1);
-                foundBooks[foundBooks.length - 1] = book.clone();
+                foundBooks[foundBooks.length - 1] = book.copy();
             }
         }
         return foundBooks;
     }
 
-    public void add(Book book) {
-        if (booksCount == books.length)
-            exetendSize();
-        books[booksCount] = book.clone();
+    public boolean add(Book book) {
+        if (booksCount == books.length) {
+            return false;
+        }
+        books[booksCount] = book.copy();
         booksCount++;
-    }
-
-    private void exetendSize() {
-        books = Arrays.copyOf(books, (int) (1.5 * books.length));
+        return true;
     }
 
     public int remove(String title) {
@@ -56,15 +61,7 @@ public class Bookcase {
         booksCount--;
     }
 
-    public Book[] getBooks() {
-        Book[] booksCopy = new Book[booksCount];
-        for (int i = 0; i < booksCount; i++) {
-            booksCopy[i] = books[i].clone();
-        }
-        return booksCopy;
-    }
-
-    public int getFreeShelvesNumber() {
+    public int getFreeShelvesCount() {
         return books.length - booksCount;
     }
 
