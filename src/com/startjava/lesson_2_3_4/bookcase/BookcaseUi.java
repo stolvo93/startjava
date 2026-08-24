@@ -1,5 +1,6 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -13,6 +14,7 @@ public class BookcaseUi {
             MenuItem.CLEAR_BOOKCASE, MenuItem.QUIT
     };
     private static final MenuItem[] fullMenu = MenuItem.values();
+    private static final int MIN_PUBLICATION_YEAR = 1800;
     private final Random random = new Random();
     private final Scanner scanner;
     private final Bookcase bookcase;
@@ -231,7 +233,14 @@ public class BookcaseUi {
     private Book askForBook() {
         String author = readCleanedLine("Введите автора книги: ");
         String title = readCleanedLine("Введите название книги: ");
-        int year = readNumber("Введите год публикации: ");
+        int year = 0;
+        while (true) {
+            year = readNumber("Введите год публикации: ");
+            if (year >= MIN_PUBLICATION_YEAR && year <= LocalDate.now().getYear()) {
+                break;
+            }
+            printUnacceptableYearError();
+        }
         scanner.nextLine();
         try {
             return new Book(author, title, year);
@@ -244,6 +253,11 @@ public class BookcaseUi {
     private String readCleanedLine(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim().replaceAll("\\s+", " ");
+    }
+
+    private void printUnacceptableYearError() {
+        System.out.println("\nОшибка: недопустимый год публикации. Год издания должен быть между" +
+                        MIN_PUBLICATION_YEAR  + " и текущим.");
     }
 
     private void findBook() {
