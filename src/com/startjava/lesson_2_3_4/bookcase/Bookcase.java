@@ -23,25 +23,29 @@ public class Bookcase {
         return booksCopy;
     }
 
-    public Book[] find(String title) {
-        Book[] foundBooks = new Book[0];
-        for (Book book : books) {
-            if (book == null) break;
-            if (book.getTitle().equals(title)) {
-                foundBooks = Arrays.copyOf(foundBooks, foundBooks.length + 1);
-                foundBooks[foundBooks.length - 1] = book.copy();
-            }
-        }
-        return foundBooks;
-    }
-
     public boolean add(Book book) {
+        if (book == null) {
+            throw new IllegalArgumentException("Ошибка: книга не найдена.");
+        }
         if (booksCount == books.length) {
             return false;
         }
         books[booksCount] = book.copy();
         booksCount++;
         return true;
+    }
+
+    public Book[] find(String title) {
+        Book[] foundBooks = new Book[0];
+        for (Book book : books) {
+            if (book == null)
+                break;
+            if (book.getTitle().equals(title)) {
+                foundBooks = Arrays.copyOf(foundBooks, foundBooks.length + 1);
+                foundBooks[foundBooks.length - 1] = book.copy();
+            }
+        }
+        return foundBooks;
     }
 
     public int remove(String title) {

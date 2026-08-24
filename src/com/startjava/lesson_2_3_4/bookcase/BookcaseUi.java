@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class BookcaseUi {
-    public static final int WIDTH = 80;
-    private static final MenuItem[] emptyBookcaseMenu = {MenuItem.ADD_BOOK, MenuItem.QUIT};
+    private static final int WIDTH = 80;
+    private static final MenuItem[] emptyBookcaseMenu = { MenuItem.ADD_BOOK, MenuItem.QUIT };
     private static final MenuItem[] filledBookcaseMenu = {
-            MenuItem.FIND_BOOK,         MenuItem.REMOVE_BOOK,
-            MenuItem.CLEAR_BOOKCASE,    MenuItem.QUIT
+            MenuItem.FIND_BOOK, MenuItem.REMOVE_BOOK,
+            MenuItem.CLEAR_BOOKCASE, MenuItem.QUIT
     };
     private static final MenuItem[] fullMenu = MenuItem.values();
     private final Random random = new Random();
@@ -32,15 +32,18 @@ public class BookcaseUi {
     public void makeInteraction() {
         printGreeting();
         MenuItem choice;
-        do {
+        while (true) {
             printAsBookcase(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
             printCurrentMenu();
             choice = promptChoice();
             printChoiceMessage(choice);
             executeMenuItem(choice);
+            if (choice == MenuItem.QUIT) {
+                break;
+            }
             printBooksAndFreeShelvesCountMessage();
             waitForPressingEnter();
-        } while (choice != MenuItem.QUIT);
+        }
     }
 
     private void printGreeting() {
@@ -51,7 +54,7 @@ public class BookcaseUi {
         char[] textCharacters = text.toCharArray();
         for (char character : textCharacters) {
             System.out.print(character);
-            int pause = random.nextInt(150, 250);
+            int pause = random.nextInt(100, 200);
             try {
                 Thread.sleep(pause);
             } catch (InterruptedException ignored) {
@@ -62,7 +65,6 @@ public class BookcaseUi {
     }
 
     private void printAsBookcase(Book[] books, String header) {
-
         if (books.length == 0) {
             printEmptyBookcaseMessage();
             return;
@@ -186,7 +188,7 @@ public class BookcaseUi {
         try {
             return scanner.nextInt();
         } catch (InputMismatchException e) {
-            scanner.next();
+            scanner.nextLine();
             System.out.println("\nОшибка: введено не целое число.");
             return readNumber("Введите целое число: ");
         }
@@ -222,7 +224,7 @@ public class BookcaseUi {
         if (isSuccess) {
             System.out.println("\nКнига добавлена в шкаф.");
         } else {
-            System.out.println("\nОшибка: невозомжно добавить книгу, так как шкаф заполнен.");
+            System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
         }
     }
 

@@ -57,6 +57,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return String.join(", ", author, title, String.valueOf(year));
+        return String.format("%s - \"%s\" (%d)", author, title, year);
     }
 }
