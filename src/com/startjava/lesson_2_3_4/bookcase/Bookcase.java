@@ -1,9 +1,11 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
+import java.time.Year;
 import java.util.Arrays;
 
 public class Bookcase {
     public static final int MAX_BOOKS = 10;
+    public static final Year MIN_PUBLICATION_YEAR = Year.of(1800);
     private int booksCount;
     private Book[] books;
 
@@ -25,11 +27,19 @@ public class Bookcase {
 
     public boolean add(Book book) {
         if (book == null) {
-            throw new IllegalArgumentException("Ошибка: книга не найдена.");
+            throw new IllegalArgumentException("Ошибка: книга не указана.");
+        }
+        if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
+            throw new IllegalArgumentException(String.format("""
+                    Ошибка: недопустимый год публикации (%d).Шкаф не принимает книги, изданные раньше %d \
+                    года. Попробуйте добавить книгу другого года публикации.
+                    """,
+                    book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
         }
         if (booksCount == books.length) {
             return false;
         }
+
         books[booksCount] = book.copy();
         booksCount++;
         return true;
@@ -60,8 +70,8 @@ public class Bookcase {
     }
 
     private void remove(int index) {
-        System.arraycopy(books, index + 1, books, index, books.length - (index + 1));
-        books[books.length - 1] = null;
+        System.arraycopy(books, index + 1, books, index, booksCount - (index + 1));
+        books[booksCount - 1] = null;
         booksCount--;
     }
 

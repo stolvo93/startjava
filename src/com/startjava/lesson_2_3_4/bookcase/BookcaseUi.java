@@ -1,6 +1,6 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
-import java.time.LocalDate;
+import java.time.Year;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -14,7 +14,6 @@ public class BookcaseUi {
             MenuItem.CLEAR_BOOKCASE, MenuItem.QUIT
     };
     private static final MenuItem[] fullMenu = MenuItem.values();
-    private static final int MIN_PUBLICATION_YEAR = 1800;
     private final Random random = new Random();
     private final Scanner scanner;
     private final Bookcase bookcase;
@@ -81,7 +80,11 @@ public class BookcaseUi {
     }
 
     private static void printEmptyBookcaseMessage() {
-        System.out.println("Шкаф пуст. Вы можете добавить в него первую книгу");
+        System.out.println("\nШкаф пуст. Вы можете добавить в него первую книгу");
+    }
+
+    private static void printSeparator() {
+        System.out.println("+" + "-".repeat(WIDTH - 2) + "+");
     }
 
     private void printAsShelf(Book book) {
@@ -216,32 +219,26 @@ public class BookcaseUi {
                 bookcase.getBooksCount(), bookcase.getFreeShelvesCount());
     }
 
-    private static void printSeparator() {
-        System.out.println("+" + "-".repeat(WIDTH - 2) + "+");
-    }
-
     private void addBook() {
         Book book = askForBook();
-        boolean isSuccess = bookcase.add(book);
-        if (isSuccess) {
-            System.out.println("\nКнига добавлена в шкаф.");
-        } else {
-            System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
+        try {
+            boolean isSuccess = bookcase.add(book);
+            if (isSuccess) {
+                System.out.println("\nКнига добавлена в шкаф.");
+            } else {
+                System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            addBook();
         }
+
     }
 
     private Book askForBook() {
         String author = readCleanedLine("Введите автора книги: ");
         String title = readCleanedLine("Введите название книги: ");
-        int year = 0;
-        while (true) {
-            year = readNumber("Введите год публикации: ");
-            if (year >= MIN_PUBLICATION_YEAR && year <= LocalDate.now().getYear()) {
-                break;
-            }
-            printUnacceptableYearError();
-        }
-        scanner.nextLine();
+        Year year = readValidPublicationYear("Введите год публикации: ");
         try {
             return new Book(author, title, year);
         } catch (IllegalArgumentException e) {
@@ -255,16 +252,28 @@ public class BookcaseUi {
         return scanner.nextLine().trim().replaceAll("\\s+", " ");
     }
 
+    private Year readValidPublicationYear(String prompt) {
+        Year year;
+        while (true) {
+            year = Year.of(readNumber(prompt));
+            if (year.isBefore(Year.now())) {
+                break;
+            }
+            printUnacceptableYearError();
+        }
+        scanner.nextLine();
+        return year;
+    }
+
     private void printUnacceptableYearError() {
-        System.out.println("\nОшибка: недопустимый год публикации. Год издания должен быть между" +
-                        MIN_PUBLICATION_YEAR  + " и текущим.");
+        System.out.println("\nОшибка: год публикации не может быть больше текущего.");
     }
 
     private void findBook() {
         String title = readCleanedLine("Введите название книги: ");
         Book[] foundBooks = bookcase.find(title);
         if (foundBooks.length == 0) {
-            System.out.println("Поиск по названию книги \"" + title + "\" не дал результата.");
+            System.out.println("\nПоиск по названию книги \"" + title + "\" не дал результата.");
             return;
         }
         printAsBookcase(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");

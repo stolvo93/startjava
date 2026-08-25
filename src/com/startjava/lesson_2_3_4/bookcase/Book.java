@@ -17,31 +17,22 @@ public class Book {
             throw new IllegalArgumentException("\nОшибка: название книги не указано.");
         }
         this.title = title;
+        if (year == null) {
+            throw new IllegalArgumentException("\nОшибка: год публикации книги не указан.");
+        }
+        if (year.isAfter(Year.now())) {
+            throw new IllegalArgumentException("\nОшибка: некорректный год издания (" + year.getValue() +
+                    "). Год публикации не может превышать текущий год.");
+        }
         this.year = year;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getYear() {
+    public Year getYear() {
         return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public Book copy() {
@@ -50,6 +41,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return String.format("%s - \"%s\" (%d)", author, title, year);
+        return String.format("%s - \"%s\" (%d)", author, title, year.getValue());
     }
 }
