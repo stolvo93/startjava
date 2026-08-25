@@ -31,7 +31,7 @@ public class Bookcase {
         }
         if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
             throw new IllegalArgumentException(String.format("""
-                    Ошибка: недопустимый год публикации (%d).Шкаф не принимает книги, изданные раньше %d \
+                    Ошибка: недопустимый год публикации (%d). Шкаф не принимает книги, изданные раньше %d \
                     года. Попробуйте добавить книгу другого года публикации.
                     """,
                     book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
@@ -80,7 +80,7 @@ public class Bookcase {
     }
 
     public void clearAll() {
-        books = new Book[books.length];
+        Arrays.fill(books, 0, booksCount, null);
         booksCount = 0;
     }
 }

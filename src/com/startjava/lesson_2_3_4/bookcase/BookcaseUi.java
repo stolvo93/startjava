@@ -70,7 +70,7 @@ public class BookcaseUi {
             printEmptyBookcaseMessage();
             return;
         }
-        int indent = (WIDTH - header.length()) / 2;
+        int indent = Math.max(0, (WIDTH - header.length()) / 2);
         System.out.println("\n" + " ".repeat(indent) + header);
         printSeparator();
         for (Book book : books) {
@@ -80,7 +80,7 @@ public class BookcaseUi {
     }
 
     private static void printEmptyBookcaseMessage() {
-        System.out.println("\nШкаф пуст. Вы можете добавить в него первую книгу");
+        System.out.println("\nШкаф пуст. Вы можете добавить в него первую книгу.");
     }
 
     private static void printSeparator() {
@@ -96,7 +96,7 @@ public class BookcaseUi {
         System.out.print(makeLineBordered(book.toString()));
     }
 
-    public String splitIntoBorderedLines(String string, int maxLineLength) {
+    private static String splitIntoBorderedLines(String string, int maxLineLength) {
         char[][] lines = new char[1][];
         char[] characters = string.toCharArray();
         int lineStart = 0;
@@ -126,13 +126,13 @@ public class BookcaseUi {
         return flattenToString(lines);
     }
 
-    private char[][] addNewLine(char[][] lines) {
+    private static char[][] addNewLine(char[][] lines) {
         lines = Arrays.copyOf(lines, lines.length + 1);
         lines[lines.length - 1] = new char[lines[0].length];
         return lines;
     }
 
-    private char[] makeBorderedLine(char[] characters, int lineStart, int lineEnd) {
+    private static char[] makeBorderedLine(char[] characters, int lineStart, int lineEnd) {
         char[] dest = new char[BookcaseUi.WIDTH + 1];
         int srcLength = lineEnd - lineStart;
         System.arraycopy(characters, lineStart, dest, 2, srcLength);
@@ -146,7 +146,7 @@ public class BookcaseUi {
         return dest;
     }
 
-    private String flattenToString(char[][] characters) {
+    private static String flattenToString(char[][] characters) {
         StringBuilder sb = new StringBuilder();
         for (char[] row : characters) {
             sb.append(row);
@@ -154,7 +154,7 @@ public class BookcaseUi {
         return sb.toString();
     }
 
-    private String makeLineBordered(String line) {
+    private static String makeLineBordered(String line) {
         char[] borderedLine = makeBorderedLine(line.toCharArray(), 0, line.length());
         return String.valueOf(borderedLine);
     }
@@ -215,11 +215,12 @@ public class BookcaseUi {
     }
 
     private void printBooksAndFreeShelvesCountMessage() {
-        System.out.printf("В шкафу книг - %d, свободно полок - %d%n",
+        System.out.printf("В шкафу книг - %d, свободно полок - %d%n.",
                 bookcase.getBooksCount(), bookcase.getFreeShelvesCount());
     }
 
     private void addBook() {
+        printPublicationYearLimitWarning();
         Book book = askForBook();
         try {
             boolean isSuccess = bookcase.add(book);
@@ -232,7 +233,11 @@ public class BookcaseUi {
             System.out.println(e.getMessage());
             addBook();
         }
+    }
 
+    private static void printPublicationYearLimitWarning() {
+        System.out.printf("%nВнимание! Шкаф принимает книги, опубликованные не ранее %d года.",
+                Bookcase.MIN_PUBLICATION_YEAR.getValue());
     }
 
     private Book askForBook() {
@@ -256,7 +261,7 @@ public class BookcaseUi {
         Year year;
         while (true) {
             year = Year.of(readNumber(prompt));
-            if (year.isBefore(Year.now())) {
+            if (!year.isAfter(Year.now())) {
                 break;
             }
             printUnacceptableYearError();
