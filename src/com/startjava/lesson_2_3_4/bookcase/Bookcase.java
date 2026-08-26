@@ -46,12 +46,10 @@ public class Bookcase {
 
     public Book[] find(String title) {
         Book[] foundBooks = new Book[0];
-        for (Book book : books) {
-            if (book == null)
-                break;
-            if (book.getTitle().equals(title)) {
+        for (int i = 0; i < booksCount; i++) {
+            if (books[i].getTitle().equals(title)) {
                 foundBooks = Arrays.copyOf(foundBooks, foundBooks.length + 1);
-                foundBooks[foundBooks.length - 1] = book.copy();
+                foundBooks[foundBooks.length - 1] = books[i].copy();
             }
         }
         return foundBooks;
