@@ -215,7 +215,7 @@ public class BookcaseUi {
     }
 
     private void printBooksAndFreeShelvesCountMessage() {
-        System.out.printf("В шкафу книг - %d, свободно полок - %d%n.",
+        System.out.printf("В шкафу книг - %d, свободно полок - %d.%n",
                 bookcase.getBooksCount(), bookcase.getFreeShelvesCount());
     }
 
@@ -236,7 +236,7 @@ public class BookcaseUi {
     }
 
     private static void printPublicationYearLimitWarning() {
-        System.out.printf("%nВнимание! Шкаф принимает книги, опубликованные не ранее %d года.",
+        System.out.printf("%nВнимание! Шкаф принимает книги, опубликованные не ранее %d года.%n",
                 Bookcase.MIN_PUBLICATION_YEAR.getValue());
     }
 

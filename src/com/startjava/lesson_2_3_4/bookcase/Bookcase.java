@@ -6,8 +6,8 @@ import java.util.Arrays;
 public class Bookcase {
     public static final int MAX_BOOKS = 10;
     public static final Year MIN_PUBLICATION_YEAR = Year.of(1800);
+    private final Book[] books;
     private int booksCount;
-    private Book[] books;
 
     public Bookcase() {
         books = new Book[MAX_BOOKS];
@@ -31,10 +31,9 @@ public class Bookcase {
         }
         if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
             throw new IllegalArgumentException(String.format("""
-                    Ошибка: недопустимый год публикации (%d). Шкаф не принимает книги, изданные раньше %d \
-                    года. Попробуйте добавить книгу другого года публикации.
-                    """,
-                    book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
+                    Ошибка: недопустимый год публикации (%d). Шкаф не принимает книги, изданные \
+                    раньше %d года. Попробуйте добавить книгу другого года публикации.
+                    """, book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
         }
         if (booksCount == books.length) {
             return false;

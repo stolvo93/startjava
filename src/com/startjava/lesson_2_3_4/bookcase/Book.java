@@ -3,9 +3,9 @@ package com.startjava.lesson_2_3_4.bookcase;
 import java.time.Year;
 
 public class Book {
-    private String author;
-    private String title;
-    private Year year;
+    private final String author;
+    private final String title;
+    private final Year year;
 
     public Book(String author, String title, Year year) {
         if (author == null || author.isBlank()) {
