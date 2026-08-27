@@ -7,6 +7,6 @@ public class BookcaseMain {
         Scanner scanner = new Scanner(System.in);
         Bookcase bookcase = new Bookcase();
         BookcaseUi ui = new BookcaseUi(scanner, bookcase);
-        ui.makeInteraction();
+        ui.run();
     }
 }

@@ -9,19 +9,19 @@ public class Book {
 
     public Book(String author, String title, Year year) {
         if (author == null || author.isBlank()) {
-            throw new IllegalArgumentException("\nОшибка: автор книги не указан.");
+            throw new IllegalArgumentException("Автор книги не указан.");
         }
         this.author = author;
 
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("\nОшибка: название книги не указано.");
+            throw new IllegalArgumentException("Название книги не указано.");
         }
         this.title = title;
         if (year == null) {
-            throw new IllegalArgumentException("\nОшибка: год публикации книги не указан.");
+            throw new IllegalArgumentException("Год публикации книги не указан.");
         }
         if (year.isAfter(Year.now())) {
-            throw new IllegalArgumentException("\nОшибка: некорректный год издания (" + year.getValue() +
+            throw new IllegalArgumentException("Некорректный год издания (" + year.getValue() +
                     "). Год публикации не может превышать текущий год.");
         }
         this.year = year;

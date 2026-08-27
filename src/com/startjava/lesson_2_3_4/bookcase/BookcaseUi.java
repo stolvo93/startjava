@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class BookcaseUi {
+    private static final int MIN_TYPEWRITER_DELAY_MS = 100;
+    private static final int MAX_TYPEWRITER_DELAY_MS = 200;
     private static final int WIDTH = 80;
     private static final MenuItem[] emptyBookcaseMenu = { MenuItem.ADD_BOOK, MenuItem.QUIT };
     private static final MenuItem[] filledBookcaseMenu = {
@@ -17,33 +19,37 @@ public class BookcaseUi {
     private final Random random = new Random();
     private final Scanner scanner;
     private final Bookcase bookcase;
-    private MenuItem[] currentMenu;
 
     public BookcaseUi(Scanner scanner, Bookcase bookcase) {
         if (scanner == null) {
-            throw new IllegalArgumentException("Ошибка в данных: сканер не найден.");
+            throw new IllegalArgumentException("Сканер не указан.");
         }
         if (bookcase == null) {
-            throw new IllegalArgumentException("Ошибка в данных: книжный шкаф не найден.");
+            throw new IllegalArgumentException("Книжный шкаф не указан.");
         }
         this.scanner = scanner;
         this.bookcase = bookcase;
     }
 
-    public void makeInteraction() {
+    public void run() {
         printGreeting();
         MenuItem choice;
         while (true) {
-            printAsBookcase(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
-            printCurrentMenu();
-            choice = promptChoice();
+            if (bookcase.getBooks().length > 0) {
+                printBookcase();
+            } else {
+                printEmptyBookcaseMessage();
+            }
+            MenuItem[] currentMenu = getCurrentMenu();
+            printMenu(currentMenu);
+            choice = promptChoice(currentMenu);
             printChoiceMessage(choice);
-            executeMenuItem(choice);
+            executeSelectedMenuItem(choice);
             if (choice == MenuItem.QUIT) {
                 break;
             }
-            printBooksAndFreeShelvesCountMessage();
-            waitForPressingEnter();
+            printBookcaseStats();
+            waitForEnter();
         }
     }
 
@@ -55,7 +61,7 @@ public class BookcaseUi {
         char[] textCharacters = text.toCharArray();
         for (char character : textCharacters) {
             System.out.print(character);
-            int pause = random.nextInt(100, 200);
+            int pause = random.nextInt(MIN_TYPEWRITER_DELAY_MS, MAX_TYPEWRITER_DELAY_MS);
             try {
                 Thread.sleep(pause);
             } catch (InterruptedException ignored) {
@@ -65,16 +71,16 @@ public class BookcaseUi {
         System.out.println();
     }
 
-    private void printAsBookcase(Book[] books, String header) {
-        if (books.length == 0) {
-            printEmptyBookcaseMessage();
-            return;
-        }
+    private void printBookcase() {
+        printBooksAsBookcase(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
+    }
+
+    private void printBooksAsBookcase(Book[] books, String header) {
         int indent = Math.max(0, (WIDTH - header.length()) / 2);
         System.out.println("\n" + " ".repeat(indent) + header);
         printSeparator();
         for (Book book : books) {
-            printAsShelf(book);
+            printBookOnShelf(book);
             printSeparator();
         }
     }
@@ -87,52 +93,52 @@ public class BookcaseUi {
         System.out.println("+" + "-".repeat(WIDTH - 2) + "+");
     }
 
-    private void printAsShelf(Book book) {
+    private void printBookOnShelf(Book book) {
+        String bookString = book.toString();
         int maxLineLength = BookcaseUi.WIDTH - 4;
-        if (book.toString().length() > maxLineLength) {
-            System.out.print(splitIntoBorderedLines(book.toString(), maxLineLength));
+        if (bookString.length() > maxLineLength) {
+            System.out.print(formatMultilineShelf(bookString, maxLineLength));
             return;
         }
-        System.out.print(makeLineBordered(book.toString()));
+        System.out.print(makeLineBordered(bookString));
     }
 
-    private static String splitIntoBorderedLines(String string, int maxLineLength) {
+    private static String formatMultilineShelf(String string, int maxLineLength) {
         char[][] lines = new char[1][];
         char[] characters = string.toCharArray();
         int lineStart = 0;
         int lineEnd = maxLineLength;
         while (lineEnd < characters.length) {
             int lastLine = lines.length - 1;
-
             boolean hasWhitespace = false;
             for (int i = lineEnd; i > lineStart; i--) {
                 if (Character.isWhitespace(characters[i])) {
                     hasWhitespace = true;
-                    lines[lastLine] = makeBorderedLine(characters, lineStart, i);
+                    lines[lastLine] = createBorderedLine(characters, lineStart, i);
                     lineStart = i + 1;
                     lineEnd = i + 1 + maxLineLength;
                     break;
                 }
             }
             if (!hasWhitespace) {
-                lines[lastLine] = makeBorderedLine(characters, lineStart, lineEnd);
+                lines[lastLine] = createBorderedLine(characters, lineStart, lineEnd);
                 lineStart += maxLineLength;
                 lineEnd += maxLineLength;
             }
-            lines = addNewLine(lines);
+            lines = expandLines(lines);
         }
-        lines[lines.length - 1] = makeBorderedLine(characters, lineStart, characters.length);
+        lines[lines.length - 1] = createBorderedLine(characters, lineStart, characters.length);
 
-        return flattenToString(lines);
+        return linesToString(lines);
     }
 
-    private static char[][] addNewLine(char[][] lines) {
+    private static char[][] expandLines(char[][] lines) {
         lines = Arrays.copyOf(lines, lines.length + 1);
         lines[lines.length - 1] = new char[lines[0].length];
         return lines;
     }
 
-    private static char[] makeBorderedLine(char[] characters, int lineStart, int lineEnd) {
+    private static char[] createBorderedLine(char[] characters, int lineStart, int lineEnd) {
         char[] dest = new char[BookcaseUi.WIDTH + 1];
         int srcLength = lineEnd - lineStart;
         System.arraycopy(characters, lineStart, dest, 2, srcLength);
@@ -146,7 +152,7 @@ public class BookcaseUi {
         return dest;
     }
 
-    private static String flattenToString(char[][] characters) {
+    private static String linesToString(char[][] characters) {
         StringBuilder sb = new StringBuilder();
         for (char[] row : characters) {
             sb.append(row);
@@ -155,47 +161,48 @@ public class BookcaseUi {
     }
 
     private static String makeLineBordered(String line) {
-        char[] borderedLine = makeBorderedLine(line.toCharArray(), 0, line.length());
+        char[] borderedLine = createBorderedLine(line.toCharArray(), 0, line.length());
         return String.valueOf(borderedLine);
     }
 
-    private void printCurrentMenu() {
-        updateMenu();
-
+    private void printMenu(MenuItem[] menu) {
         System.out.println("\nМеню:");
         int itemNumber = 1;
-        for (MenuItem item : currentMenu) {
+        for (MenuItem item : menu) {
             System.out.println(itemNumber + ". " + item.text());
             itemNumber++;
         }
         System.out.println();
     }
 
-    private void updateMenu() {
-        currentMenu = bookcase.getBooksCount() == 0 ? emptyBookcaseMenu
-                : bookcase.getBooksCount() == Bookcase.MAX_BOOKS ? filledBookcaseMenu : fullMenu;
+    private MenuItem[] getCurrentMenu() {
+        int booksCount = bookcase.getBooksCount();
+        MenuItem[] currentMenu = booksCount == 0 ? emptyBookcaseMenu
+                : booksCount == Bookcase.MAX_BOOKS ? filledBookcaseMenu : fullMenu;
+        return currentMenu;
     }
 
-    private MenuItem promptChoice() {
-        int choice = readNumber("Введите номер выбранного пункта меню: ");
-        scanner.nextLine();
-        try {
-            return currentMenu[choice - 1];
-        } catch (IndexOutOfBoundsException e) {
+    private MenuItem promptChoice(MenuItem[] menu) {
+        int choice = readInt("Введите номер выбранного пункта меню: ");
+        if (choice < 1 || choice > menu.length) {
             System.out.println(
                     "\nОшибка: пункт под номером " + choice + " не представлен в меню. Попробуйте снова.");
-            return promptChoice();
+            return promptChoice(menu);
         }
+        return menu[choice - 1];
     }
 
-    private int readNumber(String prompt) {
+    private int readInt(String prompt) {
         System.out.print(prompt);
         try {
-            return scanner.nextInt();
+            int number = scanner.nextInt();
+            scanner.nextLine();
+            return number;
+
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("\nОшибка: введено не целое число.");
-            return readNumber("Введите целое число: ");
+            return readInt("Введите целое число: ");
         }
     }
 
@@ -203,7 +210,7 @@ public class BookcaseUi {
         System.out.println("Выбран пункт \"" + choice.text() + "\".\n");
     }
 
-    private void executeMenuItem(MenuItem choice) {
+    private void executeSelectedMenuItem(MenuItem choice) {
         switch (choice) {
             case ADD_BOOK -> addBook();
             case FIND_BOOK -> findBook();
@@ -214,7 +221,7 @@ public class BookcaseUi {
         }
     }
 
-    private void printBooksAndFreeShelvesCountMessage() {
+    private void printBookcaseStats() {
         System.out.printf("В шкафу книг - %d, свободно полок - %d.%n",
                 bookcase.getBooksCount(), bookcase.getFreeShelvesCount());
     }
@@ -224,13 +231,9 @@ public class BookcaseUi {
         Book book = askForBook();
         try {
             boolean isSuccess = bookcase.add(book);
-            if (isSuccess) {
-                System.out.println("\nКнига добавлена в шкаф.");
-            } else {
-                System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
-            }
+            printAddBookResult(isSuccess);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            System.out.println("\nОшибка: " + e.getMessage());
             addBook();
         }
     }
@@ -241,61 +244,74 @@ public class BookcaseUi {
     }
 
     private Book askForBook() {
-        String author = readCleanedLine("Введите автора книги: ");
-        String title = readCleanedLine("Введите название книги: ");
+        String author = readCleanedNonBlankLine("Введите автора книги: ");
+        String title = readCleanedNonBlankLine("Введите название книги: ");
         Year year = readValidPublicationYear("Введите год публикации: ");
         try {
             return new Book(author, title, year);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage() + " Попробуйте снова.\n");
+            System.out.println("\nОшибка: " + e.getMessage() +
+                    " Попробуйте добавить книгу другого года публикации.\n");
             return askForBook();
         }
     }
 
-    private String readCleanedLine(String prompt) {
+    private String readCleanedNonBlankLine(String prompt) {
         System.out.print(prompt);
-        return scanner.nextLine().trim().replaceAll("\\s+", " ");
+        while (true) {
+            String line = scanner.nextLine().trim();
+            if (!line.isBlank()) {
+                return line.replaceAll("\\s+", " ");
+            }
+            System.out.print("Ошибка: введена пустая строка. Попробуйте снова: ");
+        }
     }
 
     private Year readValidPublicationYear(String prompt) {
         Year year;
         while (true) {
-            year = Year.of(readNumber(prompt));
+            year = Year.of(readInt(prompt));
             if (!year.isAfter(Year.now())) {
-                break;
+                return year;
             }
             printUnacceptableYearError();
         }
-        scanner.nextLine();
-        return year;
     }
 
-    private void printUnacceptableYearError() {
+    private static void printUnacceptableYearError() {
         System.out.println("\nОшибка: год публикации не может быть больше текущего.");
     }
 
+    private static void printAddBookResult(boolean isSuccess) {
+        if (isSuccess) {
+            System.out.println("\nКнига добавлена в шкаф.");
+        } else {
+            System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
+        }
+    }
+
     private void findBook() {
-        String title = readCleanedLine("Введите название книги: ");
+        String title = readCleanedNonBlankLine("Введите название книги: ");
         Book[] foundBooks = bookcase.find(title);
         if (foundBooks.length == 0) {
             System.out.println("\nПоиск по названию книги \"" + title + "\" не дал результата.");
             return;
         }
-        printAsBookcase(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
+        printBooksAsBookcase(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
     }
 
     private void removeBook() {
-        String title = readCleanedLine("Введите название книги, которую хотите удалить: ");
+        String title = readCleanedNonBlankLine("Введите название книги, которую хотите удалить: ");
         int booksRemoved = bookcase.remove(title);
         System.out.println("Удалено книг: " + booksRemoved);
     }
 
     private void clearBookcase() {
-        bookcase.clearAll();
+        bookcase.clear();
         System.out.println("Шкаф очищен.");
     }
 
-    private void waitForPressingEnter() {
-        readCleanedLine("\nДля продолжения работы нажмите клавишу <Enter> ");
+    private void waitForEnter() {
+        readCleanedNonBlankLine("\nДля продолжения работы нажмите клавишу <Enter> ");
     }
 }

@@ -26,15 +26,7 @@ public class Bookcase {
     }
 
     public boolean add(Book book) {
-        if (book == null) {
-            throw new IllegalArgumentException("Ошибка: книга не указана.");
-        }
-        if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
-            throw new IllegalArgumentException(String.format("""
-                    Ошибка: недопустимый год публикации (%d). Шкаф не принимает книги, изданные \
-                    раньше %d года. Попробуйте добавить книгу другого года публикации.
-                    """, book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
-        }
+        validateBookForAdding(book);
         if (booksCount == books.length) {
             return false;
         }
@@ -42,6 +34,18 @@ public class Bookcase {
         books[booksCount] = book.copy();
         booksCount++;
         return true;
+    }
+
+    private void validateBookForAdding(Book book) {
+        if (book == null) {
+            throw new IllegalArgumentException("Книга не указана.");
+        }
+        if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
+            throw new IllegalArgumentException(String.format("""
+                    Недопустимый год публикации (%d). Шкаф не принимает книги, изданные \
+                    раньше %d года.""",
+                    book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
+        }
     }
 
     public Book[] find(String title) {
@@ -57,16 +61,19 @@ public class Bookcase {
 
     public int remove(String title) {
         int booksRemoved = 0;
-        for (int i = 0; i < booksCount; i++) {
+        int i = 0;
+        while (i < booksCount) {
             if (books[i].getTitle().equals(title)) {
-                remove(i--);
+                removeAt(i);
                 booksRemoved++;
+            } else {
+                i++;
             }
         }
         return booksRemoved;
     }
 
-    private void remove(int index) {
+    private void removeAt(int index) {
         System.arraycopy(books, index + 1, books, index, booksCount - (index + 1));
         books[booksCount - 1] = null;
         booksCount--;
@@ -76,7 +83,7 @@ public class Bookcase {
         return books.length - booksCount;
     }
 
-    public void clearAll() {
+    public void clear() {
         Arrays.fill(books, 0, booksCount, null);
         booksCount = 0;
     }
