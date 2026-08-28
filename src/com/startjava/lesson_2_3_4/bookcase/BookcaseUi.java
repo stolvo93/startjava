@@ -1,7 +1,6 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
 import java.time.Year;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -35,11 +34,7 @@ public class BookcaseUi {
         printGreeting();
         MenuItem choice;
         while (true) {
-            if (bookcase.getBooks().length > 0) {
-                printBookcase();
-            } else {
-                printEmptyBookcaseMessage();
-            }
+            printBookcase();
             MenuItem[] currentMenu = getCurrentMenu();
             printMenu(currentMenu);
             choice = promptChoice(currentMenu);
@@ -72,6 +67,10 @@ public class BookcaseUi {
     }
 
     private void printBookcase() {
+        if (bookcase.getBooksCount() == 0) {
+            printEmptyBookcaseMessage();
+            return;
+        }
         printBooksAsBookcase(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
     }
 
@@ -100,49 +99,46 @@ public class BookcaseUi {
             System.out.print(formatMultilineShelf(bookString, maxLineLength));
             return;
         }
-        System.out.print(makeLineBordered(bookString));
+        System.out.print(wrapLineWithBorder(bookString));
     }
 
-    private static String formatMultilineShelf(String string, int maxLineLength) {
-        char[][] lines = new char[1][];
-        char[] characters = string.toCharArray();
+    private static String formatMultilineShelf(String shelfContent, int maxLineLength) {
+        StringBuilder result = new StringBuilder();
+
         int lineStart = 0;
-        int lineEnd = maxLineLength;
-        while (lineEnd < characters.length) {
-            int lastLine = lines.length - 1;
-            boolean hasWhitespace = false;
-            for (int i = lineEnd; i > lineStart; i--) {
-                if (Character.isWhitespace(characters[i])) {
-                    hasWhitespace = true;
-                    lines[lastLine] = createBorderedLine(characters, lineStart, i);
-                    lineStart = i + 1;
-                    lineEnd = i + 1 + maxLineLength;
-                    break;
-                }
+        while (lineStart + maxLineLength < shelfContent.length()) {
+            int lineEnd = lineStart + maxLineLength;
+            int breakIndex = lineEnd;
+
+            while (breakIndex > lineStart && !isWhitespace(shelfContent, breakIndex)) {
+                breakIndex--;
             }
-            if (!hasWhitespace) {
-                lines[lastLine] = createBorderedLine(characters, lineStart, lineEnd);
-                lineStart += maxLineLength;
-                lineEnd += maxLineLength;
+
+            if (breakIndex == lineStart) {
+                breakIndex = lineEnd;
             }
-            lines = expandLines(lines);
+
+            result.append(createBorderedLine(shelfContent, lineStart, breakIndex));
+
+            lineStart = breakIndex;
+            if (isWhitespace(shelfContent, lineStart) && lineStart < shelfContent.length()) {
+                lineStart++;
+            }
         }
-        lines[lines.length - 1] = createBorderedLine(characters, lineStart, characters.length);
-
-        return linesToString(lines);
+        result.append(createBorderedLine(shelfContent, lineStart, shelfContent.length()));
+        return result.toString();
     }
 
-    private static char[][] expandLines(char[][] lines) {
-        lines = Arrays.copyOf(lines, lines.length + 1);
-        lines[lines.length - 1] = new char[lines[0].length];
-        return lines;
+    private static boolean isWhitespace(String string, int index) {
+        return Character.isWhitespace(string.charAt(index));
     }
 
-    private static char[] createBorderedLine(char[] characters, int lineStart, int lineEnd) {
+    private static char[] createBorderedLine(String string, int lineStart, int lineEnd) {
+        char[] src = string.toCharArray();
         char[] dest = new char[BookcaseUi.WIDTH + 1];
-        int srcLength = lineEnd - lineStart;
-        System.arraycopy(characters, lineStart, dest, 2, srcLength);
-        for (int i = (2 + srcLength); i < (dest.length - 2); i++) {
+        int lineLength = lineEnd - lineStart;
+        System.arraycopy(src, lineStart, dest, 2, lineLength);
+        for (int i = (2 + lineLength); i < (dest.length - 2); i++) {
             dest[i] = ' ';
         }
         dest[0] = '|';
@@ -152,16 +148,8 @@ public class BookcaseUi {
         return dest;
     }
 
-    private static String linesToString(char[][] characters) {
-        StringBuilder sb = new StringBuilder();
-        for (char[] row : characters) {
-            sb.append(row);
-        }
-        return sb.toString();
-    }
-
-    private static String makeLineBordered(String line) {
-        char[] borderedLine = createBorderedLine(line.toCharArray(), 0, line.length());
+    private static String wrapLineWithBorder(String line) {
+        char[] borderedLine = createBorderedLine(line, 0, line.length());
         return String.valueOf(borderedLine);
     }
 
@@ -228,12 +216,13 @@ public class BookcaseUi {
 
     private void addBook() {
         printPublicationYearLimitWarning();
-        Book book = askForBook();
+        Book book = promptBookData();
         try {
             boolean isSuccess = bookcase.add(book);
             printAddBookResult(isSuccess);
         } catch (IllegalArgumentException e) {
-            System.out.println("\nОшибка: " + e.getMessage());
+            System.out.println("\nОшибка: " + e.getMessage() +
+                    " Попробуйте добавить книгу другого года публикации.\n");
             addBook();
         }
     }
@@ -243,16 +232,15 @@ public class BookcaseUi {
                 Bookcase.MIN_PUBLICATION_YEAR.getValue());
     }
 
-    private Book askForBook() {
+    private Book promptBookData() {
         String author = readCleanedNonBlankLine("Введите автора книги: ");
         String title = readCleanedNonBlankLine("Введите название книги: ");
         Year year = readValidPublicationYear("Введите год публикации: ");
         try {
             return new Book(author, title, year);
         } catch (IllegalArgumentException e) {
-            System.out.println("\nОшибка: " + e.getMessage() +
-                    " Попробуйте добавить книгу другого года публикации.\n");
-            return askForBook();
+            System.out.println("\nОшибка: " + e.getMessage());
+            return promptBookData();
         }
     }
 
@@ -312,6 +300,7 @@ public class BookcaseUi {
     }
 
     private void waitForEnter() {
-        readCleanedNonBlankLine("\nДля продолжения работы нажмите клавишу <Enter> ");
+        System.out.print("\nДля продолжения работы нажмите клавишу <Enter> ");
+        scanner.nextLine();
     }
 }
