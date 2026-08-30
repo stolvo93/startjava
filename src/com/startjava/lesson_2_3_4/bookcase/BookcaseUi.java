@@ -1,5 +1,7 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
+import com.startjava.lesson_2_3_4.exception.PublicationYearTooEarlyException;
+
 import java.time.Year;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -8,7 +10,11 @@ import java.util.Scanner;
 public class BookcaseUi {
     private static final int MIN_TYPEWRITER_DELAY_MS = 100;
     private static final int MAX_TYPEWRITER_DELAY_MS = 200;
-    private static final int WIDTH = 80;
+    private static final int BOOKCASE_WIDTH = 80;
+    private static final int BORDER_WIDTH = 1;
+    private static final int PADDING_WIDTH = 1;
+    private static final int OFFSET = BORDER_WIDTH + PADDING_WIDTH;
+
     private static final MenuItem[] emptyBookcaseMenu = { MenuItem.ADD_BOOK, MenuItem.QUIT };
     private static final MenuItem[] filledBookcaseMenu = {
             MenuItem.FIND_BOOK, MenuItem.REMOVE_BOOK,
@@ -75,7 +81,7 @@ public class BookcaseUi {
     }
 
     private void printBooksAsBookcase(Book[] books, String header) {
-        int indent = Math.max(0, (WIDTH - header.length()) / 2);
+        int indent = Math.max(0, (BOOKCASE_WIDTH - header.length()) / 2);
         System.out.println("\n" + " ".repeat(indent) + header);
         printSeparator();
         for (Book book : books) {
@@ -89,12 +95,13 @@ public class BookcaseUi {
     }
 
     private static void printSeparator() {
-        System.out.println("+" + "-".repeat(WIDTH - 2) + "+");
+        System.out.println("+" + "-".repeat(BOOKCASE_WIDTH - BORDER_WIDTH * 2) + "+");
     }
 
     private void printBookOnShelf(Book book) {
         String bookString = book.toString();
-        int maxLineLength = BookcaseUi.WIDTH - 4;
+        int maxLineLength = BOOKCASE_WIDTH - OFFSET * 2;
+
         if (bookString.length() > maxLineLength) {
             System.out.print(formatMultilineShelf(bookString, maxLineLength));
             return;
@@ -107,25 +114,25 @@ public class BookcaseUi {
 
         int lineStart = 0;
         while (lineStart + maxLineLength < shelfContent.length()) {
-            int lineEnd = lineStart + maxLineLength;
-            int breakIndex = lineEnd;
+            int maxLineEnd = lineStart + maxLineLength;
+            int lineEnd = maxLineEnd;
 
-            while (breakIndex > lineStart && !isWhitespace(shelfContent, breakIndex)) {
-                breakIndex--;
+            while (lineEnd > lineStart && !isWhitespace(shelfContent, lineEnd)) {
+                lineEnd--;
+            }
+            if (lineEnd == lineStart) {
+                lineEnd = maxLineEnd;
             }
 
-            if (breakIndex == lineStart) {
-                breakIndex = lineEnd;
-            }
+            result.append(createBorderedLine(shelfContent, lineStart, lineEnd));
 
-            result.append(createBorderedLine(shelfContent, lineStart, breakIndex));
-
-            lineStart = breakIndex;
+            lineStart = lineEnd;
             if (isWhitespace(shelfContent, lineStart) && lineStart < shelfContent.length()) {
                 lineStart++;
             }
         }
         result.append(createBorderedLine(shelfContent, lineStart, shelfContent.length()));
+
         return result.toString();
     }
 
@@ -135,10 +142,11 @@ public class BookcaseUi {
 
     private static char[] createBorderedLine(String string, int lineStart, int lineEnd) {
         char[] src = string.toCharArray();
-        char[] dest = new char[BookcaseUi.WIDTH + 1];
+        char[] dest = new char[BOOKCASE_WIDTH + 1];
         int lineLength = lineEnd - lineStart;
-        System.arraycopy(src, lineStart, dest, 2, lineLength);
-        for (int i = (2 + lineLength); i < (dest.length - 2); i++) {
+
+        System.arraycopy(src, lineStart, dest, OFFSET, lineLength);
+        for (int i = (OFFSET + lineLength); i < (dest.length - BORDER_WIDTH - 1); i++) {
             dest[i] = ' ';
         }
         dest[0] = '|';
@@ -172,11 +180,13 @@ public class BookcaseUi {
 
     private MenuItem promptChoice(MenuItem[] menu) {
         int choice = readInt("Введите номер выбранного пункта меню: ");
+
         if (choice < 1 || choice > menu.length) {
             System.out.println(
                     "\nОшибка: пункт под номером " + choice + " не представлен в меню. Попробуйте снова.");
             return promptChoice(menu);
         }
+
         return menu[choice - 1];
     }
 
@@ -186,7 +196,6 @@ public class BookcaseUi {
             int number = scanner.nextInt();
             scanner.nextLine();
             return number;
-
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("\nОшибка: введено не целое число.");
@@ -217,10 +226,11 @@ public class BookcaseUi {
     private void addBook() {
         printPublicationYearLimitWarning();
         Book book = promptBookData();
+
         try {
             boolean isSuccess = bookcase.add(book);
             printAddBookResult(isSuccess);
-        } catch (IllegalArgumentException e) {
+        } catch (PublicationYearTooEarlyException e) {
             System.out.println("\nОшибка: " + e.getMessage() +
                     " Попробуйте добавить книгу другого года публикации.\n");
             addBook();
@@ -236,6 +246,7 @@ public class BookcaseUi {
         String author = readCleanedNonBlankLine("Введите автора книги: ");
         String title = readCleanedNonBlankLine("Введите название книги: ");
         Year year = readValidPublicationYear("Введите год публикации: ");
+
         try {
             return new Book(author, title, year);
         } catch (IllegalArgumentException e) {
@@ -246,6 +257,7 @@ public class BookcaseUi {
 
     private String readCleanedNonBlankLine(String prompt) {
         System.out.print(prompt);
+
         while (true) {
             String line = scanner.nextLine().trim();
             if (!line.isBlank()) {
@@ -280,11 +292,13 @@ public class BookcaseUi {
 
     private void findBook() {
         String title = readCleanedNonBlankLine("Введите название книги: ");
+
         Book[] foundBooks = bookcase.find(title);
         if (foundBooks.length == 0) {
             System.out.println("\nПоиск по названию книги \"" + title + "\" не дал результата.");
             return;
         }
+
         printBooksAsBookcase(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
     }
 

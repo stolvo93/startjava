@@ -1,5 +1,7 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
+import com.startjava.lesson_2_3_4.exception.PublicationYearTooEarlyException;
+
 import java.time.Year;
 import java.util.Arrays;
 
@@ -41,7 +43,7 @@ public class Bookcase {
             throw new IllegalArgumentException("Книга не указана.");
         }
         if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
-            throw new IllegalArgumentException(String.format("""
+            throw new PublicationYearTooEarlyException(String.format("""
                     Недопустимый год публикации (%d). Шкаф не принимает книги, изданные \
                     раньше %d года.""",
                     book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
@@ -60,6 +62,9 @@ public class Bookcase {
     }
 
     public int remove(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Название удаляемой книги не указано.");
+        }
         int booksRemoved = 0;
         int i = 0;
         while (i < booksCount) {
