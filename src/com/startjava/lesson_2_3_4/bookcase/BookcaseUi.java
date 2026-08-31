@@ -14,7 +14,6 @@ public class BookcaseUi {
     private static final int BORDER_WIDTH = 1;
     private static final int PADDING_WIDTH = 1;
     private static final int OFFSET = BORDER_WIDTH + PADDING_WIDTH;
-
     private static final MenuItem[] emptyBookcaseMenu = { MenuItem.ADD_BOOK, MenuItem.QUIT };
     private static final MenuItem[] filledBookcaseMenu = {
             MenuItem.FIND_BOOK, MenuItem.REMOVE_BOOK,
@@ -103,37 +102,35 @@ public class BookcaseUi {
         int maxLineLength = BOOKCASE_WIDTH - OFFSET * 2;
 
         if (bookString.length() > maxLineLength) {
-            System.out.print(formatMultilineShelf(bookString, maxLineLength));
+            System.out.print(buildMultilineShelf(bookString, maxLineLength));
             return;
         }
         System.out.print(wrapLineWithBorder(bookString));
     }
 
-    private static String formatMultilineShelf(String shelfContent, int maxLineLength) {
+    private static String buildMultilineShelf(String shelfContent, int maxLineLength) {
         StringBuilder result = new StringBuilder();
-
         int lineStart = 0;
         while (lineStart + maxLineLength < shelfContent.length()) {
-            int maxLineEnd = lineStart + maxLineLength;
-            int lineEnd = maxLineEnd;
-
-            while (lineEnd > lineStart && !isWhitespace(shelfContent, lineEnd)) {
-                lineEnd--;
-            }
-            if (lineEnd == lineStart) {
-                lineEnd = maxLineEnd;
-            }
-
-            result.append(createBorderedLine(shelfContent, lineStart, lineEnd));
-
-            lineStart = lineEnd;
-            if (isWhitespace(shelfContent, lineStart) && lineStart < shelfContent.length()) {
-                lineStart++;
-            }
+            int lineEnd = lineStart + maxLineLength;
+            int lineBreak = findLineBreak(shelfContent, lineStart, lineEnd);
+            result.append(createBorderedLine(shelfContent, lineStart, lineBreak));
+            lineStart = isWhitespace(shelfContent, lineBreak)
+                    ? lineBreak + 1
+                    : lineBreak;
         }
         result.append(createBorderedLine(shelfContent, lineStart, shelfContent.length()));
 
         return result.toString();
+    }
+
+    private static int findLineBreak(String string, int lineStart, int lineEnd) {
+        for (int i = lineEnd - 1; i > lineStart; i--) {
+            if (isWhitespace(string, i)) {
+                return i;
+            }
+        }
+        return lineEnd;
     }
 
     private static boolean isWhitespace(String string, int index) {
@@ -153,6 +150,7 @@ public class BookcaseUi {
         dest[1] = ' ';
         dest[dest.length - 2] = '|';
         dest[dest.length - 1] = '\n';
+
         return dest;
     }
 
@@ -173,9 +171,8 @@ public class BookcaseUi {
 
     private MenuItem[] getCurrentMenu() {
         int booksCount = bookcase.getBooksCount();
-        MenuItem[] currentMenu = booksCount == 0 ? emptyBookcaseMenu
+        return booksCount == 0 ? emptyBookcaseMenu
                 : booksCount == Bookcase.MAX_BOOKS ? filledBookcaseMenu : fullMenu;
-        return currentMenu;
     }
 
     private MenuItem promptChoice(MenuItem[] menu) {
