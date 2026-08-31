@@ -1,7 +1,6 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
 import com.startjava.lesson_2_3_4.exception.PublicationYearTooEarlyException;
-
 import java.time.Year;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -14,12 +13,12 @@ public class BookcaseUi {
     private static final int BORDER_WIDTH = 1;
     private static final int PADDING_WIDTH = 1;
     private static final int OFFSET = BORDER_WIDTH + PADDING_WIDTH;
-    private static final MenuItem[] emptyBookcaseMenu = { MenuItem.ADD_BOOK, MenuItem.QUIT };
+    private static final MenuItem[] emptyBookcaseMenu = {MenuItem.ADD_BOOK, MenuItem.QUIT};
     private static final MenuItem[] filledBookcaseMenu = {
             MenuItem.FIND_BOOK, MenuItem.REMOVE_BOOK,
             MenuItem.CLEAR_BOOKCASE, MenuItem.QUIT
     };
-    private static final MenuItem[] fullMenu = MenuItem.values();
+    private static final MenuItem[] completeMenu = MenuItem.values();
     private final Random random = new Random();
     private final Scanner scanner;
     private final Bookcase bookcase;
@@ -31,6 +30,7 @@ public class BookcaseUi {
         if (bookcase == null) {
             throw new IllegalArgumentException("Книжный шкаф не указан.");
         }
+
         this.scanner = scanner;
         this.bookcase = bookcase;
     }
@@ -105,6 +105,7 @@ public class BookcaseUi {
             System.out.print(buildMultilineShelf(bookString, maxLineLength));
             return;
         }
+
         System.out.print(wrapLineWithBorder(bookString));
     }
 
@@ -172,7 +173,7 @@ public class BookcaseUi {
     private MenuItem[] getCurrentMenu() {
         int booksCount = bookcase.getBooksCount();
         return booksCount == 0 ? emptyBookcaseMenu
-                : booksCount == Bookcase.MAX_BOOKS ? filledBookcaseMenu : fullMenu;
+                : booksCount == Bookcase.MAX_BOOKS ? filledBookcaseMenu : completeMenu;
     }
 
     private MenuItem promptChoice(MenuItem[] menu) {
@@ -244,17 +245,11 @@ public class BookcaseUi {
         String title = readCleanedNonBlankLine("Введите название книги: ");
         Year year = readValidPublicationYear("Введите год публикации: ");
 
-        try {
-            return new Book(author, title, year);
-        } catch (IllegalArgumentException e) {
-            System.out.println("\nОшибка: " + e.getMessage());
-            return promptBookData();
-        }
+        return new Book(author, title, year);
     }
 
     private String readCleanedNonBlankLine(String prompt) {
         System.out.print(prompt);
-
         while (true) {
             String line = scanner.nextLine().trim();
             if (!line.isBlank()) {
@@ -301,6 +296,7 @@ public class BookcaseUi {
 
     private void removeBook() {
         String title = readCleanedNonBlankLine("Введите название книги, которую хотите удалить: ");
+
         int booksRemoved = bookcase.remove(title);
         System.out.println("Удалено книг: " + booksRemoved);
     }

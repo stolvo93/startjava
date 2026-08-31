@@ -17,6 +17,7 @@ public class Book {
             throw new IllegalArgumentException("Название книги не указано.");
         }
         this.title = title;
+
         if (year == null) {
             throw new IllegalArgumentException("Год публикации книги не указан.");
         }

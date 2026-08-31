@@ -1,7 +1,6 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
 import com.startjava.lesson_2_3_4.exception.PublicationYearTooEarlyException;
-
 import java.time.Year;
 import java.util.Arrays;
 
@@ -65,6 +64,7 @@ public class Bookcase {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Название удаляемой книги не указано.");
         }
+
         int booksRemoved = 0;
         int i = 0;
         while (i < booksCount) {
@@ -75,6 +75,7 @@ public class Bookcase {
                 i++;
             }
         }
+
         return booksRemoved;
     }
 
