@@ -79,7 +79,7 @@ public class BookcaseUi {
         printBooksAsBookcase(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
     }
 
-    private void printBooksAsBookcase(Book[] books, String header) {
+    private static void printBooksAsBookcase(Book[] books, String header) {
         int indent = Math.max(0, (BOOKCASE_WIDTH - header.length()) / 2);
         System.out.println("\n" + " ".repeat(indent) + header);
         printSeparator();
@@ -97,7 +97,7 @@ public class BookcaseUi {
         System.out.println("+" + "-".repeat(BOOKCASE_WIDTH - BORDER_WIDTH * 2) + "+");
     }
 
-    private void printBookOnShelf(Book book) {
+    private static void printBookOnShelf(Book book) {
         String bookString = book.toString();
         int maxLineLength = BOOKCASE_WIDTH - OFFSET * 2;
 

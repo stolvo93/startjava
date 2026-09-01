@@ -37,7 +37,7 @@ public class Bookcase {
         return true;
     }
 
-    private void validateBookForAdding(Book book) {
+    private static void validateBookForAdding(Book book) {
         if (book == null) {
             throw new IllegalArgumentException("Книга не указана.");
         }
