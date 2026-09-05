@@ -1,17 +1,19 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
-import com.startjava.lesson_2_3_4.exception.PublicationYearTooEarlyException;
+import com.startjava.lesson_2_3_4.bookcase.exception.PublicationYearTooEarlyException;
 import java.time.Year;
 import java.util.Arrays;
 
 public class Bookcase {
-    public static final int MAX_BOOKS = 10;
+    public static final int CAPACITY = 10;
     public static final Year MIN_PUBLICATION_YEAR = Year.of(1800);
+    private static final int INITIAL_CAPACITY = 3;
+    private static final double GROWTH_FACTOR = 1.5;
     private final Book[] books;
     private int booksCount;
 
     public Bookcase() {
-        books = new Book[MAX_BOOKS];
+        books = new Book[CAPACITY];
     }
 
     public int getBooksCount() {
@@ -19,11 +21,7 @@ public class Bookcase {
     }
 
     public Book[] getBooks() {
-        Book[] booksCopy = new Book[booksCount];
-        for (int i = 0; i < booksCount; i++) {
-            booksCopy[i] = books[i].copy();
-        }
-        return booksCopy;
+        return Arrays.copyOf(books, booksCount);
     }
 
     public boolean add(Book book) {
@@ -32,7 +30,7 @@ public class Bookcase {
             return false;
         }
 
-        books[booksCount] = book.copy();
+        books[booksCount] = book;
         booksCount++;
         return true;
     }
@@ -41,23 +39,39 @@ public class Bookcase {
         if (book == null) {
             throw new IllegalArgumentException("Книга не указана.");
         }
-        if (book.getYear().isBefore(MIN_PUBLICATION_YEAR)) {
-            throw new PublicationYearTooEarlyException(String.format("""
-                    Недопустимый год публикации (%d). Шкаф не принимает книги, изданные \
-                    раньше %d года.""",
-                    book.getYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
+        if (book.getPublicationYear().isBefore(MIN_PUBLICATION_YEAR)) {
+            throw new PublicationYearTooEarlyException(String.format(
+                    "Недопустимый год публикации (%d). Минимальный год: %d.",
+                    book.getPublicationYear().getValue(), MIN_PUBLICATION_YEAR.getValue()));
         }
     }
 
     public Book[] find(String title) {
-        Book[] foundBooks = new Book[0];
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Название искомой книги не указано.");
+        }
+
+        Book[] foundBooks = new Book[INITIAL_CAPACITY];
+        int foundCount = 0;
         for (int i = 0; i < booksCount; i++) {
             if (books[i].getTitle().equals(title)) {
-                foundBooks = Arrays.copyOf(foundBooks, foundBooks.length + 1);
-                foundBooks[foundBooks.length - 1] = books[i].copy();
+                if (foundCount == foundBooks.length) {
+                    foundBooks = extendCapacity(foundBooks);
+                }
+                foundBooks[foundCount] = books[i];
+                foundCount++;
             }
         }
-        return foundBooks;
+
+        return foundCount == foundBooks.length ? foundBooks : trimToSize(foundBooks, foundCount);
+    }
+
+    private static Book[] extendCapacity(Book[] books) {
+        return Arrays.copyOf(books, (int) (books.length * GROWTH_FACTOR));
+    }
+
+    private static Book[] trimToSize(Book[] books, int size) {
+        return Arrays.copyOf(books, size);
     }
 
     public int remove(String title) {
@@ -80,9 +94,9 @@ public class Bookcase {
     }
 
     private void removeAt(int index) {
-        System.arraycopy(books, index + 1, books, index, booksCount - (index + 1));
-        books[booksCount - 1] = null;
         booksCount--;
+        System.arraycopy(books, index + 1, books, index, booksCount - index);
+        books[booksCount] = null;
     }
 
     public int getFreeShelvesCount() {

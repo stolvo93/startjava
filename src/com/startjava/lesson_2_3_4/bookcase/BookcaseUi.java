@@ -1,6 +1,6 @@
 package com.startjava.lesson_2_3_4.bookcase;
 
-import com.startjava.lesson_2_3_4.exception.PublicationYearTooEarlyException;
+import com.startjava.lesson_2_3_4.bookcase.exception.PublicationYearTooEarlyException;
 import java.time.Year;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -164,7 +164,7 @@ public class BookcaseUi {
         System.out.println("\nМеню:");
         int itemNumber = 1;
         for (MenuItem item : menu) {
-            System.out.println(itemNumber + ". " + item.text());
+            System.out.println(itemNumber + ". " + item.label());
             itemNumber++;
         }
         System.out.println();
@@ -173,7 +173,7 @@ public class BookcaseUi {
     private MenuItem[] getCurrentMenu() {
         int booksCount = bookcase.getBooksCount();
         return booksCount == 0 ? emptyBookcaseMenu
-                : booksCount == Bookcase.MAX_BOOKS ? filledBookcaseMenu : completeMenu;
+                : booksCount == Bookcase.CAPACITY ? filledBookcaseMenu : completeMenu;
     }
 
     private MenuItem promptChoice(MenuItem[] menu) {
@@ -202,7 +202,7 @@ public class BookcaseUi {
     }
 
     private static void printChoiceMessage(MenuItem choice) {
-        System.out.println("Выбран пункт \"" + choice.text() + "\".\n");
+        System.out.println("Выбран пункт \"" + choice.label() + "\".\n");
     }
 
     private void executeSelectedMenuItem(MenuItem choice) {

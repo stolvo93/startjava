@@ -2,12 +2,12 @@ package com.startjava.lesson_2_3_4.bookcase;
 
 import java.time.Year;
 
-public class Book {
+public final class Book {
     private final String author;
     private final String title;
-    private final Year year;
+    private final Year publicationYear;
 
-    public Book(String author, String title, Year year) {
+    public Book(String author, String title, Year publicationYear) {
         if (author == null || author.isBlank()) {
             throw new IllegalArgumentException("Автор книги не указан.");
         }
@@ -18,30 +18,26 @@ public class Book {
         }
         this.title = title;
 
-        if (year == null) {
+        if (publicationYear == null) {
             throw new IllegalArgumentException("Год публикации книги не указан.");
         }
-        if (year.isAfter(Year.now())) {
-            throw new IllegalArgumentException("Некорректный год издания (" + year.getValue() +
+        if (publicationYear.isAfter(Year.now())) {
+            throw new IllegalArgumentException("Некорректный год издания (" + publicationYear.getValue() +
                     "). Год публикации не может превышать текущий год.");
         }
-        this.year = year;
+        this.publicationYear = publicationYear;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Year getYear() {
-        return year;
-    }
-
-    public Book copy() {
-        return new Book(author, title, year);
+    public Year getPublicationYear() {
+        return publicationYear;
     }
 
     @Override
     public String toString() {
-        return String.format("%s - \"%s\" (%d)", author, title, year.getValue());
+        return String.format("%s - \"%s\" (%d)", author, title, publicationYear.getValue());
     }
 }

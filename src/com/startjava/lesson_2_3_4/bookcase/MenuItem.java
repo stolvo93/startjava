@@ -7,13 +7,13 @@ public enum MenuItem {
     CLEAR_BOOKCASE("Очистить шкаф"),
     QUIT("Завершить работу");
 
-    private final String text;
+    private final String label;
 
-    MenuItem(String text) {
-        this.text = text;
+    MenuItem(String label) {
+        this.label = label;
     }
 
-    public String text() {
-        return text;
+    public String label() {
+        return label;
     }
 }
