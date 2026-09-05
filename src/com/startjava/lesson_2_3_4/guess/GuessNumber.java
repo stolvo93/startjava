@@ -14,8 +14,6 @@ public class GuessNumber {
     private final Random random = new Random();
     private final Scanner scanner;
     private int targetNumber;
-    private int currentRound;
-    private int currentAttempt;
     private Player currentPlayer;
 
     public GuessNumber(Scanner scanner, Player... players) {
@@ -24,17 +22,21 @@ public class GuessNumber {
     }
 
     public void play() {
+        initGame();
+        for (int round = 1; round <= ROUNDS_COUNT; round++) {
+            playRound(round);
+            printCurrentScore();
+            printRoundGuessHistory();
+        }
+        showGameResult();
+    }
+
+    private void initGame() {
         resetScores();
         printGreeting();
         showDrawingLots();
         shufflePlayers();
         announcePlayerOrder();
-        for (currentRound = 1; currentRound <= ROUNDS_COUNT; currentRound++) {
-            playRound();
-            printCurrentScore();
-            printRoundGuessHistory();
-        }
-        showGameResult();
     }
 
     private void resetScores() {
@@ -81,20 +83,24 @@ public class GuessNumber {
         }
     }
 
-    private void playRound() {
-        resetAttempts();
-        generateTargetNumber();
-        printRoundStartMessage();
-        for (currentAttempt = 1; currentAttempt <= MAX_ATTEMPTS; currentAttempt++) {
-            playAttempt();
+    private void playRound(int round) {
+        initRound(round);
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            playAttempt(attempt);
             if (isGuessed()) {
                 currentPlayer.addPoint();
-                printRoundVictoryMessage();
+                printRoundVictoryMessage(attempt);
                 break;
             }
         }
-        printRoundFinishMessage();
+        printRoundFinishMessage(round);
         if (!isGuessed()) printAllLoseRoundMessage();
+    }
+
+    private void initRound(int round) {
+        resetAttempts();
+        generateTargetNumber();
+        printRoundStartMessage(round);
     }
 
     private void resetAttempts() {
@@ -107,26 +113,26 @@ public class GuessNumber {
         targetNumber = random.nextInt(MIN_NUMBER, MAX_NUMBER + 1);
     }
 
-    private void printRoundStartMessage() {
-        System.out.printf("\nРаунд %d. У каждого игрока по %d попыток%n", currentRound, MAX_ATTEMPTS);
+    private void printRoundStartMessage(int round) {
+        System.out.printf("\nРаунд %d. У каждого игрока по %d попыток%n", round, MAX_ATTEMPTS);
     }
 
-    private void playAttempt() {
+    private void playAttempt(int attempt) {
         for (Player player : players) {
             currentPlayer = player;
-            makeGuess();
+            makeGuess(attempt);
             if (isGuessed()) return;
             printWrongGuessMessage();
-            if (currentAttempt == MAX_ATTEMPTS) printOutOfAttemptsMessage();
+            if (attempt == MAX_ATTEMPTS) printOutOfAttemptsMessage();
         }
     }
 
-    private void makeGuess() {
-        System.out.println("\nПопытка " + currentAttempt);
+    private void makeGuess(int attempt) {
+        System.out.println("\nПопытка " + attempt);
         int playerNumber = readNumber("Число вводит " + currentPlayer.getName() + ": ");
         while (true) {
             try {
-                currentPlayer.recordAttempt(playerNumber);
+                currentPlayer.addTriedNumber(playerNumber);
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -164,13 +170,13 @@ public class GuessNumber {
         System.out.println("У игрока " + currentPlayer.getName() + " закончились попытки!");
     }
 
-    private void printRoundVictoryMessage() {
+    private void printRoundVictoryMessage(int attempt) {
         System.out.printf("%n%s угадывает число %d с %d-й попытки%n",
-                currentPlayer.getName(), targetNumber, currentAttempt);
+                currentPlayer.getName(), targetNumber, attempt);
     }
 
-    private void printRoundFinishMessage() {
-        System.out.println("\nРаунд " + currentRound + " окончен!");
+    private void printRoundFinishMessage(int round) {
+        System.out.println("\nРаунд " + round + " окончен!");
     }
 
     private void printAllLoseRoundMessage() {

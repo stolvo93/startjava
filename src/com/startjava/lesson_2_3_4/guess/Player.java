@@ -27,7 +27,7 @@ public class Player {
         return triedNumbers[numberIndex];
     }
 
-    public void recordAttempt(int number) {
+    public void addTriedNumber(int number) {
         if (number < GuessNumber.MIN_NUMBER || number > GuessNumber.MAX_NUMBER) {
             throw new IllegalArgumentException(String.format(
                     "%nОшибка: число должно быть в диапазоне [%d, %d].",
@@ -38,6 +38,7 @@ public class Player {
     }
 
     public void resetAttempts() {
+        Arrays.fill(triedNumbers, 0);
         attemptsMade = 0;
     }
 
