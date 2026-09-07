@@ -66,12 +66,12 @@ public class Bookcase {
         return foundCount == foundBooks.length ? foundBooks : trimToSize(foundBooks, foundCount);
     }
 
-    private static Book[] extendCapacity(Book[] books) {
-        return Arrays.copyOf(books, (int) (books.length * GROWTH_FACTOR));
+    private static Book[] extendCapacity(Book[] array) {
+        return Arrays.copyOf(array, (int) (array.length * GROWTH_FACTOR));
     }
 
-    private static Book[] trimToSize(Book[] books, int size) {
-        return Arrays.copyOf(books, size);
+    private static Book[] trimToSize(Book[] array, int size) {
+        return Arrays.copyOf(array, size);
     }
 
     public int remove(String title) {
