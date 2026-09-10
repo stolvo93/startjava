@@ -38,7 +38,7 @@ public class Player {
     }
 
     public void resetAttempts() {
-        Arrays.fill(triedNumbers, 0);
+        Arrays.fill(triedNumbers, 0, attemptsMade, 0);
         attemptsMade = 0;
     }
 

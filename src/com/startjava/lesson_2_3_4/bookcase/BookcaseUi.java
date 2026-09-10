@@ -79,6 +79,133 @@ public class BookcaseUi {
         printBooksAsBookcase(bookcase.getBooks(), "КНИЖНЫЙ ШКАФ:");
     }
 
+    private static void printEmptyBookcaseMessage() {
+        System.out.println("\nШкаф пуст. Вы можете добавить в него первую книгу.");
+    }
+
+    private void printMenu(MenuItem[] menu) {
+        System.out.println("\nМеню:");
+        int itemNumber = 1;
+        for (MenuItem item : menu) {
+            System.out.println(itemNumber + ". " + item.label());
+            itemNumber++;
+        }
+        System.out.println();
+    }
+
+    private MenuItem[] getCurrentMenu() {
+        int booksCount = bookcase.getBooksCount();
+        return booksCount == 0 ? emptyBookcaseMenu
+                : booksCount == Bookcase.CAPACITY ? filledBookcaseMenu : completeMenu;
+    }
+
+    private MenuItem promptChoice(MenuItem[] menu) {
+        int choice = readInt("Введите номер выбранного пункта меню: ");
+
+        if (choice < 1 || choice > menu.length) {
+            System.out.println(
+                    "\nОшибка: пункт под номером " + choice + " не представлен в меню. Попробуйте снова.");
+            return promptChoice(menu);
+        }
+
+        return menu[choice - 1];
+    }
+
+    private static void printChoiceMessage(MenuItem choice) {
+        System.out.println("Выбран пункт \"" + choice.label() + "\".\n");
+    }
+
+    private void executeSelectedMenuItem(MenuItem choice) {
+        switch (choice) {
+            case ADD_BOOK -> addBook();
+            case FIND_BOOK -> findBook();
+            case REMOVE_BOOK -> removeBook();
+            case CLEAR_BOOKCASE -> clearBookcase();
+            case QUIT -> {
+            }
+        }
+    }
+
+    private void printBookcaseStats() {
+        System.out.printf("В шкафу книг - %d, свободно полок - %d.%n",
+                bookcase.getBooksCount(), bookcase.getFreeShelvesCount());
+    }
+
+    private void addBook() {
+        printPublicationYearLimitWarning();
+        Book book = promptBookData();
+
+        try {
+            boolean isSuccess = bookcase.add(book);
+            printAddBookResult(isSuccess);
+        } catch (PublicationYearTooEarlyException e) {
+            System.out.println("\nОшибка: " + e.getMessage() +
+                    " Попробуйте добавить книгу другого года публикации.\n");
+            addBook();
+        }
+    }
+
+    private static void printPublicationYearLimitWarning() {
+        System.out.printf("%nВнимание! Шкаф принимает книги, опубликованные не ранее %d года.%n",
+                Bookcase.MIN_PUBLICATION_YEAR.getValue());
+    }
+
+    private Book promptBookData() {
+        String author = readCleanedNonBlankLine("Введите автора книги: ");
+        String title = readCleanedNonBlankLine("Введите название книги: ");
+        Year year = readValidPublicationYear("Введите год публикации: ");
+
+        return new Book(author, title, year);
+    }
+
+    private Year readValidPublicationYear(String prompt) {
+        Year year;
+        while (true) {
+            year = Year.of(readInt(prompt));
+            if (!year.isAfter(Year.now())) {
+                return year;
+            }
+            printUnacceptableYearError();
+        }
+    }
+
+    private int readInt(String prompt) {
+        System.out.print(prompt);
+        try {
+            int number = scanner.nextInt();
+            scanner.nextLine();
+            return number;
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("\nОшибка: введено не целое число.");
+            return readInt("Введите целое число: ");
+        }
+    }
+
+    private static void printUnacceptableYearError() {
+        System.out.println("\nОшибка: год публикации не может быть больше текущего.");
+    }
+
+    private static void printAddBookResult(boolean isSuccess) {
+        if (isSuccess) {
+            System.out.println("\nКнига добавлена в шкаф.");
+        } else {
+            System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
+        }
+    }
+
+    private void findBook() {
+        String title = readCleanedNonBlankLine("Введите название книги: ");
+
+        Book[] foundBooks = bookcase.find(title);
+        if (foundBooks.length == 0) {
+            System.out.println("\nПоиск по названию книги \"" + title + "\" не дал результата.");
+            return;
+        }
+
+        printBooksAsBookcase(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
+    }
+
     private static void printBooksAsBookcase(Book[] books, String header) {
         int indent = Math.max(0, (BOOKCASE_WIDTH - header.length()) / 2);
         System.out.println("\n" + " ".repeat(indent) + header);
@@ -87,10 +214,6 @@ public class BookcaseUi {
             printBookOnShelf(book);
             printSeparator();
         }
-    }
-
-    private static void printEmptyBookcaseMessage() {
-        System.out.println("\nШкаф пуст. Вы можете добавить в него первую книгу.");
     }
 
     private static void printSeparator() {
@@ -160,92 +283,11 @@ public class BookcaseUi {
         return String.valueOf(borderedLine);
     }
 
-    private void printMenu(MenuItem[] menu) {
-        System.out.println("\nМеню:");
-        int itemNumber = 1;
-        for (MenuItem item : menu) {
-            System.out.println(itemNumber + ". " + item.label());
-            itemNumber++;
-        }
-        System.out.println();
-    }
+    private void removeBook() {
+        String title = readCleanedNonBlankLine("Введите название книги, которую хотите удалить: ");
 
-    private MenuItem[] getCurrentMenu() {
-        int booksCount = bookcase.getBooksCount();
-        return booksCount == 0 ? emptyBookcaseMenu
-                : booksCount == Bookcase.CAPACITY ? filledBookcaseMenu : completeMenu;
-    }
-
-    private MenuItem promptChoice(MenuItem[] menu) {
-        int choice = readInt("Введите номер выбранного пункта меню: ");
-
-        if (choice < 1 || choice > menu.length) {
-            System.out.println(
-                    "\nОшибка: пункт под номером " + choice + " не представлен в меню. Попробуйте снова.");
-            return promptChoice(menu);
-        }
-
-        return menu[choice - 1];
-    }
-
-    private int readInt(String prompt) {
-        System.out.print(prompt);
-        try {
-            int number = scanner.nextInt();
-            scanner.nextLine();
-            return number;
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            System.out.println("\nОшибка: введено не целое число.");
-            return readInt("Введите целое число: ");
-        }
-    }
-
-    private static void printChoiceMessage(MenuItem choice) {
-        System.out.println("Выбран пункт \"" + choice.label() + "\".\n");
-    }
-
-    private void executeSelectedMenuItem(MenuItem choice) {
-        switch (choice) {
-            case ADD_BOOK -> addBook();
-            case FIND_BOOK -> findBook();
-            case REMOVE_BOOK -> removeBook();
-            case CLEAR_BOOKCASE -> clearBookcase();
-            case QUIT -> {
-            }
-        }
-    }
-
-    private void printBookcaseStats() {
-        System.out.printf("В шкафу книг - %d, свободно полок - %d.%n",
-                bookcase.getBooksCount(), bookcase.getFreeShelvesCount());
-    }
-
-    private void addBook() {
-        printPublicationYearLimitWarning();
-        Book book = promptBookData();
-
-        try {
-            boolean isSuccess = bookcase.add(book);
-            printAddBookResult(isSuccess);
-        } catch (PublicationYearTooEarlyException e) {
-            System.out.println("\nОшибка: " + e.getMessage() +
-                    " Попробуйте добавить книгу другого года публикации.\n");
-            addBook();
-        }
-    }
-
-    private static void printPublicationYearLimitWarning() {
-        System.out.printf("%nВнимание! Шкаф принимает книги, опубликованные не ранее %d года.%n",
-                Bookcase.MIN_PUBLICATION_YEAR.getValue());
-    }
-
-    private Book promptBookData() {
-        String author = readCleanedNonBlankLine("Введите автора книги: ");
-        String title = readCleanedNonBlankLine("Введите название книги: ");
-        Year year = readValidPublicationYear("Введите год публикации: ");
-
-        return new Book(author, title, year);
+        int booksRemoved = bookcase.remove(title);
+        System.out.println("Удалено книг: " + booksRemoved);
     }
 
     private String readCleanedNonBlankLine(String prompt) {
@@ -257,48 +299,6 @@ public class BookcaseUi {
             }
             System.out.print("Ошибка: введена пустая строка. Попробуйте снова: ");
         }
-    }
-
-    private Year readValidPublicationYear(String prompt) {
-        Year year;
-        while (true) {
-            year = Year.of(readInt(prompt));
-            if (!year.isAfter(Year.now())) {
-                return year;
-            }
-            printUnacceptableYearError();
-        }
-    }
-
-    private static void printUnacceptableYearError() {
-        System.out.println("\nОшибка: год публикации не может быть больше текущего.");
-    }
-
-    private static void printAddBookResult(boolean isSuccess) {
-        if (isSuccess) {
-            System.out.println("\nКнига добавлена в шкаф.");
-        } else {
-            System.out.println("\nОшибка: невозможно добавить книгу, так как шкаф заполнен.");
-        }
-    }
-
-    private void findBook() {
-        String title = readCleanedNonBlankLine("Введите название книги: ");
-
-        Book[] foundBooks = bookcase.find(title);
-        if (foundBooks.length == 0) {
-            System.out.println("\nПоиск по названию книги \"" + title + "\" не дал результата.");
-            return;
-        }
-
-        printBooksAsBookcase(foundBooks, "КНИГИ, ИМЕЮЩИЕ НАЗВАНИЕ \"" + title + "\":");
-    }
-
-    private void removeBook() {
-        String title = readCleanedNonBlankLine("Введите название книги, которую хотите удалить: ");
-
-        int booksRemoved = bookcase.remove(title);
-        System.out.println("Удалено книг: " + booksRemoved);
     }
 
     private void clearBookcase() {
